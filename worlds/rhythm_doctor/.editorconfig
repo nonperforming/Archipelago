@@ -1,0 +1,24 @@
+# In accordance to https://github.com/ArchipelagoMW/Archipelago/blob/main/docs/style.md
+
+[*]
+indent_style = space
+max_line_length = 120
+trim_trailing_whitespace = true
+insert_final_newline = false
+end_of_line = lf
+charset = utf-8
+
+[*.py]
+indent_size = 4
+
+#[*.md]
+# No applicable options
+
+[*.html]
+indent_size = 2
+
+[*.css]
+indent_size = 2
+
+[*.js]
+indent_size = 2
