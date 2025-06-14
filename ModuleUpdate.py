@@ -48,6 +48,7 @@ if not update_ran:
 def check_pip():
     # detect if pip is available
     try:
+        return True
         import pip  # noqa: F401
     except ImportError:
         raise RuntimeError("pip not available. Please install pip.")
@@ -62,9 +63,10 @@ def confirm(msg: str):
 
 
 def update_command():
-    check_pip()
+    #pass
+    #check_pip()
     for file in requirements_files:
-        subprocess.call([sys.executable, "-m", "pip", "install", "-r", file, "--upgrade"])
+        subprocess.call(["uv", "pip", "install", "-r", file, "--upgrade"])
 
 
 def install_pkg_resources(yes=False):
@@ -74,7 +76,7 @@ def install_pkg_resources(yes=False):
         check_pip()
         if not yes:
             confirm("pkg_resources not found, press enter to install it")
-        subprocess.call([sys.executable, "-m", "pip", "install", "--upgrade", "setuptools"])
+        subprocess.call(["uv", "pip", "install", "--upgrade", "setuptools"])
 
 
 def update(yes: bool = False, force: bool = False) -> None:
@@ -143,6 +145,7 @@ def update(yes: bool = False, force: bool = False) -> None:
                             if not yes:
                                 import traceback
                                 traceback.print_exc()
+                                return
                                 confirm(f"Requirement {requirement} is not satisfied, press enter to install it")
                             update_command()
                             return
