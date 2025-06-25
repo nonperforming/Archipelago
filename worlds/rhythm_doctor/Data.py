@@ -16,9 +16,10 @@ world_path = path.join(data_path, "world.yml")
 class RhythmDoctorItem(Item):
     game: str = GAME_NAME
 
-class ItemData:
-    item_classification: ItemClassification
-    #code
+# ?
+# class ItemData:
+#     item_classification: ItemClassification
+#     #code
 
 def load_data_file(file_path: str)\
     -> (dict[str, dict[str, list] | str, list | str, dict[str, any]]
@@ -33,7 +34,7 @@ def convert_items(data: dict) -> dict[str, ItemClassification]:
     pass
     # TODO???
 
-def flatten_items(data: dict[str, dict[str, list] | str, list | str, dict[str, any]]) -> list:
+def flatten_items(data: dict[str, dict[str, list] | str, list | str, dict[str, any]]) -> list[dict[str, int, str]]:
     """
     TODO
     """
@@ -56,6 +57,14 @@ def flatten_items(data: dict[str, dict[str, list] | str, list | str, dict[str, a
 
     return flattened_items
 
+def flatten_items_filler(data: dict[str, dict[str, list] | str, list | str, dict[str, any]]) -> list[dict[str, int, str]]:
+    filler_items: list[dict[str, int, str]] = []
+    for filler_type in data["filler"].values():
+        for filler in filler_type:
+            filler_items.append(filler)
+
+    return filler_items
+
 def flatten_locations(data: dict[str, dict[str, list]]):
     """
     TODO
@@ -77,4 +86,6 @@ locations_dictionary: dict[str, dict[str, list]] = load_data_file(locations_path
 world_dictionary: dict[str, any] = load_data_file(world_path)
 
 flattened_items = flatten_items(items_dictionary)
+flattened_items_filler = flatten_items_filler(items_dictionary)
+flattened_items_nofiller = [item for item in flattened_items if item not in flattened_items_filler]
 flattened_locations = flatten_locations(locations_dictionary)

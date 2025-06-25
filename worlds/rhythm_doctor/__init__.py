@@ -1,10 +1,11 @@
 import random
 
-from BaseClasses import Tutorial
+from BaseClasses import Tutorial, Item, ItemClassification, Location
 from worlds.AutoWorld import World, WebWorld
-from typing import List, Dict, Mapping, Any
-from .Data import items_dictionary, locations_dictionary, world_dictionary, flattened_items, flattened_locations
+from .Data import items_dictionary, locations_dictionary, world_dictionary, flattened_items, flattened_locations, flattened_items_filler, flattened_items_nofiller
 from .Options import RhythmDoctorOptions
+
+GAME = "Rhythm Doctor"
 
 # Get multiworld data
 items = items_dictionary
@@ -23,7 +24,7 @@ class RhythmDoctorWeb(WebWorld):
         "A guide for setting up Rhythm Doctor for Archipelago.",
         "English",
         "setup_en_US.md",
-        "setup/en", # setup/en or setup/en_US?
+        "setup/en_US",
         [""] # TODO: Fill this in with whoever writes the doc
     )]
 
@@ -41,7 +42,7 @@ class RhythmDoctorWorld(World):
     Boss levels unlock after a certain amount of levels in its act has been cleared.
     """ # Excerpt from Steam store page
 
-    game = "Rhythm Doctor"
+    game = GAME
     web = RhythmDoctorWeb()
     #required_client_version = (world["version"], 0, 0)
     required_client_version = (0, 5, 0)
@@ -82,10 +83,41 @@ class RhythmDoctorWorld(World):
     def generate_early(self) -> None:
         # TODO: Does this work?
         # TODO: Should create_item be called here?
+        # push_precollected is used in Fill.py
         #       self.multiworld.push_precollected(self.create_item(self.random.choice(items_dictionary["levels"]["main-ward"])))
         #self.multiworld.push_precollected(self.create_item(self.random.choice(items_dictionary["levels"]["main-ward"])))
         # TODO: implement
+        # FIXME: "Start inventory gets pushed after this step."
+        # Worlds define create_items and push start inventory items there.
         pass
+
+    def create_items(self):
+        def get_classification(classification: str) -> ItemClassification:
+            match classification:
+                case "progression":
+                    return ItemClassification.progression
+                case "filler":
+                    return ItemClassification.filler
+                case "trap":
+                    return ItemClassification.trap | ItemClassification.filler
+                case "useful":
+                    return ItemClassification.useful
+        # How do we set the classification of an item?
+        # create items
+        for item_name in flattened_items_nofiller:
+            item = self.create_item(item_name)
+            item.classification
+            self.multiworld.itempool.append()
+        # FIXME: we aren't actually checking for X amount of free space
+        for filler_name in flattened_items_filler:
+            item = self.create_filler(filler_name)
+            self.multiworld.itempool.append()
+
+        # set item classifications
+
+    # "Should not need to be overridden"
+    #def create_filler(self):
+    #    return super().create_filler()
 
     def create_regions(self) -> None:
         from .Regions import create_regions
@@ -116,3 +148,8 @@ class RhythmDoctorWorld(World):
         from .Rules import set_rules
         set_rules(self)
 
+class RhythmDoctorLocation(Location):
+    game = GAME
+
+class RhythmDoctorItem(Item):
+    game = GAME
