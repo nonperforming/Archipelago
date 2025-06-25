@@ -1,4 +1,5 @@
 import random
+from typing import ClassVar
 
 from BaseClasses import Tutorial, Item, ItemClassification, Location
 from worlds.AutoWorld import World, WebWorld
@@ -47,10 +48,8 @@ class RhythmDoctorWorld(World):
     #required_client_version = (world["version"], 0, 0)
     required_client_version = (0, 5, 0)
 
-    options_dataclass: RhythmDoctorOptions
+    options_dataclass = RhythmDoctorOptions
     options: RhythmDoctorOptions
-    #settings_key = "rhythm_doctor_settings"
-    #settings: ClassVar[RhythmDoctorSettings]
 
     origin_region_name = "Main Ward"
     topology_present = True # TODO: I think this should be on. Check if the paths are valid!!

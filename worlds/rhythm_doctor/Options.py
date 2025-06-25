@@ -1,6 +1,5 @@
 from dataclasses import dataclass
-from Options import PerGameCommonOptions, DeathLink, StartInventoryPool, Choice, DefaultOnToggle, \
-    Range, Toggle, OptionGroup
+from Options import PerGameCommonOptions, DeathLink, Choice, Range, Toggle, OptionGroup
 #from . import RhythmDoctorWorld
 
 #def adjust_options(world: RhythmDoctorWorld):
@@ -29,7 +28,6 @@ class EndGoal(Choice):
     option_perfect_all = 2
     default = 0
 
-
 class BossUnlockRequirement(Choice):
     """
     The requirements to unlock the boss level for an act.
@@ -43,14 +41,12 @@ class BossUnlockRequirement(Choice):
     **Perfect:**
     All the number of levels in the ward are required to be cleared with a S+ rank or higher to unlock the act's boss.
     """
-    auto_display_name = "Boss Unlock Requirement"
+    display_name = "Boss Unlock Requirement"
 
     option_half = 0
     option_all = 1
     option_perfect = 2
     default = 0
-
-
 #endregion
 
 #region Gameplay
@@ -62,31 +58,25 @@ class TrapChance(Range):
     range_end = 100
     default = 50
 
-
 class EnableFragileHeartTraps(Toggle):
     """Determines if **increased mistake weight traps** should be in the item pool."""
     display_name = "Enable Fragile Heart Traps"
-
 
 class EnableCharacterScrambleTraps(Toggle):
     """Determines if **randomized characters traps** should be in the item pool."""
     display_name = "Enable Character Scramble Traps"
 
-
 class EnableBeatsoundScrambleTraps(Toggle):
     """Determines if **randomized beatsound traps** should be in the item pool."""
     display_name = "Enable Beatsound Scramble Traps"
-
 
 class EnableHitsoundScrambleTraps(Toggle):
     """Determines if **randomized hitsound traps** should be in the item pool."""
     display_name = "Enable Hitsound Scramble Traps"
 
-
 class EnableHardDifficultyTraps(Toggle):
     """Determines if **hard difficulty traps** should be in the item pool."""
     display_name = "Enable Hard Difficulty Traps"
-
 
 # TODO: This can get problematic with Hall of Mirrors
 #class EnableScreenEffectTraps(DefaultOnToggle):
@@ -96,8 +86,6 @@ class EnableHardDifficultyTraps(Toggle):
 class EnableSpeedTraps(Toggle):
     """Determines if **🌶️ speed traps** should be in the item pool."""
     display_name = "Enable Speed Traps"
-
-
 #endregion
 
 #region Powerups
@@ -105,17 +93,13 @@ class EnableEasyDifficultyPowerups(Toggle):
     """Determines if **easy difficulty powerups** should be in the item pool."""
     display_name = "Enable Easy Difficulty Powerups"
 
-
 class EnableStrongHeartPowerups(Toggle):
     """Determines if **decreased mistake weight powerups** should be in the item pool."""
     display_name = "Enable Strong Heart Powerups"
 
-
 class EnableSlowPowerups(Toggle):
     """Determines if **🧊 slow powerups** should be in the item pool."""
     display_name = "Enable Slow Powerups"
-
-
 #endregion
 #endregion
 #endregion
@@ -146,7 +130,6 @@ class RhythmDoctorOptions(PerGameCommonOptions):
     enable_slow_powerup: EnableSlowPowerups
     death_link: DeathLink
 
-
 groups: list[OptionGroup] = [
     OptionGroup("Generation Options", [
         EndGoal,
@@ -173,22 +156,22 @@ groups: list[OptionGroup] = [
 ]
 
 presets = {
-    "Default": {
-        "end_goal": EndGoal.option_helping_hands,
-        "boss_unlock_requirement": BossUnlockRequirement.default,
-        "trap_chance": TrapChance.default,
-        "enable_fragile_heart_trap": False,
-        "enable_character_scramble_trap": False,
-        "enable_beatsound_scramble_trap": False,
-        "enable_hitsound_scramble_trap": False,
-        "enable_hard_difficulty_trap": False,
-        #"enable_screen_effect_trap": False,
-        "enable_speed_trap": False,
-        "enable_easy_difficulty_powerup": False,
-        "enable_strong_heart_powerup": False,
-        "enable_slow_powerup": False,
-        "death_link": False,
-    },
+    # "Default": {
+    #     "end_goal": EndGoal.option_helping_hands,
+    #     "boss_unlock_requirement": BossUnlockRequirement.default,
+    #     "trap_chance": TrapChance.default,
+    #     "enable_fragile_heart_trap": False,
+    #     "enable_character_scramble_trap": False,
+    #     "enable_beatsound_scramble_trap": False,
+    #     "enable_hitsound_scramble_trap": False,
+    #     "enable_hard_difficulty_trap": False,
+    #     #"enable_screen_effect_trap": False,
+    #     "enable_speed_trap": False,
+    #     "enable_easy_difficulty_powerup": False,
+    #     "enable_strong_heart_powerup": False,
+    #     "enable_slow_powerup": False,
+    #     "death_link": False,
+    # },
     "Traps & Powerups": {
         "end_goal": EndGoal.option_helping_hands,
         "boss_unlock_requirement": BossUnlockRequirement.default,
