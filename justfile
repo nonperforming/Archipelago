@@ -1,4 +1,4 @@
-default:
+_default:
   just --choose
 
 webhost:
