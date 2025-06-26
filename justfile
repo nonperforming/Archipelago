@@ -2,9 +2,7 @@ _default:
   just --choose
 
 webhost:
-  source .venv/bin/activate
-  python WebHost.py
+  .venv/bin/python WebHost.py
 
 launcher:
-  source .venv/bin/activate
-  python Launcher.py
+  .venv/bin/python Launcher.py
