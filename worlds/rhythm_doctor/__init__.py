@@ -2,6 +2,7 @@ import random
 from typing import ClassVar
 
 from BaseClasses import Tutorial, Item, ItemClassification, Location
+from Options import OptionError
 from worlds.AutoWorld import World, WebWorld
 from .Data import items_dictionary, locations_dictionary, world_dictionary, flattened_items, flattened_locations, flattened_items_filler, flattened_items_nofiller
 from .Options import RhythmDoctorOptions
@@ -88,7 +89,14 @@ class RhythmDoctorWorld(World):
         # TODO: implement
         # FIXME: "Start inventory gets pushed after this step."
         # Worlds define create_items and push start inventory items there.
-        pass
+
+        # Check validity of options
+        # Check if sum of Trap Chance and Powerup Chance is over 100
+        if (self.options.trap_chance + self.options.powerup_chance) < 100:
+            # Format taken from Blasphemous
+            raise OptionError(f"Rhythm Doctor: Player {self.player_name}'s set",
+                              f"trap chance ({self.options.trap_chance}) and"
+                              f"powerup chance ({self.options.powerup_chance}) are over 100%")
 
     def create_items(self):
         def get_classification(classification: str) -> ItemClassification:
@@ -101,6 +109,7 @@ class RhythmDoctorWorld(World):
                     return ItemClassification.trap | ItemClassification.filler
                 case "useful":
                     return ItemClassification.useful
+            raise ValueError(f"Rhythm Doctor: Item classification '{classification}' is not valid")
         # How do we set the classification of an item?
         # create items
         for item_name in flattened_items_nofiller:

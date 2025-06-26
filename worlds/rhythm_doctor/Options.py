@@ -52,11 +52,12 @@ class BossUnlockRequirement(Choice):
 #region Gameplay
 #region Traps
 class TrapChance(Range):
-    """Determines the likeliness of a **filler item becoming a trap**."""
+    """Determines the likeliness of a **filler item becoming a trap**.
+    ***The sum of Trap Chance and Powerup Chance cannot be over 100%.***"""
     display_name = "Trap Chance"
     range_start = 0
     range_end = 100
-    default = 50
+    default = 0
 
 class EnableFragileHeartTraps(Toggle):
     """Determines if **increased mistake weight traps** should be in the item pool."""
@@ -89,6 +90,14 @@ class EnableSpeedTraps(Toggle):
 #endregion
 
 #region Powerups
+class PowerupChance(Range):
+    """Determines the likeliness of a **filler item becoming a powerup**.
+    ***The sum of Trap Chance and Powerup Chance cannot be over 100%.***"""
+    display_name = "Powerup Chance"
+    range_start = 0
+    range_end = 100
+    default = 0
+
 class EnableEasyDifficultyPowerups(Toggle):
     """Determines if **easy difficulty powerups** should be in the item pool."""
     display_name = "Enable Easy Difficulty Powerups"
@@ -125,6 +134,7 @@ class RhythmDoctorOptions(PerGameCommonOptions):
     enable_hard_difficulty_trap: EnableHardDifficultyTraps
     #enable_screen_effect_trap: EnableScreenEffectTraps
     enable_speed_trap: EnableSpeedTraps
+    powerup_chance: PowerupChance
     enable_easy_difficulty_powerup: EnableEasyDifficultyPowerups
     enable_strong_heart_powerup: EnableStrongHeartPowerups
     enable_slow_powerup: EnableSlowPowerups
@@ -149,6 +159,7 @@ groups: list[OptionGroup] = [
         EnableSpeedTraps,
     ]),
     OptionGroup("Powerup Options", [
+        PowerupChance,
         EnableEasyDifficultyPowerups,
         EnableStrongHeartPowerups,
         EnableSlowPowerups,
@@ -175,7 +186,7 @@ presets = {
     "Traps & Powerups": {
         "end_goal": EndGoal.option_helping_hands,
         "boss_unlock_requirement": BossUnlockRequirement.default,
-        "trap_chance": TrapChance.default,
+        "trap_chance": 33,
         "enable_fragile_heart_trap": True,
         "enable_character_scramble_trap": True,
         "enable_beatsound_scramble_trap": True,
@@ -183,6 +194,7 @@ presets = {
         "enable_hard_difficulty_trap": True,
         #"enable_screen_effect_trap": True,
         "enable_speed_trap": True,
+        "powerup_chance": 33,
         "enable_easy_difficulty_powerup": True,
         "enable_strong_heart_powerup": True,
         "enable_slow_powerup": True,
