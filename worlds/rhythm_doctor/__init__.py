@@ -92,7 +92,7 @@ class RhythmDoctorWorld(World):
 
         # Check validity of options
         # Check if sum of Trap Chance and Powerup Chance is over 100
-        if (self.options.trap_chance + self.options.powerup_chance) < 100:
+        if (self.options.trap_chance + self.options.powerup_chance) > 100:
             # Format taken from Blasphemous
             raise OptionError(f"Rhythm Doctor: Player {self.player_name}'s set",
                               f"trap chance ({self.options.trap_chance}) and"
