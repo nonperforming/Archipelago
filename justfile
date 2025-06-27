@@ -6,3 +6,6 @@ webhost:
 
 launcher:
   .venv/bin/python Launcher.py
+
+generate:
+  .venv/bin/python Generate.py
