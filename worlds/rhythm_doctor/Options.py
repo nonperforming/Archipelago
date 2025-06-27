@@ -175,22 +175,6 @@ groups: list[OptionGroup] = [
 ]
 
 presets = {
-    # "Default": {
-    #     "end_goal": EndGoal.option_helping_hands,
-    #     "boss_unlock_requirement": BossUnlockRequirement.default,
-    #     "trap_chance": TrapChance.default,
-    #     "enable_fragile_heart_trap": False,
-    #     "enable_character_scramble_trap": False,
-    #     "enable_beatsound_scramble_trap": False,
-    #     "enable_hitsound_scramble_trap": False,
-    #     "enable_hard_difficulty_trap": False,
-    #     #"enable_screen_effect_trap": False,
-    #     "enable_speed_trap": False,
-    #     "enable_easy_difficulty_powerup": False,
-    #     "enable_strong_heart_powerup": False,
-    #     "enable_slow_powerup": False,
-    #     "death_link": False,
-    # },
     "Traps & Powerups": {
         "end_goal": EndGoal.option_helping_hands,
         "boss_unlock_requirement": BossUnlockRequirement.default,

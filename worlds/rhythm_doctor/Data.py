@@ -13,8 +13,11 @@ locations_path = path.join(data_path, "locations.yml")
 options_path = path.join(data_path, "options.yml")
 world_path = path.join(data_path, "world.yml")
 
+class RhythmDoctorLocation(Location):
+    game = GAME_NAME
+
 class RhythmDoctorItem(Item):
-    game: str = GAME_NAME
+    game = GAME_NAME
 
 # ?
 # class ItemData:
@@ -77,6 +80,9 @@ def flatten_locations(data: dict[str, dict[str, list]]):
                 flattened_locations.append(level)
 
     return flattened_locations
+
+def create_item():
+    pass
 
 # TODO: type hint
 # TODO: item name to id!!

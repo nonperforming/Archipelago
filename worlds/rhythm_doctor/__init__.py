@@ -98,18 +98,19 @@ class RhythmDoctorWorld(World):
                               f"trap chance ({self.options.trap_chance}) and"
                               f"powerup chance ({self.options.powerup_chance}) are over 100%")
 
+    def get_classification(classification: str) -> ItemClassification:
+        match classification:
+            case "progression":
+                return ItemClassification.progression
+            case "filler":
+                return ItemClassification.filler
+            case "trap":
+                return ItemClassification.trap | ItemClassification.filler
+            case "useful":
+                return ItemClassification.useful
+        raise ValueError(f"Rhythm Doctor: Item classification '{classification}' is not valid")
+
     def create_items(self):
-        def get_classification(classification: str) -> ItemClassification:
-            match classification:
-                case "progression":
-                    return ItemClassification.progression
-                case "filler":
-                    return ItemClassification.filler
-                case "trap":
-                    return ItemClassification.trap | ItemClassification.filler
-                case "useful":
-                    return ItemClassification.useful
-            raise ValueError(f"Rhythm Doctor: Item classification '{classification}' is not valid")
         # How do we set the classification of an item?
         # create items
         for item_name in flattened_items_nofiller:
@@ -122,6 +123,12 @@ class RhythmDoctorWorld(World):
             self.multiworld.itempool.append()
 
         # set item classifications
+
+    def create_item(self, name) -> Data.RhythmDoctorItem:
+        name, id, classification = flattened_items[name]
+        id = int(id)
+        classification = self.get_classification(classification)
+        return Data.RhythmDoctorItem(name, classification, id, self.player)
 
     # "Should not need to be overridden"
     #def create_filler(self):
@@ -155,9 +162,3 @@ class RhythmDoctorWorld(World):
     def set_rules(self) -> None:
         from .Rules import set_rules
         set_rules(self)
-
-class RhythmDoctorLocation(Location):
-    game = GAME
-
-class RhythmDoctorItem(Item):
-    game = GAME
