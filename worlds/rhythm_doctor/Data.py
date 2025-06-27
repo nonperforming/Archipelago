@@ -1,10 +1,10 @@
 from os import path
 from pathlib import Path
 
-from BaseClasses import Item, ItemClassification
+from BaseClasses import Item, ItemClassification, Location
 from Utils import parse_yaml
 
-GAME_NAME = "Rhythm Doctor"
+GAME_NAME = "rhythm_doctor"
 
 base_path = path.dirname(__file__)
 data_path = path.join(base_path, "data")
@@ -80,9 +80,6 @@ def flatten_locations(data: dict[str, dict[str, list]]):
                 flattened_locations.append(level)
 
     return flattened_locations
-
-def create_item():
-    pass
 
 # TODO: type hint
 # TODO: item name to id!!
