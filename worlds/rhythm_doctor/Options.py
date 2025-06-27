@@ -15,8 +15,11 @@ class EndGoal(Choice):
     Clear all other bosses (1-X, 2-X, 3-X, 1-XN, 5-X) to unlock X-0 - Helping Hands.
     Then, clear X-0 to beat the game!
 
-    **Clear All Levels:**
+    **B Rank All Levels:**
     Clear all levels with a B rank or higher to beat the game!
+
+    **A Rank All Levels:**
+    Clear all levels with a A rank or higher to beat the game!
 
     **Perfect All Levels:**
     Clear all levels with an S+/Perfect rank to beat the game!
@@ -24,8 +27,9 @@ class EndGoal(Choice):
     display_name = "End Goal"
 
     option_helping_hands = 0
-    option_clear_all = 1
-    option_perfect_all = 2
+    option_brank_all = 1
+    option_arank_all = 2
+    option_perfect_all = 3
     default = 0
 
 class BossUnlockRequirement(Choice):
@@ -33,27 +37,31 @@ class BossUnlockRequirement(Choice):
     The requirements to unlock the boss level for an act.
 
     **Half:**
-    Only half the number of levels in the ward are required to be cleared with a B rank or higher to unlock the act's boss.
+    Only half the number of levels in the act (rounding down if odd) are required to be cleared with a B rank or higher to unlock the act's boss.
 
-    **All:**
-    All the number of levels in the ward are required to be cleared with a B rank or higher to unlock the act's boss.
+    **B Rank All Levels:**
+    All the number of levels in the act are required to be cleared with a B rank or higher to unlock the act's boss.
+
+    **A Rank All Levels:**
+    All the number of levels in the act are required to be cleared with a B rank or higher to unlock the act's boss.
 
     **Perfect:**
-    All the number of levels in the ward are required to be cleared with a S+ rank or higher to unlock the act's boss.
+    All the number of levels in the act are required to be cleared with a S+ rank to unlock the act's boss.
     """
     display_name = "Boss Unlock Requirement"
 
     option_half = 0
-    option_all = 1
-    option_perfect = 2
+    option_brank_all = 1
+    option_arank_all = 2
+    option_perfect = 3
     default = 0
 #endregion
 
 #region Gameplay
 #region Traps
 class TrapChance(Range):
-    """Determines the likeliness of a **filler item becoming a trap**.
-    ***The sum of Trap Chance and Powerup Chance cannot be over 100%.***"""
+    """Determines the percent likeliness of a **filler item becoming a trap**.
+    **The sum of Trap Chance and Powerup Chance cannot be over 100%.**"""
     display_name = "Trap Chance"
     range_start = 0
     range_end = 100
@@ -91,8 +99,8 @@ class EnableSpeedTraps(Toggle):
 
 #region Powerups
 class PowerupChance(Range):
-    """Determines the likeliness of a **filler item becoming a powerup**.
-    ***The sum of Trap Chance and Powerup Chance cannot be over 100%.***"""
+    """Determines the percent likeliness of a **filler item becoming a powerup**.
+    **The sum of Trap Chance and Powerup Chance cannot be over 100%.**"""
     display_name = "Powerup Chance"
     range_start = 0
     range_end = 100
