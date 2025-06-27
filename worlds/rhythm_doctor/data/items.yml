@@ -189,9 +189,10 @@ filler:
     - name: Sleeve Paint
       id: 82_104_121_68_114_048
       classification: filler
-    - name: Samurai.
+    - name: A Bit of Rhythm
       id: 82_104_121_68_114_049
       classification: filler
+      special: nothing-filler
 
   powerups:
     - name: Strengthened Heart
