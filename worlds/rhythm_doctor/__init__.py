@@ -98,7 +98,7 @@ class RhythmDoctorWorld(World):
                               f"trap chance ({self.options.trap_chance}) and"
                               f"powerup chance ({self.options.powerup_chance}) are over 100%")
 
-    def get_classification(classification: str) -> ItemClassification:
+    def get_classification(self, classification: str) -> ItemClassification:
         match classification:
             case "progression":
                 return ItemClassification.progression
@@ -124,11 +124,21 @@ class RhythmDoctorWorld(World):
 
         # set item classifications
 
-    def create_item(self, name) -> Data.RhythmDoctorItem:
-        name, id, classification = flattened_items[name]
-        id = int(id)
-        classification = self.get_classification(classification)
-        return Data.RhythmDoctorItem(name, classification, id, self.player)
+    def create_item(self, name: dict[str, str | int]) -> Data.RhythmDoctorItem:
+        # ?????????????????????????
+        # Saving Princess has 'name' as str.
+        # So why is it an item dict '{'name': '1-1 - Samurai Techno', 'id': 8210412168114000, 'classification': 'progression'}'
+        #  for us?
+
+        #item = flattened_items[self.item_name_to_id[name] - 82_104_121_68_114_000]
+        #id = item["id"]
+        #classification = self.get_classification(item["classification"])
+        #return Data.RhythmDoctorItem(name, classification, id, self.player)
+
+        return Data.RhythmDoctorItem(name["name"],
+                                     self.get_classification(name["classification"]),
+                                     name["id"],
+                                     self.player)
 
     # "Should not need to be overridden"
     #def create_filler(self):
