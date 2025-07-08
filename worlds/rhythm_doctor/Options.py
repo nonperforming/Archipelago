@@ -92,9 +92,9 @@ class EnableHardDifficultyTraps(Toggle):
 #    """Determines if **screen effect traps** should be in the item pool."""
 #    display_name = "Enable Screen Effect Traps"
 
-class EnableSpeedTraps(Toggle):
-    """Determines if **🌶️ speed traps** should be in the item pool."""
-    display_name = "Enable Speed Traps"
+class EnableChilliSpeedTraps(Toggle):
+    """Determines if **🌶️ chilli speed traps** should be in the item pool."""
+    display_name = "Enable Chilli Speed Traps"
 #endregion
 
 #region Powerups
@@ -114,9 +114,9 @@ class EnableStrongHeartPowerups(Toggle):
     """Determines if **decreased mistake weight powerups** should be in the item pool."""
     display_name = "Enable Strong Heart Powerups"
 
-class EnableSlowPowerups(Toggle):
-    """Determines if **🧊 slow powerups** should be in the item pool."""
-    display_name = "Enable Slow Powerups"
+class EnableIceSpeedPowerups(Toggle):
+    """Determines if **🧊 ice speed powerups** should be in the item pool."""
+    display_name = "Enable Ice Speed Powerups"
 #endregion
 #endregion
 #endregion
@@ -141,11 +141,11 @@ class RhythmDoctorOptions(PerGameCommonOptions):
     enable_hitsound_scramble_trap: EnableHitsoundScrambleTraps
     enable_hard_difficulty_trap: EnableHardDifficultyTraps
     #enable_screen_effect_trap: EnableScreenEffectTraps
-    enable_speed_trap: EnableSpeedTraps
+    enable_chilli_speed_trap: EnableChilliSpeedTraps
     powerup_chance: PowerupChance
     enable_easy_difficulty_powerup: EnableEasyDifficultyPowerups
     enable_strong_heart_powerup: EnableStrongHeartPowerups
-    enable_slow_powerup: EnableSlowPowerups
+    enable_ice_speed_powerup: EnableIceSpeedPowerups
     death_link: DeathLink
 
 groups: list[OptionGroup] = [
@@ -164,13 +164,13 @@ groups: list[OptionGroup] = [
         EnableHitsoundScrambleTraps,
         EnableHardDifficultyTraps,
         #EnableScreenEffectTraps,
-        EnableSpeedTraps,
+        EnableChilliSpeedTraps,
     ]),
     OptionGroup("Powerup Options", [
         PowerupChance,
         EnableEasyDifficultyPowerups,
         EnableStrongHeartPowerups,
-        EnableSlowPowerups,
+        EnableIceSpeedPowerups,
     ]),
 ]
 
@@ -185,11 +185,11 @@ presets = {
         "enable_hitsound_scramble_trap": True,
         "enable_hard_difficulty_trap": True,
         #"enable_screen_effect_trap": True,
-        "enable_speed_trap": True,
+        "enable_chilli_speed_trap": True,
         "powerup_chance": 33,
         "enable_easy_difficulty_powerup": True,
         "enable_strong_heart_powerup": True,
-        "enable_slow_powerup": True,
+        "enable_ice_speed_powerup": True,
         "death_link": False,
     },
 }
