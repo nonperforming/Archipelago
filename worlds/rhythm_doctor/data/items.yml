@@ -221,3 +221,6 @@ filler:
     - name: Chilli Speed Trap
       id: 82_104_121_68_114_056
       classification: trap
+    - name: Ghost Tap Trap
+      id: 82_104_121_68_114_057
+      classification: trap
