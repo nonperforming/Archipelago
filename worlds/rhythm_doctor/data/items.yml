@@ -201,6 +201,9 @@ filler:
     - name: Easy Mode
       id: 82_104_121_68_114_051
       classification: filler
+    - name: Ice Speed Powerup
+      id: 82_104_121_68_114_056
+      classification: filler
 
   traps:
     - name: Fragile Heart Trap
@@ -209,12 +212,12 @@ filler:
     - name: Hard Mode Trap
       id: 82_104_121_68_114_053
       classification: trap
-    - name: Connectifia Abortus Trap
+    - name: Randomize Characters
       id: 82_104_121_68_114_054
       classification: trap
-    - name: Randomize Characters
-      id: 82_104_121_68_114_055
-      classification: filler
     - name: Scramble Beat Sounds
+      id: 82_104_121_68_114_055
+      classification: trap
+    - name: Chilli Speed Trap
       id: 82_104_121_68_114_056
-      classification: filler
+      classification: trap
