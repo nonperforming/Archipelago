@@ -27,7 +27,8 @@ def set_rules(world: RhythmDoctorWorld):
     # Set key requirement
     # Act 1/Act 3 are available to the user at all times
     for ward_name in locations_dictionary["locations"].keys():
-        if ward_name == "main-ward":  # Helping Hands stays in the world regardless of it being in generation or not.
+        if ward_name == "main-ward": # The Main Ward is always accessible.
+            # Helping Hands stays in the world regardless of it being in generation or not.
             # or world.options.end_goal == EndGoal.option_helping_hands and region_name == "Art Room":
             continue
         set_key_requirement(ward_name, humanize_name(ward_name) + " Key")
