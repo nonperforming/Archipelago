@@ -88,14 +88,7 @@ class RhythmDoctorWorld(World):
     }
 
     def generate_early(self) -> None:
-        # TODO: Does this work?
-        # TODO: Should create_item be called here?
-        # push_precollected is used in Fill.py
-        #       self.multiworld.push_precollected(self.create_item(self.random.choice(items_dictionary["levels"]["main-ward"])))
-        # self.multiworld.push_precollected(self.create_item(self.random.choice(items_dictionary["levels"]["main-ward"])))
-        # TODO: implement
-        # FIXME: "Start inventory gets pushed after this step."
-        # Worlds define create_items and push start inventory items there.
+        # TODO: Need to finish
 
         # Check validity of options
         # Check if sum of Trap Chance and Powerup Chance is over 100
@@ -104,47 +97,61 @@ class RhythmDoctorWorld(World):
             raise OptionError(f"Rhythm Doctor: Player {self.player_name}'s set",
                               f"trap chance ({self.options.trap_chance}) and"
                               f"powerup chance ({self.options.powerup_chance}) are over 100%")
+        # TODO: Check if all traps are disabled but trap chance is not 0
 
-    def create_items(self):
-        non_filleritems_created = 0
+    def create_items(self) -> None:
+        # We need to pull a level from the Main Ward and push it into our start inventory.
+        starting_level_dict = self.random.choice(items_dictionary["levels"]["main-ward"])
+        starting_level = self.create_item(starting_level_dict)
+        self.multiworld.push_precollected(starting_level)
 
         for item_dict in flattened_items_nofiller:
+            if item_dict == starting_level_dict:
+                # Do not add the level we start with to the pool.
+                continue
             item = self.create_item(item_dict)
+            item.classification = get_classification(item_dict["classification"])
             self.multiworld.itempool.append(item)
-            non_filleritems_created += 1
 
-        need_to_create_filler_amount = len(flattened_items) - non_filleritems_created
+        # Add filler items to pad leftover locations
+        need_to_create_filler_amount = len(flattened_locations) - len(flattened_items_nofiller)
         for i in range(need_to_create_filler_amount):
             self.multiworld.itempool.append(self.get_filler())
 
-    def create_item(self, name: dict[str, str | int]) -> Data.RhythmDoctorItem:
-        # ?????????????????????????
-        # Saving Princess has 'name' as str.
-        # So why is it an item dict '{'name': '1-1 - Samurai Techno', 'id': 8210412168114000, 'classification': 'progression'}'
-        #  for us?
+        pass
+
+    def create_item(self, item_dictionary: dict[str, str | int]) -> Data.RhythmDoctorItem:
+        # Is it safe to have name be an item dict
+        # '{'name': '1-1 - Samurai Techno', 'id': 8210412168114000, 'classification': 'progression'}'?
 
         # item = flattened_items[self.item_name_to_id[name] - 82_104_121_68_114_000]
         # id = item["id"]
         # classification = self.get_classification(item["classification"])
         # return Data.RhythmDoctorItem(name, classification, id, self.player)
 
-        return Data.RhythmDoctorItem(name["name"],
-                                     get_classification(name["classification"]),
-                                     name["id"],
+        return Data.RhythmDoctorItem(item_dictionary["name"],
+                                     get_classification(item_dictionary["classification"]),
+                                     item_dictionary["id"],
                                      self.player)
 
     def get_filler(self) -> Data.RhythmDoctorItem:
+        # TODO: Currently ignores user input on trap preferences
+        #       i.e. self.options.enable_chilli_speed_trap
         # Check which filler type to get
         result = self.random.randint(0, 199)
 
+        classification = ItemClassification.filler
         if result < self.options.trap_chance:
             filler_items = flattened_items_filler_junk
+            classification = ItemClassification.trap
         elif result < self.options.trap_chance + self.options.powerup_chance:
             filler_items = flattened_items_filler_traps
         else:
             filler_items = flattened_items_filler_junk
 
         item_dict = self.random.choice(filler_items)
+        item = self.create_item(item_dict)
+        item.classification = classification
         return self.create_item(item_dict)
 
     # def get_filler_item_name(self) -> str:
