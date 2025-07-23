@@ -6,7 +6,8 @@ wards = list(locations_dictionary["locations"].keys())
 
 
 def humanize_name(name: str) -> str:
-    return name.replace("-", " ").title()
+    # "Svt" -> "SVT": the ward in-game is called "SVT Ward", as SVT is an abbreviation
+    return name.replace("-", " ").title().replace("Svt", "SVT")
 
 
 # Code adapted from Saving Princess
@@ -18,7 +19,7 @@ def create_regions(multiworld: MultiWorld, player: int) -> None:
         for level in locations_dictionary["locations"][ward].values():
             for location in level:
                 # Classification where?
-                region.locations.append(RhythmDoctorLocation(player, location["name"]))
+                region.locations.append(RhythmDoctorLocation(player, location["name"], location["id"], region))
 
         multiworld.regions.append(region)
     connect_regions(multiworld, player)
