@@ -13,18 +13,21 @@ locations_path = path.join(data_path, "locations.yml")
 options_path = path.join(data_path, "options.yml")
 world_path = path.join(data_path, "world.yml")
 
+
 class RhythmDoctorLocation(Location):
     game = GAME_NAME
 
+
 class RhythmDoctorItem(Item):
     game = GAME_NAME
+
 
 # ?
 # class ItemData:
 #     item_classification: ItemClassification
 #     #code
 
-def load_data_file(file_path: str)\
+def load_data_file(file_path: str) \
     -> (dict[str, dict[str, list] | str, list | str, dict[str, any]]
         | dict[str, dict[str, list]]
         | dict[str, any]):
@@ -33,9 +36,11 @@ def load_data_file(file_path: str)\
     """
     return parse_yaml(Path(file_path).read_text())
 
+
 def convert_items(data: dict) -> dict[str, ItemClassification]:
     pass
     # TODO???
+
 
 def flatten_items(data: dict[str, dict[str, list] | str, list | str, dict[str, any]]) -> list[dict[str, int, str]]:
     """
@@ -60,7 +65,9 @@ def flatten_items(data: dict[str, dict[str, list] | str, list | str, dict[str, a
 
     return flattened_items
 
-def flatten_items_filler(data: dict[str, dict[str, list] | str, list | str, dict[str, any]]) -> list[dict[str, int, str]]:
+
+def flatten_items_filler(data: dict[str, dict[str, list] | str, list | str, dict[str, any]]) -> list[
+    dict[str, int, str]]:
     filler_items: list[dict[str, int, str]] = []
     for filler_type in data["filler"].values():
         for filler in filler_type:
@@ -68,26 +75,33 @@ def flatten_items_filler(data: dict[str, dict[str, list] | str, list | str, dict
 
     return filler_items
 
-def flatten_items_filler_traps(data: dict[str, dict[str, list] | str, list | str, dict[str, any]]) -> list[dict[str, int, str]]:
+
+def flatten_items_filler_traps(data: dict[str, dict[str, list] | str, list | str, dict[str, any]]) -> list[
+    dict[str, int, str]]:
     filler_items: list[dict[str, int, str]] = []
     for filler in data["filler"]["traps"]:
         filler_items.append(filler)
 
     return filler_items
 
-def flatten_items_filler_powerups(data: dict[str, dict[str, list] | str, list | str, dict[str, any]]) -> list[dict[str, int, str]]:
+
+def flatten_items_filler_powerups(data: dict[str, dict[str, list] | str, list | str, dict[str, any]]) -> list[
+    dict[str, int, str]]:
     filler_items: list[dict[str, int, str]] = []
     for filler in data["filler"]["powerups"]:
         filler_items.append(filler)
 
     return filler_items
 
-def flatten_items_filler_junk(data: dict[str, dict[str, list] | str, list | str, dict[str, any]]) -> list[dict[str, int, str]]:
+
+def flatten_items_filler_junk(data: dict[str, dict[str, list] | str, list | str, dict[str, any]]) -> list[
+    dict[str, int, str]]:
     filler_items: list[dict[str, int, str]] = []
     for filler in data["filler"]["junk"]:
         filler_items.append(filler)
 
     return filler_items
+
 
 def flatten_locations(data: dict[str, dict[str, list]]):
     """
@@ -102,6 +116,7 @@ def flatten_locations(data: dict[str, dict[str, list]]):
 
     return flattened_locations
 
+
 def get_classification(classification: str) -> ItemClassification:
     match classification:
         case "progression":
@@ -113,6 +128,7 @@ def get_classification(classification: str) -> ItemClassification:
         case "useful":
             return ItemClassification.useful
     raise ValueError(f"Rhythm Doctor: Item classification '{classification}' is not valid")
+
 
 # TODO: type hint
 # TODO: item name to id!!

@@ -1,12 +1,14 @@
 from dataclasses import dataclass
 from Options import PerGameCommonOptions, DeathLink, Choice, Range, Toggle, OptionGroup
-#from . import RhythmDoctorWorld
 
-#def adjust_options(world: RhythmDoctorWorld):
+
+# from . import RhythmDoctorWorld
+
+# def adjust_options(world: RhythmDoctorWorld):
 #    pass
 
-#region Options
-#region Generation
+# region Options
+# region Generation
 class EndGoal(Choice):
     """
     The end goal required to beat the game.
@@ -32,6 +34,7 @@ class EndGoal(Choice):
     option_perfect_all = 3
     default = 0
 
+
 class BossUnlockRequirement(Choice):
     """
     The requirements to unlock the boss level for an act.
@@ -55,10 +58,12 @@ class BossUnlockRequirement(Choice):
     option_arank_all = 2
     option_perfect = 3
     default = 0
-#endregion
 
-#region Gameplay
-#region Traps
+
+# endregion
+
+# region Gameplay
+# region Traps
 class TrapChance(Range):
     """Determines the percent likeliness of a **filler item becoming a trap**.
     **The sum of Trap Chance and Powerup Chance cannot be over 100%.**"""
@@ -67,37 +72,45 @@ class TrapChance(Range):
     range_end = 100
     default = 0
 
+
 class EnableFragileHeartTraps(Toggle):
     """Determines if **increased mistake weight traps** should be in the item pool."""
     display_name = "Enable Fragile Heart Traps"
+
 
 class EnableCharacterScrambleTraps(Toggle):
     """Determines if **randomized characters traps** should be in the item pool."""
     display_name = "Enable Character Scramble Traps"
 
+
 class EnableBeatsoundScrambleTraps(Toggle):
     """Determines if **randomized beatsound traps** should be in the item pool."""
     display_name = "Enable Beatsound Scramble Traps"
+
 
 class EnableHitsoundScrambleTraps(Toggle):
     """Determines if **randomized hitsound traps** should be in the item pool."""
     display_name = "Enable Hitsound Scramble Traps"
 
+
 class EnableHardDifficultyTraps(Toggle):
     """Determines if **hard difficulty traps** should be in the item pool."""
     display_name = "Enable Hard Difficulty Traps"
 
+
 # TODO: This can get problematic with Hall of Mirrors
-#class EnableScreenEffectTraps(DefaultOnToggle):
+# class EnableScreenEffectTraps(DefaultOnToggle):
 #    """Determines if **screen effect traps** should be in the item pool."""
 #    display_name = "Enable Screen Effect Traps"
 
 class EnableChilliSpeedTraps(Toggle):
     """Determines if **🌶️ chilli speed traps** should be in the item pool."""
     display_name = "Enable Chilli Speed Traps"
-#endregion
 
-#region Powerups
+
+# endregion
+
+# region Powerups
 class PowerupChance(Range):
     """Determines the percent likeliness of a **filler item becoming a powerup**.
     **The sum of Trap Chance and Powerup Chance cannot be over 100%.**"""
@@ -106,20 +119,25 @@ class PowerupChance(Range):
     range_end = 100
     default = 0
 
+
 class EnableEasyDifficultyPowerups(Toggle):
     """Determines if **easy difficulty powerups** should be in the item pool."""
     display_name = "Enable Easy Difficulty Powerups"
+
 
 class EnableStrongHeartPowerups(Toggle):
     """Determines if **decreased mistake weight powerups** should be in the item pool."""
     display_name = "Enable Strong Heart Powerups"
 
+
 class EnableIceSpeedPowerups(Toggle):
     """Determines if **🧊 ice speed powerups** should be in the item pool."""
     display_name = "Enable Ice Speed Powerups"
-#endregion
-#endregion
-#endregion
+
+
+# endregion
+# endregion
+# endregion
 
 @dataclass
 class RhythmDoctorOptions(PerGameCommonOptions):
@@ -127,7 +145,7 @@ class RhythmDoctorOptions(PerGameCommonOptions):
     # Should we include a random level from Act 1/Act 3 here?
     # Or instead use push_precollected in generate_early?
     # Generation options
-    #start_inventory_from_pool: StartInventoryPool
+    # start_inventory_from_pool: StartInventoryPool
 
     # Generation options
     end_goal: EndGoal
@@ -140,13 +158,14 @@ class RhythmDoctorOptions(PerGameCommonOptions):
     enable_beatsound_scramble_trap: EnableBeatsoundScrambleTraps
     enable_hitsound_scramble_trap: EnableHitsoundScrambleTraps
     enable_hard_difficulty_trap: EnableHardDifficultyTraps
-    #enable_screen_effect_trap: EnableScreenEffectTraps
+    # enable_screen_effect_trap: EnableScreenEffectTraps
     enable_chilli_speed_trap: EnableChilliSpeedTraps
     powerup_chance: PowerupChance
     enable_easy_difficulty_powerup: EnableEasyDifficultyPowerups
     enable_strong_heart_powerup: EnableStrongHeartPowerups
     enable_ice_speed_powerup: EnableIceSpeedPowerups
     death_link: DeathLink
+
 
 groups: list[OptionGroup] = [
     OptionGroup("Generation Options", [
@@ -163,7 +182,7 @@ groups: list[OptionGroup] = [
         EnableBeatsoundScrambleTraps,
         EnableHitsoundScrambleTraps,
         EnableHardDifficultyTraps,
-        #EnableScreenEffectTraps,
+        # EnableScreenEffectTraps,
         EnableChilliSpeedTraps,
     ]),
     OptionGroup("Powerup Options", [
@@ -184,7 +203,7 @@ presets = {
         "enable_beatsound_scramble_trap": True,
         "enable_hitsound_scramble_trap": True,
         "enable_hard_difficulty_trap": True,
-        #"enable_screen_effect_trap": True,
+        # "enable_screen_effect_trap": True,
         "enable_chilli_speed_trap": True,
         "powerup_chance": 33,
         "enable_easy_difficulty_powerup": True,

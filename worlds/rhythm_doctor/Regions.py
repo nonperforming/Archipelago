@@ -4,8 +4,10 @@ from . import RhythmDoctorWorld
 
 wards = list(locations_dictionary["locations"].keys())
 
+
 def humanize_name(name: str) -> str:
     return name.replace("-", " ").title()
+
 
 # Code adapted from Saving Princess
 def create_regions(multiworld: MultiWorld, player: int) -> None:
@@ -15,15 +17,16 @@ def create_regions(multiworld: MultiWorld, player: int) -> None:
         multiworld.regions.append(region)
     connect_regions(multiworld, player)
 
+
 def connect_regions(multiworld: MultiWorld, player: int) -> None:
     # Add a connection between the Main Menu and Main Ward
     # TODO: cleanup opted to use origin_region_name
     # do we need to do this
-    #menu = multiworld.get_region("Menu", player)
-    #main = multiworld.get_region("Main Ward", player)
-    #connection = Entrance(player, f"Main Ward Entrance", menu)
-    #menu.exits.append(connection)
-    #connection.connect(main)
+    # menu = multiworld.get_region("Menu", player)
+    # main = multiworld.get_region("Main Ward", player)
+    # connection = Entrance(player, f"Main Ward Entrance", menu)
+    # menu.exits.append(connection)
+    # connection.connect(main)
 
     main = multiworld.get_region(RhythmDoctorWorld.origin_region_name, player)
 
@@ -37,4 +40,3 @@ def connect_regions(multiworld: MultiWorld, player: int) -> None:
         connection = Entrance(player, f"{ward} Entrance", main)
         main.exits.append(connection)
         connection.connect(multiworld.get_region(ward, player))
-

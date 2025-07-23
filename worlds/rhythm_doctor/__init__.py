@@ -18,6 +18,7 @@ items = items_dictionary
 locations = locations_dictionary
 world = world_dictionary
 
+
 class RhythmDoctorWeb(WebWorld):
     rich_text_options_doc = True
     theme = "partyTime"
@@ -31,11 +32,12 @@ class RhythmDoctorWeb(WebWorld):
         "English",
         "setup_en_US.md",
         "setup/en_US",
-        [""] # TODO: Fill this in with whoever writes the doc
+        [""]  # TODO: Fill this in with whoever writes the doc
     )]
 
     options_presets = Options.presets
     option_groups = Options.groups
+
 
 class RhythmDoctorWorld(World):
     """
@@ -46,7 +48,7 @@ class RhythmDoctorWorld(World):
 
     In Archipelago, levels and wards are randomized. Clearing levels with B, A, and S ranks will clear locations.
     Boss levels unlock after a certain amount of levels in its act has been cleared.
-    """ # Excerpt from Steam store page
+    """  # Excerpt from Steam store page
 
     game = GAME
     web = RhythmDoctorWeb()
@@ -56,13 +58,13 @@ class RhythmDoctorWorld(World):
     options: RhythmDoctorOptions
 
     origin_region_name = "Main Ward"
-    topology_present = True # TODO: I think this should be on. Check if the paths are valid!!
+    topology_present = True  # TODO: I think this should be on. Check if the paths are valid!!
 
     # items.yml has items classified by levels, keys, filler (powerups, traps, junk) etc.
     # We need to "flatten" it here as item_name_to_id wants type Dict[str, int]
     # TODO: Do we need this?
-    #@staticmethod
-    #def is_item(item: Any | Dict) -> bool:
+    # @staticmethod
+    # def is_item(item: Any | Dict) -> bool:
     #    return "name" in item and "id" in item and "classification" in item
 
     item_name_to_id = {item["name"]: item["id"] for item in flattened_items}
@@ -72,9 +74,11 @@ class RhythmDoctorWorld(World):
     # Is leaving them here safe?
     item_name_groups = {
         # FIXME: invalid syntax
-        "Act 1 Levels": [level["name"] for level in items_dictionary["levels"]["main-ward"] if level["name"].startswith("1-")],
+        "Act 1 Levels": [level["name"] for level in items_dictionary["levels"]["main-ward"] if
+                         level["name"].startswith("1-")],
         "Act 2 Levels": [level["name"] for level in items_dictionary["levels"]["svt-ward"]],
-        "Act 3 Levels": [level["name"] for level in items_dictionary["levels"]["main-ward"] if level["name"].startswith("3-")],
+        "Act 3 Levels": [level["name"] for level in items_dictionary["levels"]["main-ward"] if
+                         level["name"].startswith("3-")],
         "Act 4 Levels": [level["name"] for level in items_dictionary["levels"]["train"]],
         "Act 5 Levels": [level["name"] for level in items_dictionary["levels"]["physiotherapy-ward"]],
         "Keys": [item["name"] for item in items_dictionary["keys"]],
@@ -88,7 +92,7 @@ class RhythmDoctorWorld(World):
         # TODO: Should create_item be called here?
         # push_precollected is used in Fill.py
         #       self.multiworld.push_precollected(self.create_item(self.random.choice(items_dictionary["levels"]["main-ward"])))
-        #self.multiworld.push_precollected(self.create_item(self.random.choice(items_dictionary["levels"]["main-ward"])))
+        # self.multiworld.push_precollected(self.create_item(self.random.choice(items_dictionary["levels"]["main-ward"])))
         # TODO: implement
         # FIXME: "Start inventory gets pushed after this step."
         # Worlds define create_items and push start inventory items there.
@@ -119,10 +123,10 @@ class RhythmDoctorWorld(World):
         # So why is it an item dict '{'name': '1-1 - Samurai Techno', 'id': 8210412168114000, 'classification': 'progression'}'
         #  for us?
 
-        #item = flattened_items[self.item_name_to_id[name] - 82_104_121_68_114_000]
-        #id = item["id"]
-        #classification = self.get_classification(item["classification"])
-        #return Data.RhythmDoctorItem(name, classification, id, self.player)
+        # item = flattened_items[self.item_name_to_id[name] - 82_104_121_68_114_000]
+        # id = item["id"]
+        # classification = self.get_classification(item["classification"])
+        # return Data.RhythmDoctorItem(name, classification, id, self.player)
 
         return Data.RhythmDoctorItem(name["name"],
                                      get_classification(name["classification"]),
@@ -143,7 +147,7 @@ class RhythmDoctorWorld(World):
         item_dict = self.random.choice(filler_items)
         return self.create_item(item_dict)
 
-    #def get_filler_item_name(self) -> str:
+    # def get_filler_item_name(self) -> str:
     #    # Check which filler type to get
     #    result = self.random.randint(0, 199)
     #
