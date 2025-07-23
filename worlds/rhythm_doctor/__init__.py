@@ -151,7 +151,7 @@ class RhythmDoctorWorld(World):
         item_dict = self.random.choice(filler_items)
         item = self.create_item(item_dict)
         item.classification = classification
-        return self.create_item(item_dict)
+        return item
 
     # def get_filler_item_name(self) -> str:
     #    # Check which filler type to get
