@@ -1,8 +1,7 @@
-from BaseClasses import CollectionState, Location, MultiWorld
+from BaseClasses import CollectionState
 from worlds.generic.Rules import set_rule
 from . import RhythmDoctorWorld
 from .Data import flattened_items, locations_dictionary
-from .Options import EndGoal
 
 
 def set_rules(world: RhythmDoctorWorld):
@@ -22,7 +21,7 @@ def set_rules(world: RhythmDoctorWorld):
         for locations_in_level in levels_in_ward:
             item = flattened_items[item_index := item_index + 1]
             for location in locations_in_level:
-                set_rule(world.get_location(location["name"]), lambda state: state.has(item.name))
+                set_rule(world.get_location(location["name"]), lambda state: state.has(item.name, world.player))
     del item_index
 
     # Set key requirement
@@ -33,3 +32,7 @@ def set_rules(world: RhythmDoctorWorld):
             # or world.options.end_goal == EndGoal.option_helping_hands and region_name == "Art Room":
             continue
         set_key_requirement(region_name + " Key", region_name)
+
+    # TODO: Saving Princess has a "VICTORY ITEM".
+    #       But we are calling SetGoalAchieved() on client plugin, do we need this?
+    #       https://archipelagomw.github.io/Archipelago.MultiClient.Net/api/Archipelago.MultiClient.Net.ArchipelagoSession.html#Archipelago_MultiClient_Net_ArchipelagoSession_SetGoalAchieved
