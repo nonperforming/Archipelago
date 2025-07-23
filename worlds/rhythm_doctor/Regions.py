@@ -18,10 +18,10 @@ def create_regions(multiworld: MultiWorld, player: int) -> None:
 
         # Add related locations to regions
         for level in locations_dictionary["locations"][ward].values():
-            for location_name in level:
-                location = RhythmDoctorLocation(player, location_name["name"], location_name["id"], region)
-                location.progress_type = get_progress_type(location_name["classification"])
-                region.locations.append(location_name)
+            for location_dict in level:
+                location = RhythmDoctorLocation(player, location_dict["name"], location_dict["id"], region)
+                location.progress_type = get_progress_type(location_dict["classification"])
+                region.locations.append(location)
 
         multiworld.regions.append(region)
     connect_regions(multiworld, player)
