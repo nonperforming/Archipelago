@@ -4,6 +4,7 @@ from . import RhythmDoctorWorld
 from .Data import flattened_items, locations_dictionary
 from .Options import EndGoal
 
+
 def set_rules(world: RhythmDoctorWorld):
     def has_key(state: CollectionState, area: str) -> bool:
         return state.has(f"{area} Key", world.player)
@@ -11,7 +12,7 @@ def set_rules(world: RhythmDoctorWorld):
     def set_key_requirement(yaml_key: str, key: str):
         for level in locations_dictionary["locations"][yaml_key]:
             for location in level:
-                set_rule(location["name"], lambda state: has_key(state, key))
+                set_rule(world.get_location(location["name"]), lambda state: has_key(state, key))
 
     # Set level item requirement for level locations
     item_index = 0
@@ -21,8 +22,7 @@ def set_rules(world: RhythmDoctorWorld):
         for locations_in_level in levels_in_ward:
             item = flattened_items[item_index := item_index + 1]
             for location in locations_in_level:
-                set_rule(world.multiworld.get_location(location["name"], world.player),
-                         lambda state: state.has(item.name))
+                set_rule(world.get_location(location["name"]), lambda state: state.has(item.name))
     del item_index
 
     # Set key requirement
