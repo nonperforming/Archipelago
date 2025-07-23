@@ -19,7 +19,7 @@ class EndGoal(Choice):
     Clear all levels with a B rank or higher to beat the game!
 
     **A Rank All Levels:**
-    Clear all levels with a A rank or higher to beat the game!
+    Clear all levels with an A rank or higher to beat the game!
 
     **Perfect All Levels:**
     Clear all levels with an S+/Perfect rank to beat the game!
@@ -43,10 +43,10 @@ class BossUnlockRequirement(Choice):
     All the number of levels in the act are required to be cleared with a B rank or higher to unlock the act's boss.
 
     **A Rank All Levels:**
-    All the number of levels in the act are required to be cleared with a B rank or higher to unlock the act's boss.
+    All the number of levels in the act are required to be cleared with an A rank or higher to unlock the act's boss.
 
     **Perfect:**
-    All the number of levels in the act are required to be cleared with a S+ rank to unlock the act's boss.
+    All the number of levels in the act are required to be cleared with an S+ rank to unlock the act's boss.
     """
     display_name = "Boss Unlock Requirement"
 
