@@ -1,5 +1,5 @@
 from BaseClasses import MultiWorld, Region, Entrance
-from .Data import locations_dictionary
+from .Data import RhythmDoctorLocation, locations_dictionary
 from . import RhythmDoctorWorld
 
 wards = list(locations_dictionary["locations"].keys())
@@ -13,7 +13,13 @@ def humanize_name(name: str) -> str:
 def create_regions(multiworld: MultiWorld, player: int) -> None:
     for ward in wards:
         region = Region(humanize_name(ward), player, multiworld)
-        # TODO: set_region_locations . .? ?? ??
+
+        # Add related locations to regions
+        for level in locations_dictionary["locations"][ward].values():
+            for location in level:
+                # Classification where?
+                region.locations.append(RhythmDoctorLocation(player, location["name"]))
+
         multiworld.regions.append(region)
     connect_regions(multiworld, player)
 
