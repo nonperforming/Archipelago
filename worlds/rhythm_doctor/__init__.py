@@ -1,10 +1,14 @@
-import random
 from typing import ClassVar
 
 from BaseClasses import Tutorial, Item, ItemClassification, Location
 from Options import OptionError
 from worlds.AutoWorld import World, WebWorld
-from .Data import items_dictionary, locations_dictionary, world_dictionary, flattened_items, flattened_locations, flattened_items_filler, flattened_items_nofiller
+from .Data import items_dictionary, locations_dictionary, world_dictionary, \
+    flattened_items, flattened_items_filler, flattened_items_filler_junk, flattened_items_filler_powerups, \
+    flattened_items_filler_traps, flattened_items_nofiller, \
+    flattened_locations, \
+    get_classification
+
 from .Options import RhythmDoctorOptions
 
 GAME = "Rhythm Doctor"
@@ -46,7 +50,6 @@ class RhythmDoctorWorld(World):
 
     game = GAME
     web = RhythmDoctorWeb()
-    #required_client_version = (world["version"], 0, 0)
     required_client_version = (0, 5, 0)
 
     options_dataclass = RhythmDoctorOptions
@@ -98,31 +101,17 @@ class RhythmDoctorWorld(World):
                               f"trap chance ({self.options.trap_chance}) and"
                               f"powerup chance ({self.options.powerup_chance}) are over 100%")
 
-    def get_classification(self, classification: str) -> ItemClassification:
-        match classification:
-            case "progression":
-                return ItemClassification.progression
-            case "filler":
-                return ItemClassification.filler
-            case "trap":
-                return ItemClassification.trap | ItemClassification.filler
-            case "useful":
-                return ItemClassification.useful
-        raise ValueError(f"Rhythm Doctor: Item classification '{classification}' is not valid")
-
     def create_items(self):
-        # How do we set the classification of an item?
-        # create items
-        for item_name in flattened_items_nofiller:
-            item = self.create_item(item_name)
-            item.classification
-            self.multiworld.itempool.append()
-        # FIXME: we aren't actually checking for X amount of free space
-        for filler_name in flattened_items_filler:
-            item = self.create_filler(filler_name)
-            self.multiworld.itempool.append()
+        non_filleritems_created = 0
 
-        # set item classifications
+        for item_dict in flattened_items_nofiller:
+            item = self.create_item(item_dict)
+            self.multiworld.itempool.append(item)
+            non_filleritems_created += 1
+
+        need_to_create_filler_amount = len(flattened_items) - non_filleritems_created
+        for i in range(need_to_create_filler_amount):
+            self.multiworld.itempool.append(self.get_filler())
 
     def create_item(self, name: dict[str, str | int]) -> Data.RhythmDoctorItem:
         # ?????????????????????????
@@ -136,13 +125,36 @@ class RhythmDoctorWorld(World):
         #return Data.RhythmDoctorItem(name, classification, id, self.player)
 
         return Data.RhythmDoctorItem(name["name"],
-                                     self.get_classification(name["classification"]),
+                                     get_classification(name["classification"]),
                                      name["id"],
                                      self.player)
 
-    # "Should not need to be overridden"
-    #def create_filler(self):
-    #    return super().create_filler()
+    def get_filler(self) -> Data.RhythmDoctorItem:
+        # Check which filler type to get
+        result = self.random.randint(0, 199)
+
+        if result < self.options.trap_chance:
+            filler_items = flattened_items_filler_junk
+        elif result < self.options.trap_chance + self.options.powerup_chance:
+            filler_items = flattened_items_filler_traps
+        else:
+            filler_items = flattened_items_filler_junk
+
+        item_dict = self.random.choice(filler_items)
+        return self.create_item(item_dict)
+
+    #def get_filler_item_name(self) -> str:
+    #    # Check which filler type to get
+    #    result = self.random.randint(0, 199)
+    #
+    #    if result < self.options.trap_chance:
+    #        filler_items = flattened_items_filler_junk
+    #    elif result < self.options.trap_chance + self.options.powerup_chance:
+    #        filler_items = flattened_items_filler_traps
+    #    else:
+    #        filler_items = flattened_items_filler_junk
+    #
+    #    return self.random.choice([item_name["name"] for item_name in filler_items])
 
     def create_regions(self) -> None:
         from .Regions import create_regions

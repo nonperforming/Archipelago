@@ -68,6 +68,27 @@ def flatten_items_filler(data: dict[str, dict[str, list] | str, list | str, dict
 
     return filler_items
 
+def flatten_items_filler_traps(data: dict[str, dict[str, list] | str, list | str, dict[str, any]]) -> list[dict[str, int, str]]:
+    filler_items: list[dict[str, int, str]] = []
+    for filler in data["filler"]["traps"]:
+        filler_items.append(filler)
+
+    return filler_items
+
+def flatten_items_filler_powerups(data: dict[str, dict[str, list] | str, list | str, dict[str, any]]) -> list[dict[str, int, str]]:
+    filler_items: list[dict[str, int, str]] = []
+    for filler in data["filler"]["powerups"]:
+        filler_items.append(filler)
+
+    return filler_items
+
+def flatten_items_filler_junk(data: dict[str, dict[str, list] | str, list | str, dict[str, any]]) -> list[dict[str, int, str]]:
+    filler_items: list[dict[str, int, str]] = []
+    for filler in data["filler"]["junk"]:
+        filler_items.append(filler)
+
+    return filler_items
+
 def flatten_locations(data: dict[str, dict[str, list]]):
     """
     TODO
@@ -81,14 +102,29 @@ def flatten_locations(data: dict[str, dict[str, list]]):
 
     return flattened_locations
 
+def get_classification(classification: str) -> ItemClassification:
+    match classification:
+        case "progression":
+            return ItemClassification.progression
+        case "filler":
+            return ItemClassification.filler
+        case "trap":
+            return ItemClassification.trap | ItemClassification.filler
+        case "useful":
+            return ItemClassification.useful
+    raise ValueError(f"Rhythm Doctor: Item classification '{classification}' is not valid")
+
 # TODO: type hint
 # TODO: item name to id!!
-# TODO:                                    vvv ------------- vvv ----------------- vvv --> What should item type be?
+# TODO: item type (instead of list, any)
 items_dictionary: dict[str, dict[str, list] | str, list | str, dict[str, any]] = load_data_file(items_path)
 locations_dictionary: dict[str, dict[str, list]] = load_data_file(locations_path)
 world_dictionary: dict[str, any] = load_data_file(world_path)
 
 flattened_items = flatten_items(items_dictionary)
 flattened_items_filler = flatten_items_filler(items_dictionary)
+flattened_items_filler_junk = flatten_items_filler_junk(items_dictionary)
+flattened_items_filler_powerups = flatten_items_filler_powerups(items_dictionary)
+flattened_items_filler_traps = flatten_items_filler_traps(items_dictionary)
 flattened_items_nofiller = [item for item in flattened_items if item not in flattened_items_filler]
 flattened_locations = flatten_locations(locations_dictionary)

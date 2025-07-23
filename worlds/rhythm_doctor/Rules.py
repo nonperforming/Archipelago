@@ -14,17 +14,22 @@ def set_rules(world: RhythmDoctorWorld):
                 set_rule(location["name"], lambda state: has_key(state, key))
 
     # Set level item requirement for level locations
-    for items_index, area in enumerate(locations_dictionary["locations"]):
-        for level in area:
-            item = flattened_items[items_index]
-            for location in level:
-                # We need to get the corresponding item for these locations
-                set_rule(world.multiworld.get_location(location, world.player), lambda state: state.has(item.name))
+    item_index = 0
+    for ward_name in locations_dictionary["locations"].keys():
+        levels_in_ward = locations_dictionary["locations"][
+            ward_name].values()  # FIXME: This is a dict at runtime; why is type checking insisting it is list? Check Data.py!!
+        for locations_in_level in levels_in_ward:
+            item = flattened_items[item_index := item_index + 1]
+            for location in locations_in_level:
+                set_rule(world.multiworld.get_location(location["name"], world.player),
+                         lambda state: state.has(item.name))
+    del item_index
 
     # Set key requirement
     # Act 1/Act 3 are available to the user at all times
-    for ward in locations_dictionary["locations"].keys():
-        region_name = ward.replace("-", " ").title()
-        if region_name == "Main Ward" or world.options.end_goal == EndGoal.option_helping_hands and region_name == "Art Room":
+    for levels_in_ward in locations_dictionary["locations"].keys():
+        region_name = levels_in_ward.replace("-", " ").title()
+        if region_name == "Main Ward":  # Helping Hands stays in the world regardless of it being in generation or not.
+            # or world.options.end_goal == EndGoal.option_helping_hands and region_name == "Art Room":
             continue
         set_key_requirement(region_name + " Key", region_name)
