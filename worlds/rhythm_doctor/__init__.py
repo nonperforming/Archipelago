@@ -114,8 +114,7 @@ class RhythmDoctorWorld(World):
             self.multiworld.itempool.append(item)
 
         # Add filler items to pad leftover locations
-        need_to_create_filler_amount = len(flattened_locations) - len(flattened_items_nofiller)
-        for i in range(need_to_create_filler_amount):
+        for i in range(len(self.multiworld.get_unfilled_locations(self.player))):
             self.multiworld.itempool.append(self.get_filler())
 
         pass
