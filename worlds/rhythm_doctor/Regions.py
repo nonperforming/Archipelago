@@ -1,6 +1,7 @@
-from BaseClasses import MultiWorld, Region, Entrance
-from .Data import RhythmDoctorLocation, locations_dictionary
+from BaseClasses import MultiWorld, Region, Entrance, CollectionState, LocationProgressType
+from .Data import RhythmDoctorLocation, locations_dictionary, get_progress_type
 from . import RhythmDoctorWorld
+from ..generic.Rules import CollectionRule
 
 wards = list(locations_dictionary["locations"].keys())
 
@@ -17,9 +18,10 @@ def create_regions(multiworld: MultiWorld, player: int) -> None:
 
         # Add related locations to regions
         for level in locations_dictionary["locations"][ward].values():
-            for location in level:
-                # Classification where?
-                region.locations.append(RhythmDoctorLocation(player, location["name"], location["id"], region))
+            for location_name in level:
+                location = RhythmDoctorLocation(player, location_name["name"], location_name["id"], region)
+                location.progress_type = get_progress_type(location_name["classification"])
+                region.locations.append(location_name)
 
         multiworld.regions.append(region)
     connect_regions(multiworld, player)

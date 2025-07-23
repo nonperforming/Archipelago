@@ -1,7 +1,7 @@
 from os import path
 from pathlib import Path
 
-from BaseClasses import Item, ItemClassification, Location
+from BaseClasses import Item, ItemClassification, Location, LocationProgressType
 from Utils import parse_yaml
 
 GAME_NAME = "rhythm_doctor"
@@ -129,6 +129,15 @@ def get_classification(classification: str) -> ItemClassification:
             return ItemClassification.useful
     raise ValueError(f"Rhythm Doctor: Item classification '{classification}' is not valid")
 
+def get_progress_type(progress_type: str) -> LocationProgressType:
+    match progress_type:
+        case "default":
+            return LocationProgressType.DEFAULT
+        case "priority":
+            return LocationProgressType.PRIORITY
+        case "excluded":
+            return LocationProgressType.EXCLUDED
+    raise ValueError(f"Rhythm Doctor: Progress type '{progress_type}' is not valid")
 
 # TODO: type hint
 # TODO: item name to id!!
