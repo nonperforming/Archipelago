@@ -29,8 +29,8 @@ class EndGoal(Choice):
     display_name = "End Goal"
 
     option_helping_hands = 0
-    option_brank_all = 1
-    option_arank_all = 2
+    option_b_rank_all = 1
+    option_a_rank_all = 2
     option_perfect_all = 3
     default = 0
 
@@ -63,6 +63,7 @@ class BossUnlockRequirement(Choice):
 # endregion
 
 # region Gameplay
+
 # region Traps
 class TrapChance(Range):
     """Determines the percent likeliness of a **filler item becoming a trap**.
@@ -133,10 +134,15 @@ class EnableStrongHeartPowerups(Toggle):
 class EnableIceSpeedPowerups(Toggle):
     """Determines if **🧊 ice speed powerups** should be in the item pool."""
     display_name = "Enable Ice Speed Powerups"
+# endregion
 
+class RhythmDoctorDeathLink(DeathLink):
+    """
+    When you die (a patient's heart breaks), everyone dies. The reverse is also true.
+    """
 
 # endregion
-# endregion
+
 # endregion
 
 @dataclass
@@ -164,7 +170,7 @@ class RhythmDoctorOptions(PerGameCommonOptions):
     enable_easy_difficulty_powerup: EnableEasyDifficultyPowerups
     enable_strong_heart_powerup: EnableStrongHeartPowerups
     enable_ice_speed_powerup: EnableIceSpeedPowerups
-    death_link: DeathLink
+    death_link: RhythmDoctorDeathLink
 
 
 groups: list[OptionGroup] = [
@@ -173,7 +179,7 @@ groups: list[OptionGroup] = [
         BossUnlockRequirement,
     ]),
     OptionGroup("Gameplay Options", [
-        DeathLink,
+        RhythmDoctorDeathLink,
     ]),
     OptionGroup("Trap Options", [
         TrapChance,
