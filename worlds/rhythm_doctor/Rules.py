@@ -50,6 +50,10 @@ def set_rules(world: RhythmDoctorWorld):
                  lambda state: state.has_group("Act 3 Levels", world.player, 3))
         add_rule(world.multiworld.get_location("3-X - One Shift More - Perfect Clear", world.player),
                  lambda state: state.has_group("Act 3 Levels", world.player, 3))
+        add_rule(world.multiworld.get_location("3-DOG - Rhythm Dogtor - Clear", world.player),
+                 lambda state: state.has_group("Act 3 Levels", world.player, 3))
+        add_rule(world.multiworld.get_location("3-DOG - Rhythm Dogtor - Perfect Clear", world.player),
+                 lambda state: state.has_group("Act 3 Levels", world.player, 3))
         # Act 4 (4 levels) - 1-XN - Super Battleworn Insomniac
         add_rule(world.multiworld.get_location("1-XN - Super Battleworn Insomniac - Clear", world.player),
                  lambda state: state.has_group("Act 4 Levels", world.player, 4))

@@ -149,6 +149,13 @@ locations:
       - name: 3-X - One Shift More - Perfect Clear
         id: 82_104_121_68_114_039
         classification: default
+    3-DOG: # Unlocks at the same time as 3-X
+      - name: 3-DOG - Rhythm Dogtor - Clear
+        id: 82_104_121_68_114_038
+        classification: default
+      - name: 3-DOG - Rhythm Dogtor - Perfect Clear
+        id: 82_104_121_68_114_039
+        classification: default
 
     # Act 4
     1-XN:
