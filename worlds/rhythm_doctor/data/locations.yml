@@ -149,6 +149,7 @@ locations:
       - name: 3-X - One Shift More - Perfect Clear
         id: 82_104_121_68_114_039
         classification: default
+
     # Act 4
     1-XN:
       - name: 1-XN - Super Battleworn Insomniac - Clear
