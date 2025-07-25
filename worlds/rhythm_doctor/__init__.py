@@ -3,13 +3,12 @@ from typing import ClassVar
 from BaseClasses import Tutorial, Item, ItemClassification, Location
 from Options import OptionError
 from worlds.AutoWorld import World, WebWorld
-from .Data import items_dictionary, locations_dictionary, world_dictionary, \
+from .Data import RhythmDoctorItem, items_dictionary, locations_dictionary, world_dictionary, \
     flattened_items, flattened_items_filler, flattened_items_filler_junk, flattened_items_filler_powerups, \
     flattened_items_filler_traps, flattened_items_nofiller, \
     flattened_locations, \
     get_classification
-
-from .Options import RhythmDoctorOptions
+from .Options import RhythmDoctorOptions, EndGoal
 
 GAME = "Rhythm Doctor"
 
@@ -73,13 +72,13 @@ class RhythmDoctorWorld(World):
     # TODO: Items other than levels probably don't need to be here, is there any other use for them here?
     # Is leaving them here safe?
     item_name_groups = {
-        # FIXME: invalid syntax
         "Act 1 Levels": [level["name"] for level in items_dictionary["levels"]["main-ward"] if
-                         level["name"].startswith("1-")],
+                         level["name"].startswith("1-") and not level["name"] == ("1-XN")],
         "Act 2 Levels": [level["name"] for level in items_dictionary["levels"]["svt-ward"]],
         "Act 3 Levels": [level["name"] for level in items_dictionary["levels"]["main-ward"] if
                          level["name"].startswith("3-")],
-        "Act 4 Levels": [level["name"] for level in items_dictionary["levels"]["train"]],
+        "Act 4 Levels": [level["name"] for level in items_dictionary["levels"]["train"]] +
+                        [level["name"] for level in items_dictionary["levels"]["main-ward"] if level["name"].startswith("1-XN")],
         "Act 5 Levels": [level["name"] for level in items_dictionary["levels"]["physiotherapy-ward"]],
         "Keys": [item["name"] for item in items_dictionary["keys"]],
         "Junk": [item["name"] for item in items_dictionary["filler"]["junk"]],
@@ -101,7 +100,10 @@ class RhythmDoctorWorld(World):
 
     def create_items(self) -> None:
         # We need to pull a level from the Main Ward and push it into our start inventory.
-        starting_level_dict = self.random.choice(items_dictionary["levels"]["main-ward"])
+        starting_level_dict = self.random.choice([item for item in items_dictionary["levels"]["main-ward"]
+                                                  if not item["name"].startswith("1-X") and
+                                                  not item["name"].startswith("1-XN") and
+                                                  not item["name"].startswith("3-X")])
         starting_level = self.create_item(starting_level_dict)
         self.multiworld.push_precollected(starting_level)
 
@@ -114,12 +116,12 @@ class RhythmDoctorWorld(World):
             self.multiworld.itempool.append(item)
 
         # Add filler items to pad leftover locations
-        for i in range(len(self.multiworld.get_unfilled_locations(self.player))):
+        for _ in range(len(self.multiworld.get_unfilled_locations(self.player))):
             self.multiworld.itempool.append(self.get_filler())
 
-        pass
-
     def create_item(self, item_dictionary: dict[str, str | int]) -> Data.RhythmDoctorItem:
+        # FIXME: Docs expect create_item() to read item: str
+
         # Is it safe to have name be an item dict
         # '{'name': '1-1 - Samurai Techno', 'id': 8210412168114000, 'classification': 'progression'}'?
 
@@ -168,7 +170,7 @@ class RhythmDoctorWorld(World):
 
     def create_regions(self) -> None:
         from .Regions import create_regions
-        create_regions(self.multiworld, self.player)
+        create_regions(self, self.player)
 
     """
     def fill_slot_data(self) -> Mapping[str, Any]:

@@ -1,38 +1,85 @@
-from BaseClasses import CollectionState
-from worlds.generic.Rules import set_rule
+from BaseClasses import CollectionState, Region
+from worlds.generic.Rules import add_rule, set_rule
 from . import RhythmDoctorWorld
-from .Data import flattened_items, locations_dictionary
+from .Data import flattened_items, locations_dictionary, RhythmDoctorItem, RhythmDoctorLocation # FIXME: We don't need to repeated deserialize our data. Put it in world somehow.
+from .Options import EndGoal
 from .Regions import humanize_name
 
 def set_rules(world: RhythmDoctorWorld):
-    def has_key(state: CollectionState, area: str) -> bool:
-        return state.has(f"{area} Key", world.player)
+    # TODO: Currently assumes X-0 is the end goal.
 
-    def set_key_requirement(yaml_key: str, key_item_name: str):
-        for level in locations_dictionary["locations"][yaml_key].values():
-            for location in level:
-                set_rule(world.get_location(location["name"]), lambda state: has_key(state, key_item_name))
+    def set_level_item_requirements():
+        for ward_name in iter(locations_dictionary["locations"].keys()):
+            # FIXME: This is a dict at runtime; why is type checking insisting it is list? Check Data.py!!
+            levels_in_ward = locations_dictionary["locations"][ward_name].values()
 
-    # Set level item requirement for level locations
-    item_index = 0
-    for ward_name in locations_dictionary["locations"].keys():
-        ward_name = locations_dictionary["locations"][
-            ward_name].values()  # FIXME: This is a dict at runtime; why is type checking insisting it is list? Check Data.py!!
-        for locations_in_level in ward_name:
-            item = flattened_items[item_index := item_index + 1]
-            for location in locations_in_level:
-                set_rule(world.get_location(location["name"]), lambda state: state.has(item["name"], world.player))
-    del item_index
+            for level_index, level in enumerate(levels_in_ward):
+                level_name = list(locations_dictionary["locations"][ward_name].keys())[level_index]
+                if level_name == "X-0":
+                    # X-0 is our end goal - do not add it as a location.
+                    continue
+                for location in level:
+                    item_name = flattened_items[level_index]["name"]
+                    set_rule(world.get_location(location["name"]), lambda state: state.has(item_name, world.player))
 
-    # Set key requirement
-    # Act 1/Act 3 are available to the user at all times
-    for ward_name in locations_dictionary["locations"].keys():
-        if ward_name == "main-ward": # The Main Ward is always accessible.
-            # Helping Hands stays in the world regardless of it being in generation or not.
-            # or world.options.end_goal == EndGoal.option_helping_hands and region_name == "Art Room":
-            continue
-        set_key_requirement(ward_name, humanize_name(ward_name) + " Key")
+    def set_key_requirements():
+        for ward_name in iter(locations_dictionary["locations"].keys()):
+            if ward_name == "Art Room" and world.options.end_goal == EndGoal.art_room:
+                # X-0 (as end goal) unlocks when all bosses have been cleared, and does not require a key.
+                continue
+            elif ward_name == "main-ward":
+                # Main Ward requires no key.
+                continue
+            key_name = f"{humanize_name(ward_name)} Key"
+            entrance = world.get_entrance(f"{humanize_name(ward_name)} Entrance")
+            set_rule(entrance, lambda state: state.has(key_name, world.player))
 
-    # TODO: Saving Princess has a "VICTORY ITEM".
-    #       But we are calling SetGoalAchieved() on client plugin, do we need this?
-    #       https://archipelagomw.github.io/Archipelago.MultiClient.Net/api/Archipelago.MultiClient.Net.ArchipelagoSession.html#Archipelago_MultiClient_Net_ArchipelagoSession_SetGoalAchieved
+    def set_boss_act_requirements():
+        # Act 1 (2 levels) - 1-X - Battleworn Insomniac
+        add_rule(world.multiworld.get_location("1-X - Battleworn Insomniac - Clear", world.player),
+                 lambda state: state.has_group("Act 1 Levels", world.player, 2))
+        add_rule(world.multiworld.get_location("1-X - Battleworn Insomniac - Perfect Clear", world.player),
+                 lambda state: state.has_group("Act 1 Levels", world.player, 2))
+        # Act 2 (4 levels) - 2-X - All The Times
+        add_rule(world.multiworld.get_location("2-X - All The Times - Clear", world.player),
+                 lambda state: state.has_group("Act 2 Levels", world.player, 4))
+        add_rule(world.multiworld.get_location("2-X - All The Times - Perfect Clear", world.player),
+                 lambda state: state.has_group("Act 2 Levels", world.player, 4))
+        # Act 3 (3 levels) - 3-X - One Shift More
+        add_rule(world.multiworld.get_location("3-X - One Shift More - Clear", world.player),
+                 lambda state: state.has_group("Act 3 Levels", world.player, 3))
+        add_rule(world.multiworld.get_location("3-X - One Shift More - Perfect Clear", world.player),
+                 lambda state: state.has_group("Act 3 Levels", world.player, 3))
+        # Act 4 (4 levels) - 1-XN - Super Battleworn Insomniac
+        add_rule(world.multiworld.get_location("1-XN - Super Battleworn Insomniac - Clear", world.player),
+                 lambda state: state.has_group("Act 4 Levels", world.player, 4))
+        add_rule(world.multiworld.get_location("1-XN - Super Battleworn Insomniac - Perfect Clear", world.player),
+                 lambda state: state.has_group("Act 4 Levels", world.player, 4))
+        # Act 5 (3 levels) - 5-X - Dreams Don't Stop
+        add_rule(world.multiworld.get_location("5-X - Dreams Don't Stop - Clear", world.player),
+                 lambda state: state.has_group("Act 5 Levels", world.player, 3))
+        add_rule(world.multiworld.get_location("5-X - Dreams Don't Stop - Checkpointless Clear", world.player),
+                 lambda state: state.has_group("Act 5 Levels", world.player, 3))
+        add_rule(world.multiworld.get_location("5-X - Dreams Don't Stop - Perfect Clear", world.player),
+                 lambda state: state.has_group("Act 5 Levels", world.player, 3))
+
+    set_level_item_requirements()
+    set_key_requirements()
+    set_boss_act_requirements()
+
+    if world.options.end_goal == EndGoal.option_helping_hands:
+        # Only accessible when all bosses have been cleared.
+        add_rule(world.multiworld.get_location("X-0 - Helping Hands - Clear", world.player),
+                 lambda state: state.has_group("Act 1 Levels", world.player, 2) and
+                 state.has_group("Act 2 Levels", world.player, 4) and
+                 state.has_group("Act 3 Levels", world.player, 3) and
+                 state.has_group("Act 4 Levels", world.player, 4) and
+                 state.has_group("Act 5 Levels", world.player, 3))
+
+        victory_event_location =  world.get_location("X-0 - Helping Hands - Clear")
+        set_rule(victory_event_location, lambda state: state.has("Beat X-0 - Helping Hands", world.player)) # Must have location clear boss
+    else:
+        raise NotImplementedError()
+
+    from Utils import visualize_regions
+    visualize_regions(world.multiworld.get_region("Main Ward", world.player), "rd.puml")
