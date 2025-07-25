@@ -26,7 +26,7 @@ def create_regions(world: RhythmDoctorWorld, player: int) -> None:
         world.multiworld.regions.append(region)
     connect_regions(world.multiworld, player)
 
-    if world.options.end_goal == EndGoal.option_helping_hands:
+    if world.options.end_goal.value == EndGoal.option_helping_hands:
         victory_region = world.multiworld.get_region("Art Room", world.player)
         victory_location = RhythmDoctorLocation(world.player, "X-0 - Helping Hands - Clear", None, victory_region)
         victory_region.locations = [victory_location]

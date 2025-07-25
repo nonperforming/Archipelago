@@ -24,7 +24,7 @@ def set_rules(world: RhythmDoctorWorld):
 
     def set_key_requirements():
         for ward_name in iter(locations_dictionary["locations"].keys()):
-            if ward_name == "Art Room" and world.options.end_goal == EndGoal.art_room:
+            if ward_name == "Art Room" and world.options.end_goal.value == EndGoal.option_helping_hands:
                 # X-0 (as end goal) unlocks when all bosses have been cleared, and does not require a key.
                 continue
             elif ward_name == "main-ward":
@@ -45,7 +45,7 @@ def set_rules(world: RhythmDoctorWorld):
                  lambda state: state.has_group("Act 2 Levels", world.player, 4))
         add_rule(world.multiworld.get_location("2-X - All The Times - Perfect Clear", world.player),
                  lambda state: state.has_group("Act 2 Levels", world.player, 4))
-        # Act 3 (3 levels) - 3-X - One Shift More
+        # Act 3 (3 levels) - 3-X - One Shift More (and by extension 3-DOG - Rhythm Dogtor)
         add_rule(world.multiworld.get_location("3-X - One Shift More - Clear", world.player),
                  lambda state: state.has_group("Act 3 Levels", world.player, 3))
         add_rule(world.multiworld.get_location("3-X - One Shift More - Perfect Clear", world.player),
@@ -67,7 +67,7 @@ def set_rules(world: RhythmDoctorWorld):
     set_key_requirements()
     set_boss_act_requirements()
 
-    if world.options.end_goal == EndGoal.option_helping_hands:
+    if world.options.end_goal.value == EndGoal.option_helping_hands:
         # Only accessible when all bosses have been cleared.
         add_rule(world.multiworld.get_location("X-0 - Helping Hands - Clear", world.player),
                  lambda state: state.has_group("Act 1 Levels", world.player, 2) and
