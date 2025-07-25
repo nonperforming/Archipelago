@@ -414,7 +414,7 @@ locations:
       - name: 5-X - Dreams Don't Stop - Clear
         id: 82_104_121_68_114_116
         classification: priority
-      - name: 5-X - Dreams Don't Stop - Checkpointless Clear
+      - name: 5-X - Dreams Don't Stop - Complete+ Without Checkpoints
         id: 82_104_121_68_114_117
         classification: default
       - name: 5-X - Dreams Don't Stop - Perfect Clear
