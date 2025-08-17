@@ -1,10 +1,11 @@
-from typing import Mapping, Any, TYPE_CHECKING
+from typing import Mapping, Any
 
 from BaseClasses import ItemClassification
 from Options import OptionError
 from worlds.AutoWorld import World
 
-from .Data import GAME, RhythmDoctorItem, create_items, get_location_name_to_id, get_item_name_to_id, create_locations, all_stages
+from .Data import GAME, FILLER_JUNK, FILLER_POWERUPS, FILLER_TRAPS, RhythmDoctorItem, create_items, \
+    get_location_name_to_id, get_item_name_to_id, create_locations, all_stages
 from .Options import RhythmDoctorOptions
 from .Regions import create_and_connect_regions
 from .Web import RhythmDoctorWeb
@@ -43,6 +44,15 @@ class RhythmDoctorWorld(World):
         if stage.act not in item_name_groups:
             item_name_groups[stage.act] = []
         item_name_groups[stage.act].append(stage.name)
+    item_name_groups["Junk"] = []
+    for junk in FILLER_JUNK:
+        item_name_groups["Junk"].append(junk)
+    item_name_groups["Powerups"] = []
+    for powerup in FILLER_POWERUPS:
+        item_name_groups["Powerups"].append(powerup)
+    item_name_groups["Traps"] = []
+    for trap in FILLER_TRAPS:
+        item_name_groups["Traps"].append(trap)
 
     def create_regions(self) -> None:
         create_and_connect_regions(self)
@@ -61,6 +71,27 @@ class RhythmDoctorWorld(World):
             return ItemClassification.progression
 
         return RhythmDoctorItem(name, get_classification(), self.item_name_to_id[name], self.player)
+
+    def create_filler(self) -> RhythmDoctorItem:
+        # TODO: Currently ignores user input on trap preferences
+        #       i.e. self.options.enable_chilli_speed_trap
+        # Check which filler type to get
+        result = self.random.randrange(100)
+
+        classification = ItemClassification.filler
+        if result < self.options.trap_chance.value:
+            pool = self.item_name_groups["Traps"]
+            classification = ItemClassification.trap
+        elif result < self.options.trap_chance.value + self.options.powerup_chance.value:
+            pool = self.item_name_groups["Powerups"]
+        else:
+            # FIXME: Currently Sleeve Paint is not progressive - so it should only have one item.
+            pool = self.item_name_groups["Junk"]
+
+        item_name = self.random.choice(list(pool))
+        item = self.create_item(item_name)
+        item.classification = classification
+        return item
 
     def get_filler_item_name(self) -> str:
         return "A Bit of Rhythm"

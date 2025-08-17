@@ -10,6 +10,12 @@ if TYPE_CHECKING:
 GAME = "Rhythm Doctor"
 REGIONS = ["Main Ward", "SVT Ward", "Train", "Physiotherapy Ward", "Basement", "Art Room"]
 
+FILLER_JUNK = ["Sleeve Paint"]
+FILLER_POWERUPS = ["Strengthened Heart", "Easy Mode", "Ice Speed Powerup"]
+FILLER_TRAPS = ["Fragile Heart Trap", "Hard Mode Trap", "Randomize Characters", "Scramble Beat Sounds",
+                "Chilli Speed Trap", "Ghost Tap Trap"]
+FILLER = FILLER_JUNK + FILLER_POWERUPS + FILLER_TRAPS
+
 
 # region Data
 class RhythmDoctorItem(Item):
@@ -138,33 +144,37 @@ all_stages = all_regular_stages + all_boss_stages
 
 def create_items(world: "RhythmDoctorWorld"):
     # Get a random level in the Main Ward to start with
-
     # At runtime this seems to be a frozenset, not a list (for some reason???)
     start_with_item = world.random.choice(list(world.item_name_groups["Act 1"] | world.item_name_groups["Act 3"]))
 
-    def create_item_from_stage(stage: _RegularStage):
+    def create_item_from_stage(stage: _RegularStage) -> None:
         item = world.create_item(stage.name)
         if stage.name == start_with_item:
             world.push_precollected(item)
         else:
-            world.multiworld.itempool.append(item)
+            item_pool.append(item)
 
-    def create_keys():
+    def create_keys() -> None:
         for ward_name in REGIONS:
             if ward_name == "Main Ward":
                 # Main Ward is always accessible
                 continue
 
-            world.multiworld.itempool.append(world.create_item(f"{ward_name} Key"))
+            item_pool.append(world.create_item(f"{ward_name} Key"))
 
-    def create_filler():
-        # TODO: implement. Also don't forget traps!
-        pass
+    def pad_with_filler() -> None:
+        for _ in range(total_locations - len(item_pool)):
+            item_pool.append(world.create_filler())
+
+    total_locations = len(world.multiworld.get_unfilled_locations(world.player))
+    item_pool = []
 
     for stage in all_regular_stages:
         create_item_from_stage(stage)
     create_keys()
-    create_filler()
+    pad_with_filler()
+
+    world.multiworld.itempool += item_pool
 
 
 def create_locations(world: "RhythmDoctorWorld"):
@@ -251,6 +261,10 @@ def get_item_name_to_id() -> dict[str, int]:
             continue
 
         item_name_to_id[f"{ward_name} Key"] = i
+        i += 1
+
+    for filler in FILLER:
+        item_name_to_id[filler] = i
         i += 1
 
     return item_name_to_id
