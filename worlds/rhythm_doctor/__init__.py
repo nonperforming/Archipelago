@@ -1,9 +1,11 @@
 from typing import Mapping, Any, TYPE_CHECKING
 
 from BaseClasses import ItemClassification
+from Options import OptionError
 from worlds.AutoWorld import World
 
 from .Data import GAME, RhythmDoctorItem, create_items, get_location_name_to_id, get_item_name_to_id, create_locations, all_stages
+from .Options import RhythmDoctorOptions
 from .Regions import create_and_connect_regions
 from .Web import RhythmDoctorWeb
 
@@ -22,6 +24,9 @@ class RhythmDoctorWorld(World):
     game = GAME
     web = RhythmDoctorWeb()
 
+    options_dataclass = RhythmDoctorOptions
+    options: RhythmDoctorOptions
+
     origin_region_name = "Main Ward"
     topology_present = True  # TODO: Check if this is correct
 
@@ -29,6 +34,7 @@ class RhythmDoctorWorld(World):
     item_name_to_id = get_item_name_to_id()
 
     # Populate item_name_groups
+    # FIXME: frozenset or list?
     item_name_groups: dict[str, list[str]] = {}
     for stage in all_stages:
         if stage.act is None:
@@ -37,23 +43,6 @@ class RhythmDoctorWorld(World):
         if stage.act not in item_name_groups:
             item_name_groups[stage.act] = []
         item_name_groups[stage.act].append(stage.name)
-
-    # item_name_groups = {
-    #
-    #     # "Act 1 Levels": [level["name"] for level in data.items_dictionary["levels"]["main-ward"] if
-    #     #                  level["name"].startswith("1-") and not level["name"] == "1-XN"],
-    #     # "Act 2 Levels": [level["name"] for level in data.items_dictionary["levels"]["svt-ward"]],
-    #     # "Act 3 Levels": [level["name"] for level in data.items_dictionary["levels"]["main-ward"] if
-    #     #                  level["name"].startswith("3-")],
-    #     # "Act 4 Levels": [level["name"] for level in data.items_dictionary["levels"]["train"]] +
-    #     #                 [level["name"] for level in data.items_dictionary["levels"]["main-ward"] if
-    #     #                  level["name"].startswith("1-XN")],
-    #     # "Act 5 Levels": [level["name"] for level in data.items_dictionary["levels"]["physiotherapy-ward"]],
-    #     # "Keys": [item["name"] for item in data.items_dictionary["keys"]],
-    #     # "Junk": [item["name"] for item in data.items_dictionary["filler"]["junk"]],
-    #     # "Powerups": [item["name"] for item in data.items_dictionary["filler"]["powerups"]],
-    #     # "Traps": [item["name"] for item in data.items_dictionary["filler"]["traps"]],
-    # }
 
     def create_regions(self) -> None:
         create_and_connect_regions(self)
@@ -75,6 +64,12 @@ class RhythmDoctorWorld(World):
 
     def get_filler_item_name(self) -> str:
         return "A Bit of Rhythm"
+
+    def generate_early(self) -> None:
+        if (self.options.trap_chance + self.options.powerup_chance) > 100:
+            raise OptionError(f"Rhythm Doctor: Player {self.player_name}'s set",
+                              f"trap chance ({self.options.trap_chance}) and"
+                              f"powerup chance ({self.options.powerup_chance}) are over 100%")
 
     def fill_slot_data(self) -> Mapping[str, Any]:
         return self.options.as_dict(
