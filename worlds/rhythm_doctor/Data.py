@@ -67,7 +67,8 @@ svt_ward_stages = [
     _RegularStage("2-3N - Bomb-Sniffing Pomeranian", "2-3N", "SVT Ward", "Act 2"),
     # FIXME: These stages should be excluded/non-progression
     _RegularStage("2-4 - Song of the Sea", "2-4", "SVT Ward", "Act 2", b_rank_location=False, a_rank_location=False),
-    _RegularStage("2-4N - Song of the Sea (Night)", "2-4N", "SVT Ward", "Act 2", b_rank_location=False, a_rank_location=False),
+    _RegularStage("2-4N - Song of the Sea (Night)", "2-4N", "SVT Ward", "Act 2", b_rank_location=False,
+                  a_rank_location=False),
     _RegularStage("2-B1 - Beans Hopper", "2-B1", "SVT Ward", "Act 2"),
 ]
 
@@ -87,7 +88,8 @@ physiotherapy_ward_stages = [
     _RegularStage("5-1N - One Slip Too Late", "5-1N", "Physiotherapy Ward", "Act 5"),
     _RegularStage("5-2 - Lo-fi Beats For Patients To Chill To", "5-2", "Physiotherapy Ward", "Act 5"),
     _RegularStage("5-2N - Unsustainable Inconsolable", "5-2N", "Physiotherapy Ward", "Act 5"),
-    _RegularStage("5-3 - Seventh Inning Stretch", "5-3", "Physiotherapy Ward", "Act 5", b_rank_location=False, a_rank_location=False),
+    _RegularStage("5-3 - Seventh Inning Stretch", "5-3", "Physiotherapy Ward", "Act 5", b_rank_location=False,
+                  a_rank_location=False),
     _RegularStage("5-B1 - Rhythm Weightlifter", "5-B1", "Physiotherapy Ward", "Act 5"),
 ]
 
@@ -135,8 +137,17 @@ all_stages = all_regular_stages + all_boss_stages
 # endregion
 
 def create_items(world: "RhythmDoctorWorld"):
+    # Get a random level in the Main Ward to start with
+
+    # At runtime this seems to be a frozenset, not a list (for some reason???)
+    start_with_item = world.random.choice(list(world.item_name_groups["Act 1"] | world.item_name_groups["Act 3"]))
+
     def create_item_from_stage(stage: _RegularStage):
-        world.multiworld.itempool.append(world.create_item(stage.name))
+        item = world.create_item(stage.name)
+        if stage.name == start_with_item:
+            world.push_precollected(item)
+        else:
+            world.multiworld.itempool.append(item)
 
     def create_keys():
         for ward_name in REGIONS:
