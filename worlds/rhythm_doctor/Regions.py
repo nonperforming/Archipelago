@@ -31,9 +31,8 @@ def connect_main_regions(world: "RhythmDoctorWorld"):
 
         region = world.get_region(region_name)
 
-        main_ward_region.connect(region, f"{world.origin_region_name} to {region_name}",
-                                 lambda state, local_region_name=region_name: state.has(f"{local_region_name} Key",
-                                                                                        world.player))
+        main_ward_region.connect(region, f"{world.origin_region_name} to {region_name}")
+        # lambda state, local_region_name=region_name: state.has(f"{local_region_name} Key", world.player)
 
 
 def create_and_connect_stage_regions(world: "RhythmDoctorWorld"):
@@ -47,8 +46,8 @@ def create_and_connect_stage_regions(world: "RhythmDoctorWorld"):
         stage_region = Region(stage.short_name, world.player, world.multiworld)
         world.multiworld.regions.append(stage_region)
 
-        region.connect(stage_region, f"{stage.region_name} to {stage.short_name}",
-                       lambda state, local_item_name=stage.name: state.has(local_item_name, world.player))
+        region.connect(stage_region, f"{stage.region_name} to {stage.short_name}")
+        # lambda state, local_item_name=stage.name: state.has(local_item_name, world.player))
 
     for boss_stage in all_boss_stages:
         region = world.get_region(boss_stage.region_name)
@@ -69,9 +68,8 @@ def create_and_connect_stage_regions(world: "RhythmDoctorWorld"):
                 requires_count = 3
             case _:
                 raise KeyError(f"Rhythm Doctor: Could not find {boss_stage.act}'s requires_count")
-        region.connect(stage_region, f"{boss_stage.region_name} to {boss_stage.short_name}",
-                       lambda state, local_act=boss_stage.act, local_requires_count=requires_count: state.has_group(
-                           local_act, world.player, local_requires_count))
+        region.connect(stage_region, f"{boss_stage.region_name} to {boss_stage.short_name}")
+        # lambda state, local_act=boss_stage.act, local_requires_count=requires_count: state.has_group(local_act, world.player, local_requires_count))
 
     def connect_regions(world: "RhythmDoctorWorld"):
         main_ward = world.get_region("Main Ward")
