@@ -3,6 +3,7 @@ from typing import TYPE_CHECKING
 from BaseClasses import Region
 
 from .Data import REGIONS, all_regular_stages, all_boss_stages
+from .Options import EndGoal
 
 if TYPE_CHECKING:
     from . import RhythmDoctorWorld
@@ -30,9 +31,8 @@ def connect_main_regions(world: "RhythmDoctorWorld"):
             continue
 
         region = world.get_region(region_name)
-
-        main_ward_region.connect(region, f"{world.origin_region_name} to {region_name}")
-        # lambda state, local_region_name=region_name: state.has(f"{local_region_name} Key", world.player)
+        rule = (lambda ward: lambda state: state.has(f"{ward} Key", world.player))(region_name)
+        main_ward_region.connect(region, f"{world.origin_region_name} to {region_name}", rule)
 
 
 def create_and_connect_stage_regions(world: "RhythmDoctorWorld"):
@@ -46,8 +46,16 @@ def create_and_connect_stage_regions(world: "RhythmDoctorWorld"):
         stage_region = Region(stage.short_name, world.player, world.multiworld)
         world.multiworld.regions.append(stage_region)
 
-        region.connect(stage_region, f"{stage.region_name} to {stage.short_name}")
-        # lambda state, local_item_name=stage.name: state.has(local_item_name, world.player))
+        if stage.short_name == "X-0" and world.options.end_goal.value == EndGoal.option_helping_hands:
+            # TODO: duplicated in Rules
+            rule = lambda state: (state.has_group("Act 1", world.player, 2) and
+                                  state.has_group("Act 2", world.player, 4) and
+                                  state.has_group("Act 3", world.player, 3) and
+                                  state.has_group("Act 4", world.player, 4) and
+                                  state.has_group("Act 5", world.player, 3))
+        else:
+            rule = (lambda item_name: lambda state: state.has(item_name, world.player))(stage.name)
+        region.connect(stage_region, f"{stage.region_name} to {stage.short_name}", rule)
 
     for boss_stage in all_boss_stages:
         region = world.get_region(boss_stage.region_name)
@@ -68,17 +76,9 @@ def create_and_connect_stage_regions(world: "RhythmDoctorWorld"):
                 requires_count = 3
             case _:
                 raise KeyError(f"Rhythm Doctor: Could not find {boss_stage.act}'s requires_count")
-        region.connect(stage_region, f"{boss_stage.region_name} to {boss_stage.short_name}")
-        # lambda state, local_act=boss_stage.act, local_requires_count=requires_count: state.has_group(local_act, world.player, local_requires_count))
 
-    def connect_regions(world: "RhythmDoctorWorld"):
-        main_ward = world.get_region("Main Ward")
-
-        for region_name in REGIONS:
-            if region_name == "Main Ward":
-                # Do not link the Main Ward to itself
-                continue
-
-            region = world.get_region(region_name)
-            # TODO: Add entrance rule later. Under certain conditions certain wards like the Art Room will not have a key
-            main_ward.connect(region, f"Main Ward to {region_name}")  # , lambda state: state.has(f"{region_name} Key"))
+        # what?
+        # python weirdness: splitting this out here makes things work properly
+        rule = ((lambda act, count: lambda state: state.has_group(act, world.player, count))
+                (boss_stage.act, requires_count))
+        region.connect(stage_region, f"{boss_stage.region_name} to {boss_stage.short_name}", rule)

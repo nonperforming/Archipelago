@@ -2,6 +2,8 @@ from BaseClasses import Item, Location
 
 from dataclasses import dataclass
 
+from .Options import EndGoal
+
 from typing import TYPE_CHECKING, Literal
 
 if TYPE_CHECKING:
@@ -159,6 +161,9 @@ def create_items(world: "RhythmDoctorWorld"):
             if ward_name == "Main Ward":
                 # Main Ward is always accessible
                 continue
+            elif ward_name == "Art Room" and world.options.end_goal.value == EndGoal.option_helping_hands:
+                # When Art Room is the end goal, we do not need a key to access it (it will unlock automatically)
+                continue
 
             item_pool.append(world.create_item(f"{ward_name} Key"))
 
@@ -170,6 +175,9 @@ def create_items(world: "RhythmDoctorWorld"):
     item_pool = []
 
     for stage in all_regular_stages:
+        if world.options.end_goal.value == EndGoal.option_helping_hands and stage.short_name == "X-0":
+            continue
+
         create_item_from_stage(stage)
     create_keys()
     pad_with_filler()
@@ -209,6 +217,8 @@ def create_locations(world: "RhythmDoctorWorld"):
         stage_region.add_locations(locations, RhythmDoctorLocation)
 
     for stage in all_regular_stages:
+        if stage.short_name == "X-0" and world.options.end_goal.value == EndGoal.option_helping_hands:
+            continue
         create_locations_from_regular_stage(stage)
 
     for stage in all_boss_stages:

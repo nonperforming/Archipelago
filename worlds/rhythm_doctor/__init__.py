@@ -8,6 +8,7 @@ from .Data import GAME, FILLER_JUNK, FILLER_POWERUPS, FILLER_TRAPS, RhythmDoctor
     get_location_name_to_id, get_item_name_to_id, create_locations, all_stages
 from .Options import RhythmDoctorOptions
 from .Regions import create_and_connect_regions
+from .Rules import set_rules
 from .Web import RhythmDoctorWeb
 
 
@@ -36,31 +37,32 @@ class RhythmDoctorWorld(World):
 
     # Populate item_name_groups
     # FIXME: frozenset or list?
-    item_name_groups: dict[str, list[str]] = {}
+    local_item_name_groups: dict[str, list[str]] = {"Stages": []}
     for stage in all_stages:
         if stage.act is None:
             continue
 
-        if stage.act not in item_name_groups:
-            item_name_groups[stage.act] = []
-        item_name_groups[stage.act].append(stage.name)
-    item_name_groups["Junk"] = []
+        if stage.act not in local_item_name_groups:
+            local_item_name_groups[stage.act] = []
+        local_item_name_groups[stage.act].append(stage.name)
+        local_item_name_groups["Stages"].append(stage.name)
+    local_item_name_groups["Junk"] = []
     for junk in FILLER_JUNK:
-        item_name_groups["Junk"].append(junk)
-    item_name_groups["Powerups"] = []
+        local_item_name_groups["Junk"].append(junk)
+    local_item_name_groups["Powerups"] = []
     for powerup in FILLER_POWERUPS:
-        item_name_groups["Powerups"].append(powerup)
-    item_name_groups["Traps"] = []
+        local_item_name_groups["Powerups"].append(powerup)
+    local_item_name_groups["Traps"] = []
     for trap in FILLER_TRAPS:
-        item_name_groups["Traps"].append(trap)
+        local_item_name_groups["Traps"].append(trap)
+    item_name_groups = local_item_name_groups
 
     def create_regions(self) -> None:
         create_and_connect_regions(self)
         create_locations(self)
 
     def set_rules(self) -> None:
-        # TODO
-        pass
+        set_rules(self)
 
     def create_items(self) -> None:
         create_items(self)
