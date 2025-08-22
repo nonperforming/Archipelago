@@ -109,8 +109,8 @@ other_stages = [
     _RegularStage("MD-1 - Blackest Luxury Car", "MD-1", "Basement", None),
     _RegularStage("MD-2 - tape/stop/night", "MD-2", "Basement", None),
     _RegularStage("MD-3 - The 90's Decision", "MD-3", "Basement", None),
-    _RegularStage("X-1 - Art Exercise", "X-1", "Basement", None),
     _RegularStage("X-0 - Helping Hands", "X-0", "Art Room", None),
+    _RegularStage("X-1 - Art Exercise", "X-1", "Basement", None),
 ]
 """
 Stages that don't have a corresponding boss song or act.
