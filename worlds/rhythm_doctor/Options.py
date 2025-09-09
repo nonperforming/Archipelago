@@ -2,11 +2,6 @@ from dataclasses import dataclass
 from Options import PerGameCommonOptions, DeathLink, Choice, Range, Toggle, OptionGroup
 
 
-# from . import RhythmDoctorWorld
-
-# def adjust_options(world: RhythmDoctorWorld):
-#    pass
-
 # region Options
 # region Generation
 class EndGoal(Choice):
@@ -39,24 +34,24 @@ class BossUnlockRequirement(Choice):
     """
     The requirements to unlock the boss level for an act.
 
-    **Half:**
+    **Clear Half In Act:**
     Only half the number of levels in the act (rounding down if odd) are required to be cleared with a B rank or higher to unlock the act's boss.
 
-    **B Rank All Levels:**
+    **B Rank All:**
     All the number of levels in the act are required to be cleared with a B rank or higher to unlock the act's boss.
 
-    **A Rank All Levels:**
+    **A Rank All:**
     All the number of levels in the act are required to be cleared with an A rank or higher to unlock the act's boss.
 
-    **Perfect:**
+    **Perfect All:**
     All the number of levels in the act are required to be cleared with an S+ rank to unlock the act's boss.
     """
     display_name = "Boss Unlock Requirement"
 
-    option_half = 0
-    option_brank_all = 1
-    option_arank_all = 2
-    option_perfect = 3
+    option_clear_half_in_act = 0
+    option_b_rank_all = 1
+    option_a_rank_all = 2
+    option_perfect_all = 3
     default = 0
 
 
@@ -103,6 +98,11 @@ class EnableChilliSpeedTraps(Toggle):
     display_name = "Enable Chilli Speed Traps"
 
 
+class EnableGhostTapTraps(Toggle):
+    """Determines if **ghost tap traps** (make a mistake on ghost tap) should be in the item pool."""
+    display_name = "Enable Ghost Tap Traps"
+
+
 # endregion
 
 # region Powerups
@@ -136,6 +136,8 @@ class RhythmDoctorDeathLink(DeathLink):
     """
     When you die (a patient's heart breaks), everyone dies. The reverse is also true.
     """
+
+
 # endregion
 # endregion
 
@@ -147,16 +149,17 @@ class RhythmDoctorOptions(PerGameCommonOptions):
 
     # Gameplay options
     trap_chance: TrapChance
-    enable_fragile_heart_trap: EnableFragileHeartTraps
-    enable_character_scramble_trap: EnableCharacterScrambleTraps
-    enable_beatsound_scramble_trap: EnableBeatsoundScrambleTraps
-    enable_hitsound_scramble_trap: EnableHitsoundScrambleTraps
-    enable_hard_difficulty_trap: EnableHardDifficultyTraps
-    enable_chilli_speed_trap: EnableChilliSpeedTraps
+    enable_fragile_heart_traps: EnableFragileHeartTraps
+    enable_character_scramble_traps: EnableCharacterScrambleTraps
+    enable_beatsound_scramble_traps: EnableBeatsoundScrambleTraps
+    enable_hitsound_scramble_traps: EnableHitsoundScrambleTraps
+    enable_hard_difficulty_traps: EnableHardDifficultyTraps
+    enable_chilli_speed_traps: EnableChilliSpeedTraps
+    enable_ghost_tap_traps: EnableGhostTapTraps
     powerup_chance: PowerupChance
-    enable_easy_difficulty_powerup: EnableEasyDifficultyPowerups
-    enable_strong_heart_powerup: EnableStrongHeartPowerups
-    enable_ice_speed_powerup: EnableIceSpeedPowerups
+    enable_easy_difficulty_powerups: EnableEasyDifficultyPowerups
+    enable_strong_heart_powerups: EnableStrongHeartPowerups
+    enable_ice_speed_powerups: EnableIceSpeedPowerups
     death_link: RhythmDoctorDeathLink
 
 
@@ -176,6 +179,7 @@ groups: list[OptionGroup] = [
         EnableHitsoundScrambleTraps,
         EnableHardDifficultyTraps,
         EnableChilliSpeedTraps,
+        EnableGhostTapTraps,
     ]),
     OptionGroup("Powerup Options", [
         PowerupChance,

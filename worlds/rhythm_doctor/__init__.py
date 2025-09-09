@@ -66,6 +66,9 @@ class RhythmDoctorWorld(World):
     def set_rules(self) -> None:
         set_rules(self)
 
+        from .tools import GenerateClientData
+        GenerateClientData.main(self)
+
     def create_items(self) -> None:
         create_items(self)
 
@@ -82,12 +85,36 @@ class RhythmDoctorWorld(World):
         # Check which filler type to get
         result = self.random.randrange(100)
 
+        trap_pool = list(self.item_name_groups["Traps"])
+        if not self.options.enable_fragile_heart_traps.value:
+            trap_pool.remove("Fragile Heart Trap")
+        if not self.options.enable_character_scramble_traps.value:
+            trap_pool.remove("Scramble Characters Trap")
+        if not self.options.enable_beatsound_scramble_traps.value:
+            trap_pool.remove("Scramble Beatsound Trap")
+        if not self.options.enable_hitsound_scramble_traps.value:
+            trap_pool.remove("Scramble Hitsound Trap")
+        if not self.options.enable_hard_difficulty_traps.value:
+            trap_pool.remove("Hard Difficulty Trap")
+        if not self.options.enable_chilli_speed_traps.value:
+            trap_pool.remove("Chilli Speed Trap")
+        if not self.options.enable_ghost_tap_traps.value:
+            trap_pool.remove("Ghost Tap Trap")
+
+        powerup_pool = list(self.item_name_groups["Powerups"])
+        if not self.options.enable_easy_difficulty_powerups.value:
+            powerup_pool.remove("Easy Difficulty Powerup")
+        if not self.options.enable_strong_heart_powerups.value:
+            powerup_pool.remove("Strong Heart Powerup")
+        if not self.options.enable_ice_speed_powerups.value:
+            powerup_pool.remove("Ice Speed Powerup")
+
         classification = ItemClassification.filler
         if result < self.options.trap_chance.value:
-            pool = self.item_name_groups["Traps"]
+            pool = trap_pool
             classification = ItemClassification.trap
         elif result < self.options.trap_chance.value + self.options.powerup_chance.value:
-            pool = self.item_name_groups["Powerups"]
+            pool = powerup_pool
         else:
             # FIXME: Currently Sleeve Paint is not progressive - so it should only have one item.
             pool = self.item_name_groups["Junk"]
@@ -101,10 +128,25 @@ class RhythmDoctorWorld(World):
         return "A Bit of Rhythm"
 
     def generate_early(self) -> None:
-        if (self.options.trap_chance + self.options.powerup_chance) > 100:
+        if (self.options.trap_chance.value + self.options.powerup_chance.value) > 100:
             raise OptionError(f"Rhythm Doctor: Player {self.player_name}'s set",
                               f"trap chance ({self.options.trap_chance}) and"
                               f"powerup chance ({self.options.powerup_chance}) are over 100%")
+        if self.options.trap_chance.value != 0 and not \
+                (self.options.enable_fragile_heart_traps.value
+                 or self.options.enable_character_scramble_traps.value
+                 or self.options.enable_beatsound_scramble_traps.value
+                 or self.options.enable_hitsound_scramble_traps.value
+                 or self.options.enable_hard_difficulty_traps.value
+                 or self.options.enable_chilli_speed_traps.value):
+            raise OptionError(f"Rhythm Doctor: Player {self.player_name}'s set trap chance "
+                              f"is {self.options.trap_chance}, but all traps are disabled")
+        if self.options.powerup_chance.value != 0 and not \
+                (self.options.enable_easy_difficulty_powerups.value
+                 or self.options.enable_strong_heart_powerups.value
+                 or self.options.enable_ice_speed_powerups.value):
+            raise OptionError(f"Rhythm Doctor: Player {self.player_name}'s set powerup chance "
+                              f"is {self.options.trap_chance}, but all powerups are disabled")
 
     def fill_slot_data(self) -> Mapping[str, Any]:
         return self.options.as_dict(

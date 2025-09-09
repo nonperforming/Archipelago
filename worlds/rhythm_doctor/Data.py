@@ -1,5 +1,6 @@
-from BaseClasses import Item, Location
+from BaseClasses import Item, Location, LocationProgressType
 
+from abc import ABC, abstractmethod
 from dataclasses import dataclass
 
 from .Options import EndGoal
@@ -13,9 +14,9 @@ GAME = "Rhythm Doctor"
 REGIONS = ["Main Ward", "SVT Ward", "Train", "Physiotherapy Ward", "Basement", "Art Room"]
 
 FILLER_JUNK = ["Sleeve Paint"]
-FILLER_POWERUPS = ["Strengthened Heart", "Easy Mode", "Ice Speed Powerup"]
-FILLER_TRAPS = ["Fragile Heart Trap", "Hard Mode Trap", "Randomize Characters", "Scramble Beat Sounds",
-                "Chilli Speed Trap", "Ghost Tap Trap"]
+FILLER_POWERUPS = ["Strong Heart Powerup", "Easy Difficulty Powerup", "Ice Speed Powerup"]
+FILLER_TRAPS = ["Fragile Heart Trap", "Hard Difficulty Trap", "Scramble Characters Trap", "Scramble Beatsound Trap",
+                "Scramble Hitsound Trap", "Chilli Speed Trap", "Ghost Tap Trap"]
 FILLER = FILLER_JUNK + FILLER_POWERUPS + FILLER_TRAPS
 
 
@@ -29,12 +30,16 @@ class RhythmDoctorLocation(Location):
 
 
 @dataclass
-class _Stage:
+class _Stage(ABC):
     name: str
     short_name: str
     region_name: Literal["Main Ward", "SVT Ward", "Train", "Physiotherapy Ward", "Basement", "Art Room"]
     act: Literal["Act 1", "Act 2", "Act 3", "Act 4", "Act 5"] | None
+    excluded: bool = False
 
+    @abstractmethod
+    def get_locations(self, world: "RhythmDoctorWorld") -> dict[str, int]:
+        pass
 
 @dataclass
 class _RegularStage(_Stage):
@@ -42,12 +47,39 @@ class _RegularStage(_Stage):
     a_rank_location: bool = True
     s_rank_location: bool = True
 
+    def get_locations(self, world: "RhythmDoctorWorld") -> dict[str, int]:
+        locations = {}
+        if self.b_rank_location:
+            name = f"{self.name} - B Rank"
+            locations[name] = world.location_name_to_id[name]
+        if self.a_rank_location:
+            name = f"{self.name} - A Rank"
+            locations[name] = world.location_name_to_id[name]
+        if self.s_rank_location:
+            name = f"{self.name} - S Rank"
+            locations[name] = world.location_name_to_id[name]
+
+        return locations
+
 
 @dataclass
 class _BossStage(_Stage):
     clear_location: bool = True
     clear_plus_location: bool = False
     clear_perfect_location: bool = True
+
+    def get_locations(self, world: "RhythmDoctorWorld") -> dict[str, int]:
+        locations = {}
+        if self.clear_location:
+            name = f"{self.name} - Clear"
+            locations[name] = world.location_name_to_id[name]
+        if self.clear_plus_location:
+            name = f"{self.name} - Complete+ Without Checkpoints"
+            locations[name] = world.location_name_to_id[name]
+        if self.clear_perfect_location:
+            name = f"{self.name} - Perfect Clear"
+            locations[name] = world.location_name_to_id[name]
+        return locations
 
 
 # region Main stages
@@ -73,11 +105,11 @@ svt_ward_stages = [
     _RegularStage("2-2N - Unreachable", "2-2N", "SVT Ward", "Act 2"),
     _RegularStage("2-3 - Puff Piece", "2-3", "SVT Ward", "Act 2"),
     _RegularStage("2-3N - Bomb-Sniffing Pomeranian", "2-3N", "SVT Ward", "Act 2"),
-    # FIXME: These stages should be excluded/non-progression
-    _RegularStage("2-4 - Song of the Sea", "2-4", "SVT Ward", "Act 2", b_rank_location=False, a_rank_location=False),
-    _RegularStage("2-4N - Song of the Sea (Night)", "2-4N", "SVT Ward", "Act 2", b_rank_location=False,
-                  a_rank_location=False),
-    _RegularStage("2-B1 - Beans Hopper", "2-B1", "SVT Ward", "Act 2"),
+    _RegularStage("2-4 - Song of the Sea", "2-4", "SVT Ward", "Act 2",
+                  b_rank_location=False, a_rank_location=False, excluded=True),
+    _RegularStage("2-4N - Song of the Sea (Night)", "2-4N", "SVT Ward", "Act 2",
+                  b_rank_location=False, a_rank_location=False, excluded=True),
+    _RegularStage("2-B1 - Beans Hopper", "2-B1", "SVT Ward", "Act 2", excluded=True),
 ]
 
 train_stages = [
@@ -97,7 +129,7 @@ physiotherapy_ward_stages = [
     _RegularStage("5-2 - Lo-fi Beats For Patients To Chill To", "5-2", "Physiotherapy Ward", "Act 5"),
     _RegularStage("5-2N - Unsustainable Inconsolable", "5-2N", "Physiotherapy Ward", "Act 5"),
     _RegularStage("5-3 - Seventh Inning Stretch", "5-3", "Physiotherapy Ward", "Act 5", b_rank_location=False,
-                  a_rank_location=False),
+                  a_rank_location=False, excluded=True),
     _RegularStage("5-B1 - Rhythm Weightlifter", "5-B1", "Physiotherapy Ward", "Act 5"),
 ]
 
@@ -186,43 +218,19 @@ def create_items(world: "RhythmDoctorWorld"):
 
 
 def create_locations(world: "RhythmDoctorWorld"):
-    def create_locations_from_regular_stage(stage: _RegularStage) -> None:
-        stage_region = world.get_region(stage.short_name)
+    def create_locations_from_stage(stage: _Stage):
+        locations = stage.get_locations(world)
+        world.get_region(stage.short_name).add_locations(locations, RhythmDoctorLocation)
 
-        locations = {}
-        if stage.b_rank_location:
-            name = f"{stage.name} - B Rank"
-            locations[name] = world.location_name_to_id[name]
-        if stage.a_rank_location:
-            name = f"{stage.name} - A Rank"
-            locations[name] = world.location_name_to_id[name]
-        if stage.s_rank_location:
-            name = f"{stage.name} - S Rank"
-            locations[name] = world.location_name_to_id[name]
-        stage_region.add_locations(locations, RhythmDoctorLocation)
+        if stage.excluded:
+            for location_name in locations.keys():
+                world.get_location(location_name).progress_type = LocationProgressType.EXCLUDED
 
-    def create_locations_from_boss_stage(stage: _BossStage) -> None:
-        stage_region = world.get_region(stage.short_name)
-
-        locations = {}
-        if stage.clear_location:
-            name = f"{stage.name} - Clear"
-            locations[name] = world.location_name_to_id[name]
-        if stage.clear_plus_location:
-            name = f"{stage.name} - Complete+ Without Checkpoints"
-            locations[name] = world.location_name_to_id[name]
-        if stage.clear_perfect_location:
-            name = f"{stage.name} - Perfect Clear"
-            locations[name] = world.location_name_to_id[name]
-        stage_region.add_locations(locations, RhythmDoctorLocation)
-
-    for stage in all_regular_stages:
+    for stage in all_stages:
         if stage.short_name == "X-0" and world.options.end_goal.value == EndGoal.option_helping_hands:
             continue
-        create_locations_from_regular_stage(stage)
 
-    for stage in all_boss_stages:
-        create_locations_from_boss_stage(stage)
+        create_locations_from_stage(stage)
 
 
 def get_location_name_to_id() -> dict[str, int]:
