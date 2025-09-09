@@ -19,7 +19,7 @@ class RhythmDoctorWorld(World):
     Rhythm Doctor is a rhythm game in a world where defibrillating patients' hearts in sync with their heartbeats has healing properties.
     Slam your spacebar in perfect time on the 7th beat, and they might just come out okay.
 
-    In Archipelago, levels and wards are randomized. Clearing levels with B, A, and S ranks will clear locations.
+    In Archipelago, levels and access to wards are randomized. Clearing levels with B, A, and S ranks will clear locations.
     Boss levels unlock after a certain amount of levels in its act has been cleared.
     """  # Excerpt from Steam store page
 
@@ -40,6 +40,8 @@ class RhythmDoctorWorld(World):
     local_item_name_groups: dict[str, list[str]] = {"Stages": []}
     for stage in all_stages:
         if stage.act is None:
+            continue
+        if stage in Data.all_boss_stages:
             continue
 
         if stage.act not in local_item_name_groups:
