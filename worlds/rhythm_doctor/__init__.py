@@ -5,7 +5,7 @@ from Options import OptionError
 from worlds.AutoWorld import World
 
 from .Data import GAME, FILLER_JUNK, FILLER_POWERUPS, FILLER_TRAPS, RhythmDoctorItem, create_items, \
-    get_location_name_to_id, get_item_name_to_id, create_locations, all_stages
+    get_location_name_to_id, get_item_name_to_id, create_locations, all_stages, all_boss_stages
 from .Options import RhythmDoctorOptions
 from .Regions import create_and_connect_regions
 from .Rules import set_rules
@@ -41,7 +41,7 @@ class RhythmDoctorWorld(World):
     for stage in all_stages:
         if stage.act is None:
             continue
-        if stage in Data.all_boss_stages:
+        if stage in all_boss_stages:
             continue
 
         if stage.act not in local_item_name_groups:
