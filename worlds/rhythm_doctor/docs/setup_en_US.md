@@ -2,7 +2,7 @@
 
 ## Required Software
 
-- Any desktop version of Rhythm Doctor: [Steam](https://store.steampowered.com/app/774181/Rhythm_Doctor/)
+- Any desktop version of Rhythm Doctor: [Steam](https://store.steampowered.com/app/774181/Rhythm_Doctor/) or [itch.io](https://fizzd.itch.io/rhythm-doctor-early-access)
 - Client plugin: Thunderstore (TODO) or [GitHub](https://github.com/nonperforming/RhythmDoctor.Archipelago/releases/latest)
 
 ## Installation
