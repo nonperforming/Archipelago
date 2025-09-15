@@ -1,5 +1,6 @@
 from dataclasses import dataclass
-from Options import PerGameCommonOptions, DeathLink, Choice, Range, Toggle, OptionGroup
+
+from Options import Choice, DeathLink, OptionGroup, PerGameCommonOptions, Range, Toggle
 
 
 # region Options
@@ -21,6 +22,7 @@ class EndGoal(Choice):
     **Perfect All Levels:**
     Clear all levels with an S+/Perfect rank to beat the game!
     """
+
     display_name = "End Goal"
 
     option_helping_hands = 0
@@ -46,6 +48,7 @@ class BossUnlockRequirement(Choice):
     **Perfect All:**
     All the number of levels in the act are required to be cleared with an S+ rank to unlock the act's boss.
     """
+
     display_name = "Boss Unlock Requirement"
 
     option_clear_half_in_act = 0
@@ -57,11 +60,13 @@ class BossUnlockRequirement(Choice):
 
 # endregion
 
+
 # region Gameplay
 # region Traps
 class TrapChance(Range):
     """Determines the percent likeliness of a **filler item becoming a trap**.
     **The sum of Trap Chance and Powerup Chance cannot be over 100%.**"""
+
     display_name = "Trap Chance"
     range_start = 0
     range_end = 100
@@ -70,45 +75,54 @@ class TrapChance(Range):
 
 class EnableFragileHeartTraps(Toggle):
     """Determines if **increased mistake weight traps** should be in the item pool."""
+
     display_name = "Enable Fragile Heart Traps"
 
 
 class EnableCharacterScrambleTraps(Toggle):
     """Determines if **randomized characters traps** should be in the item pool."""
+
     display_name = "Enable Character Scramble Traps"
 
 
 class EnableBeatsoundScrambleTraps(Toggle):
     """Determines if **randomized beatsound traps** should be in the item pool."""
+
     display_name = "Enable Beatsound Scramble Traps"
 
 
 class EnableHitsoundScrambleTraps(Toggle):
     """Determines if **randomized hitsound traps** should be in the item pool."""
+
     display_name = "Enable Hitsound Scramble Traps"
 
 
 class EnableHardDifficultyTraps(Toggle):
     """Determines if **hard difficulty traps** should be in the item pool."""
+
     display_name = "Enable Hard Difficulty Traps"
 
 
 class EnableChilliSpeedTraps(Toggle):
     """Determines if **🌶️ chilli speed traps** should be in the item pool."""
+
     display_name = "Enable Chilli Speed Traps"
 
 
 class EnableGhostTapTraps(Toggle):
     """Determines if **ghost tap traps** (make a mistake on ghost tap) should be in the item pool."""
+
     display_name = "Enable Ghost Tap Traps"
 
 
 # endregion
 
+
 # region Powerups
 class PowerupChance(Range):
     """Determines the percent likeliness of a **filler item becoming a powerup**.
     **The sum of Trap Chance and Powerup Chance cannot be over 100%.**"""
+
     display_name = "Powerup Chance"
     range_start = 0
     range_end = 100
@@ -117,20 +131,24 @@ class PowerupChance(Range):
 
 class EnableEasyDifficultyPowerups(Toggle):
     """Determines if **easy difficulty powerups** should be in the item pool."""
+
     display_name = "Enable Easy Difficulty Powerups"
 
 
 class EnableStrongHeartPowerups(Toggle):
     """Determines if **decreased mistake weight powerups** should be in the item pool."""
+
     display_name = "Enable Strong Heart Powerups"
 
 
 class EnableIceSpeedPowerups(Toggle):
     """Determines if **🧊 ice speed powerups** should be in the item pool."""
+
     display_name = "Enable Ice Speed Powerups"
 
 
 # endregion
+
 
 class RhythmDoctorDeathLink(DeathLink):
     """
@@ -140,6 +158,7 @@ class RhythmDoctorDeathLink(DeathLink):
 
 # endregion
 # endregion
+
 
 @dataclass
 class RhythmDoctorOptions(PerGameCommonOptions):
@@ -164,29 +183,41 @@ class RhythmDoctorOptions(PerGameCommonOptions):
 
 
 groups: list[OptionGroup] = [
-    OptionGroup("Generation Options", [
-        EndGoal,
-        BossUnlockRequirement,
-    ]),
-    OptionGroup("Gameplay Options", [
-        RhythmDoctorDeathLink,
-    ]),
-    OptionGroup("Trap Options", [
-        TrapChance,
-        EnableFragileHeartTraps,
-        EnableCharacterScrambleTraps,
-        EnableBeatsoundScrambleTraps,
-        EnableHitsoundScrambleTraps,
-        EnableHardDifficultyTraps,
-        EnableChilliSpeedTraps,
-        EnableGhostTapTraps,
-    ]),
-    OptionGroup("Powerup Options", [
-        PowerupChance,
-        EnableEasyDifficultyPowerups,
-        EnableStrongHeartPowerups,
-        EnableIceSpeedPowerups,
-    ]),
+    OptionGroup(
+        "Generation Options",
+        [
+            EndGoal,
+            BossUnlockRequirement,
+        ],
+    ),
+    OptionGroup(
+        "Gameplay Options",
+        [
+            RhythmDoctorDeathLink,
+        ],
+    ),
+    OptionGroup(
+        "Trap Options",
+        [
+            TrapChance,
+            EnableFragileHeartTraps,
+            EnableCharacterScrambleTraps,
+            EnableBeatsoundScrambleTraps,
+            EnableHitsoundScrambleTraps,
+            EnableHardDifficultyTraps,
+            EnableChilliSpeedTraps,
+            EnableGhostTapTraps,
+        ],
+    ),
+    OptionGroup(
+        "Powerup Options",
+        [
+            PowerupChance,
+            EnableEasyDifficultyPowerups,
+            EnableStrongHeartPowerups,
+            EnableIceSpeedPowerups,
+        ],
+    ),
 ]
 
 presets = {

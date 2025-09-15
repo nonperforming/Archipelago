@@ -2,7 +2,7 @@ from typing import TYPE_CHECKING
 
 from BaseClasses import Region
 
-from .Data import REGIONS, all_regular_stages, all_boss_stages
+from .Data import REGIONS, all_boss_stages, all_regular_stages
 from .Options import EndGoal
 
 if TYPE_CHECKING:
@@ -48,11 +48,13 @@ def create_and_connect_stage_regions(world: "RhythmDoctorWorld"):
 
         if stage.short_name == "X-0" and world.options.end_goal.value == EndGoal.option_helping_hands:
             # TODO: duplicated in Rules
-            rule = lambda state: (state.has_group("Act 1", world.player, 2) and
-                                  state.has_group("Act 2", world.player, 4) and
-                                  state.has_group("Act 3", world.player, 3) and
-                                  state.has_group("Act 4", world.player, 4) and
-                                  state.has_group("Act 5", world.player, 3))
+            rule = lambda state: (
+                state.has_group("Act 1", world.player, 2)
+                and state.has_group("Act 2", world.player, 4)
+                and state.has_group("Act 3", world.player, 3)
+                and state.has_group("Act 4", world.player, 4)
+                and state.has_group("Act 5", world.player, 3)
+            )
         else:
             rule = (lambda item_name: lambda state: state.has(item_name, world.player))(stage.name)
         region.connect(stage_region, f"{stage.region_name} to {stage.short_name}", rule)
@@ -79,6 +81,7 @@ def create_and_connect_stage_regions(world: "RhythmDoctorWorld"):
 
         # what?
         # python weirdness: splitting this out here makes things work properly
-        rule = ((lambda act, count: lambda state: state.has_group(act, world.player, count))
-                (boss_stage.act, requires_count))
+        rule = (lambda act, count: lambda state: state.has_group(act, world.player, count))(
+            boss_stage.act, requires_count
+        )
         region.connect(stage_region, f"{boss_stage.region_name} to {boss_stage.short_name}", rule)

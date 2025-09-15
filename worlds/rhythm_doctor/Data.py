@@ -1,11 +1,10 @@
-from BaseClasses import Item, Location, LocationProgressType
-
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
+from typing import TYPE_CHECKING, Literal
+
+from BaseClasses import Item, Location, LocationProgressType
 
 from .Options import EndGoal
-
-from typing import TYPE_CHECKING, Literal
 
 if TYPE_CHECKING:
     from . import RhythmDoctorWorld
@@ -15,8 +14,15 @@ REGIONS = ["Main Ward", "SVT Ward", "Train", "Physiotherapy Ward", "Basement", "
 
 FILLER_JUNK = ["Sleeve Paint"]
 FILLER_POWERUPS = ["Strong Heart Powerup", "Easy Difficulty Powerup", "Ice Speed Powerup"]
-FILLER_TRAPS = ["Fragile Heart Trap", "Hard Difficulty Trap", "Scramble Characters Trap", "Scramble Beatsound Trap",
-                "Scramble Hitsound Trap", "Chilli Speed Trap", "Ghost Tap Trap"]
+FILLER_TRAPS = [
+    "Fragile Heart Trap",
+    "Hard Difficulty Trap",
+    "Scramble Characters Trap",
+    "Scramble Beatsound Trap",
+    "Scramble Hitsound Trap",
+    "Chilli Speed Trap",
+    "Ghost Tap Trap",
+]
 FILLER = FILLER_JUNK + FILLER_POWERUPS + FILLER_TRAPS
 
 
@@ -35,11 +41,12 @@ class _Stage(ABC):
     short_name: str
     region_name: Literal["Main Ward", "SVT Ward", "Train", "Physiotherapy Ward", "Basement", "Art Room"]
     act: Literal["Act 1", "Act 2", "Act 3", "Act 4", "Act 5"] | None
-    excluded: bool = False
+    excluded: Literal["True", "False", "Bonus Location"] = "False"
 
     @abstractmethod
     def get_locations(self, world: "RhythmDoctorWorld") -> dict[str, int]:
         pass
+
 
 @dataclass
 class _RegularStage(_Stage):
@@ -105,10 +112,18 @@ svt_ward_stages = [
     _RegularStage("2-2N - Unreachable", "2-2N", "SVT Ward", "Act 2"),
     _RegularStage("2-3 - Puff Piece", "2-3", "SVT Ward", "Act 2"),
     _RegularStage("2-3N - Bomb-Sniffing Pomeranian", "2-3N", "SVT Ward", "Act 2"),
-    _RegularStage("2-4 - Song of the Sea", "2-4", "SVT Ward", "Act 2",
-                  b_rank_location=False, a_rank_location=False, excluded=True),
-    _RegularStage("2-4N - Song of the Sea (Night)", "2-4N", "SVT Ward", "Act 2",
-                  b_rank_location=False, a_rank_location=False, excluded=True),
+    _RegularStage(
+        "2-4 - Song of the Sea", "2-4", "SVT Ward", "Act 2", b_rank_location=False, a_rank_location=False, excluded=True
+    ),
+    _RegularStage(
+        "2-4N - Song of the Sea (Night)",
+        "2-4N",
+        "SVT Ward",
+        "Act 2",
+        b_rank_location=False,
+        a_rank_location=False,
+        excluded=True,
+    ),
     _RegularStage("2-B1 - Beans Hopper", "2-B1", "SVT Ward", "Act 2", excluded=True),
 ]
 
@@ -128,8 +143,15 @@ physiotherapy_ward_stages = [
     _RegularStage("5-1N - One Slip Too Late", "5-1N", "Physiotherapy Ward", "Act 5"),
     _RegularStage("5-2 - Lo-fi Beats For Patients To Chill To", "5-2", "Physiotherapy Ward", "Act 5"),
     _RegularStage("5-2N - Unsustainable Inconsolable", "5-2N", "Physiotherapy Ward", "Act 5"),
-    _RegularStage("5-3 - Seventh Inning Stretch", "5-3", "Physiotherapy Ward", "Act 5", b_rank_location=False,
-                  a_rank_location=False, excluded=True),
+    _RegularStage(
+        "5-3 - Seventh Inning Stretch",
+        "5-3",
+        "Physiotherapy Ward",
+        "Act 5",
+        b_rank_location=False,
+        a_rank_location=False,
+        excluded=True,
+    ),
     _RegularStage("5-B1 - Rhythm Weightlifter", "5-B1", "Physiotherapy Ward", "Act 5"),
 ]
 
@@ -157,8 +179,7 @@ act_2_boss = _BossStage("2-X - All The Times", "2-X", "SVT Ward", "Act 2")
 act_3_boss = _BossStage("3-X - One Shift More", "3-X", "Main Ward", "Act 3")
 act_3_secret_boss = _BossStage("3-DOG - Rhythm Dogtor", "3-DOG", "Main Ward", "Act 3")
 act_4_boss = _BossStage("4-X - Super Battleworn Insomniac", "1-XN", "Main Ward", "Act 4")
-act_5_boss = _BossStage("5-X - Dreams Don't Stop", "5-X", "Physiotherapy Ward", "Act 5",
-                        clear_plus_location=True)
+act_5_boss = _BossStage("5-X - Dreams Don't Stop", "5-X", "Physiotherapy Ward", "Act 5", clear_plus_location=True)
 
 all_boss_stages = [
     act_1_boss,
@@ -175,6 +196,7 @@ all_stages = all_regular_stages + all_boss_stages
 
 
 # endregion
+
 
 def create_items(world: "RhythmDoctorWorld"):
     # Get a random level in the Main Ward to start with
@@ -193,7 +215,7 @@ def create_items(world: "RhythmDoctorWorld"):
             if ward_name == "Main Ward":
                 # Main Ward is always accessible
                 continue
-            elif ward_name == "Art Room" and world.options.end_goal.value == EndGoal.option_helping_hands:
+            if ward_name == "Art Room" and world.options.end_goal.value == EndGoal.option_helping_hands:
                 # When Art Room is the end goal, we do not need a key to access it (it will unlock automatically)
                 continue
 

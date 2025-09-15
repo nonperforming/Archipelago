@@ -1,9 +1,15 @@
 from typing import TYPE_CHECKING
 
 from worlds.rhythm_doctor import GAME
-from worlds.rhythm_doctor.Data import all_regular_stages, all_boss_stages, \
-    act_3_boss, act_3_secret_boss, \
-    FILLER_TRAPS, FILLER_POWERUPS, REGIONS
+from worlds.rhythm_doctor.Data import (
+    FILLER_POWERUPS,
+    FILLER_TRAPS,
+    REGIONS,
+    act_3_boss,
+    act_3_secret_boss,
+    all_boss_stages,
+    all_regular_stages,
+)
 
 if TYPE_CHECKING:
     from worlds.rhythm_doctor import RhythmDoctorWorld
@@ -18,7 +24,6 @@ short_to_internal_name = {
     "1-CNY": "Level.GongXi",  # Chinese New Year
     "1-BOO": "Level.Halloween",  # Theme Of Really Spooky Bird
     # endregion
-
     # region Act 2 - SVT Ward
     "2-1": "Level.Lofi",  # Lofi Hip Hop Beats To Treat Patients To
     "2-1N": "Level.CareLess",  # Wish I Could Care Less
@@ -31,7 +36,6 @@ short_to_internal_name = {
     "2-X": "Level.Boss2",  # All The Times
     "2-B1": "Level.BeansHopper",
     # endregion
-
     # region Act 3 - Main Ward
     "3-1": "Level.Garden",  # Sleepy Garden
     "3-1N": "Level.Lounge",
@@ -42,7 +46,6 @@ short_to_internal_name = {
     "3-X": "Level.Lesmis",  # One Shift More
     "3-DOG": "Level.Lesmis",  # "Rhythm Dogtor" - not official name
     # endregion
-
     # region Act 4 - Train
     "4-1": "Level.Heldbeats",  # Training Doctor's Train Ride Performance
     "4-1N": "Level.Rollerdisco",  # Rollerdisco Rumble
@@ -54,7 +57,6 @@ short_to_internal_name = {
     "4-4N": "Level.Murmurs",
     "1-XN": "Level.InsomniacHard",  # Super Battleworn Insomniac
     # endregion
-
     # region Act 5 - Physiotherapy Ward
     "5-1": "Level.LuckyBreak",
     "5-1N": "Level.Injury",  # One Slip Too Late
@@ -64,7 +66,6 @@ short_to_internal_name = {
     "5-B1": "Level.RhythmWeightlifter",
     "5-X": "Level.AthleteFinale",  # Dreams Don't Stop
     # endregion
-
     # region Bonus - Basement
     "X-FTS": "Level.VividStasis",  # vivid/stasis - Fixations Toward the Stars
     "X-KOB": "Level.SparkLine",  # Circle of Sparks - Kingdom of Balloons
@@ -77,7 +78,6 @@ short_to_internal_name = {
     # endregion
     "X-1": "Level.ArtExercise",
     # endregion
-
     # region Art Room
     "X-0": "Level.HelpingHands",
     # endregion
@@ -85,19 +85,21 @@ short_to_internal_name = {
 
 
 def build_internal_name_to_stage(world: "RhythmDoctorWorld") -> str:
-    buffer = "/// <summary>\n" + \
-             """/// <see cref="Level"/> to corresponding <see cref="LevelBase"/>\n""" + \
-             "/// </summary>\n" + \
-             """/// <seeAlso cref="RegularStage"/>\n""" + \
-             """/// <seeAlso cref="BossStage"/>\n""" + \
-             "internal static readonly Dictionary<Level, BaseStage> LevelToStage = new() {"
+    buffer = (
+        "/// <summary>\n"
+         """/// <see cref="Level"/> to corresponding <see cref="LevelBase"/>\n"""
+         "/// </summary>\n"
+         """/// <seeAlso cref="RegularStage"/>\n"""
+         """/// <seeAlso cref="BossStage"/>\n"""
+         "internal static readonly Dictionary<Level, BaseStage> LevelToStage = new() {"
+    )
 
     for regular_stage in all_regular_stages:
         constructor = ""
         if regular_stage.act is None:
             constructor += "Act.None, "
         else:
-            constructor += f"Act.{regular_stage.act.replace(" ", "")}, "
+            constructor += f"Act.{regular_stage.act.replace(' ', '')}, "
 
         if regular_stage.b_rank_location:
             constructor += str(world.location_name_to_id[f"{regular_stage.name} - B Rank"])
@@ -117,10 +119,12 @@ def build_internal_name_to_stage(world: "RhythmDoctorWorld") -> str:
         buffer += f"\n  {{ {short_to_internal_name[regular_stage.short_name]}, new RegularStage({constructor}) }},"
 
     # We exclude 3-X and 3-DOG here as they are a special case - they are handled separately afterward
-    for boss_stage in [boss_stage for boss_stage in all_boss_stages
-                       if not (boss_stage.short_name == act_3_boss.short_name
-                               or boss_stage.short_name == act_3_secret_boss.short_name)]:
-        constructor = f"Act.{boss_stage.act.replace(" ", "")}, "
+    for boss_stage in [
+        boss_stage
+        for boss_stage in all_boss_stages
+        if not (boss_stage.short_name == act_3_boss.short_name or boss_stage.short_name == act_3_secret_boss.short_name)
+    ]:
+        constructor = f"Act.{boss_stage.act.replace(' ', '')}, "
         if boss_stage.clear_location:
             constructor += str(world.location_name_to_id[f"{boss_stage.name} - Clear"])
         else:
@@ -139,25 +143,31 @@ def build_internal_name_to_stage(world: "RhythmDoctorWorld") -> str:
         buffer += f"\n  {{ {short_to_internal_name[boss_stage.short_name]}, new BossStage({constructor}) }},"
 
     # Handle special 3-X/3-DOG case
-    lesmis_constructor = ("Act.Act3, "
-                          f"{world.location_name_to_id[f"{act_3_boss.name} - Clear"]}, "
-                          f"null, "
-                          f"{world.location_name_to_id[f"{act_3_boss.name} - Perfect Clear"]}")
-    buffer += (f"\n  {{ Level.Lesmis, new BossStage({lesmis_constructor}, "
-               f"new Dictionary<string, long> "
-               f"{{ {{ \"dog_clear\", {world.location_name_to_id[f"{act_3_secret_boss.name} - Clear"]} }}, "
-               f"{{ \"dog_perfect\", {world.location_name_to_id[f"{act_3_secret_boss.name} - Perfect Clear"]} }} "
-               f"}}) }},")
+    lesmis_constructor = (
+        "Act.Act3, "
+        f"{world.location_name_to_id[f'{act_3_boss.name} - Clear']}, "
+        f"null, "
+        f"{world.location_name_to_id[f'{act_3_boss.name} - Perfect Clear']}"
+    )
+    buffer += (
+        f"\n  {{ Level.Lesmis, new BossStage({lesmis_constructor}, "
+        f"new Dictionary<string, long> "
+        f'{{ {{ "dog_clear", {world.location_name_to_id[f"{act_3_secret_boss.name} - Clear"]} }}, '
+        f'{{ "dog_perfect", {world.location_name_to_id[f"{act_3_secret_boss.name} - Perfect Clear"]} }} '
+        f"}}) }},"
+    )
 
     buffer += "\n};\n\n"
     return buffer
 
 
 def build_item_id_to_level(world: "RhythmDoctorWorld") -> str:
-    buffer = "/// <summary>\n" + \
-             """/// Level ID to corresponding <see cref="Level"/>\n""" + \
-             "/// </summary>\n" + \
-             "internal static readonly Dictionary<long, Level> ItemIdToLevel = new() {"
+    buffer = (
+        "/// <summary>\n"
+         """/// Level ID to corresponding <see cref="Level"/>\n"""
+         "/// </summary>\n"
+         "internal static readonly Dictionary<long, Level> ItemIdToLevel = new() {"
+    )
 
     for stage in all_regular_stages:
         buffer += f"""\n  {{ {world.item_name_to_id[stage.name]}, {short_to_internal_name[stage.short_name]} }},"""
@@ -167,12 +177,14 @@ def build_item_id_to_level(world: "RhythmDoctorWorld") -> str:
 
 
 def build_item_id_to_trap(world: "RhythmDoctorWorld") -> str:
-    buffer = "/// <summary>\n" + \
-             "/// Trap item ID to corresponding <see cref=\"Level\"/>\n" + \
-             "/// </summary>\n" + \
-             "internal static readonly Dictionary<long, Type> TrapItemIdToLevel =\n" + \
-             "  new()\n" + \
-             "  {\n"
+    buffer = (
+        "/// <summary>\n"
+         '/// Trap item ID to corresponding <see cref="Level"/>\n'
+         "/// </summary>\n"
+         "internal static readonly Dictionary<long, Type> TrapItemIdToLevel =\n"
+         "  new()\n"
+         "  {\n"
+    )
 
     # Requires someone to go in and fill in the types manually
     for trap in FILLER_TRAPS + FILLER_POWERUPS:
@@ -184,23 +196,26 @@ def build_item_id_to_trap(world: "RhythmDoctorWorld") -> str:
 
 
 def build_key_item_id_to_ward(world: "RhythmDoctorWorld") -> str:
-    buffer = "/// <summary>\n" + \
-             "/// Key item ID to corresponding <see cref=\"Region\"/>\n" + \
-             "/// </summary>\n" + \
-             "internal static readonly Dictionary<long, Region> KeyItemIdToWard =\n" + \
-             "  new()\n" + \
-             "  {\n"
+    buffer = (
+        "/// <summary>\n"
+         '/// Key item ID to corresponding <see cref="Region"/>\n'
+         "/// </summary>\n"
+         "internal static readonly Dictionary<long, Region> KeyItemIdToWard =\n"
+         "  new()\n"
+         "  {\n"
+    )
 
     for ward in REGIONS:
         if ward == "Main Ward":
             continue
 
         # Requires manual fixing
-        buffer += f"  {{ {world.item_name_to_id[f"{ward} Key"]}, Region.{ward.replace(" ", "")} }},\n"
+        buffer += f"  {{ {world.item_name_to_id[f'{ward} Key']}, Region.{ward.replace(' ', '')} }},\n"
 
     buffer += "\n};\n\n"
 
     return buffer
+
 
 def main(world: "RhythmDoctorWorld"):
     """
