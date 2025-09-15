@@ -41,7 +41,7 @@ class _Stage(ABC):
     short_name: str
     region_name: Literal["Main Ward", "SVT Ward", "Train", "Physiotherapy Ward", "Basement", "Art Room"]
     act: Literal["Act 1", "Act 2", "Act 3", "Act 4", "Act 5"] | None
-    excluded: Literal["True", "False", "Bonus Location"] = "False"
+    excluded: bool = False
 
     @abstractmethod
     def get_locations(self, world: "RhythmDoctorWorld") -> dict[str, int]:
@@ -89,6 +89,16 @@ class _BossStage(_Stage):
         return locations
 
 
+@dataclass
+class _RhythmWeightlifterStage(_Stage):
+    def get_locations(self, world: "RhythmDoctorWorld") -> dict[str, int]:
+        locations = {}
+        for stage_number in range(1, 11):
+            name = f"{self.name} - Stage {stage_number} Clear"
+            locations[name] = world.location_name_to_id[name]
+
+        return locations
+
 # region Main stages
 main_ward_stages = [
     _RegularStage("1-1 - Samurai Techno", "1-1", "Main Ward", "Act 1"),
@@ -124,7 +134,7 @@ svt_ward_stages = [
         a_rank_location=False,
         excluded=True,
     ),
-    _RegularStage("2-B1 - Beans Hopper", "2-B1", "SVT Ward", "Act 2", excluded=True),
+    _RegularStage("2-B1 - Beans Hopper", "2-B1", "SVT Ward", "Act 2", excluded=False),
 ]
 
 train_stages = [
@@ -152,7 +162,7 @@ physiotherapy_ward_stages = [
         a_rank_location=False,
         excluded=True,
     ),
-    _RegularStage("5-B1 - Rhythm Weightlifter", "5-B1", "Physiotherapy Ward", "Act 5"),
+    _RhythmWeightlifterStage("5-B1 - Rhythm Weightlifter", "5-B1", "Physiotherapy Ward", "Act 5"),
 ]
 
 other_stages = [
@@ -247,6 +257,10 @@ def create_locations(world: "RhythmDoctorWorld"):
         if stage.excluded:
             for location_name in locations.keys():
                 world.get_location(location_name).progress_type = LocationProgressType.EXCLUDED
+        elif stage.short_name == "5-B1":
+            for stage_number in range(5,11):
+                world.get_location(f"5-B1 - Rhythm Weightlifter - Stage {stage_number} Clear").progress_type \
+                    = LocationProgressType.EXCLUDED
 
     for stage in all_stages:
         if stage.short_name == "X-0" and world.options.end_goal.value == EndGoal.option_helping_hands:
@@ -260,15 +274,20 @@ def get_location_name_to_id() -> dict[str, int]:
     i = 1  # For some reason Archipelago discards i=0
 
     for stage in all_regular_stages:
-        if stage.b_rank_location:
-            location_name_to_id[f"{stage.name} - B Rank"] = i
-            i += 1
-        if stage.a_rank_location:
-            location_name_to_id[f"{stage.name} - A Rank"] = i
-            i += 1
-        if stage.s_rank_location:
-            location_name_to_id[f"{stage.name} - S Rank"] = i
-            i += 1
+        if stage.short_name == "5-B1":
+            for stage_number in range(1, 11):
+                location_name_to_id[f"{stage.name} - Stage {stage_number} Clear"] = i
+                i += 1
+        else:
+            if stage.b_rank_location:
+                location_name_to_id[f"{stage.name} - B Rank"] = i
+                i += 1
+            if stage.a_rank_location:
+                location_name_to_id[f"{stage.name} - A Rank"] = i
+                i += 1
+            if stage.s_rank_location:
+                location_name_to_id[f"{stage.name} - S Rank"] = i
+                i += 1
 
     for stage in all_boss_stages:
         if stage.clear_location:

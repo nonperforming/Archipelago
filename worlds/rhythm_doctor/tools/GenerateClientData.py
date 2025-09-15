@@ -101,6 +101,10 @@ def build_internal_name_to_stage(world: "RhythmDoctorWorld") -> str:
         else:
             constructor += f"Act.{regular_stage.act.replace(' ', '')}, "
 
+        if regular_stage.short_name == "5-B1":
+            # Rhythm Weightlifter is a special case we handle separately
+            continue
+
         if regular_stage.b_rank_location:
             constructor += str(world.location_name_to_id[f"{regular_stage.name} - B Rank"])
         else:
@@ -217,6 +221,21 @@ def build_key_item_id_to_ward(world: "RhythmDoctorWorld") -> str:
     return buffer
 
 
+def build_rhythm_weightlifter_level_to_location(world: "RhythmDoctorWorld") -> str:
+    buffer = (
+        "/// <summary>\n"
+        "/// Rhythm Weightlifter stage to its corresponding location ID.\n"
+        "/// </summary>\n"
+        "internal static readonly long[] RhythmWeightlifterStageToLocationID =\n"
+        "  [ "
+    )
+
+    for stage_number in range(1, 11):
+        buffer += f"""{world.location_name_to_id[f"5-B1 - Rhythm Weightlifter - Stage {stage_number} Clear"]}, """
+
+    buffer += " ];"
+    return buffer
+
 def main(world: "RhythmDoctorWorld"):
     """
     Generate client data used by the C# client.
@@ -229,6 +248,7 @@ def main(world: "RhythmDoctorWorld"):
     file += build_item_id_to_level(world)
     file += build_item_id_to_trap(world)
     file += build_key_item_id_to_ward(world)
+    file += build_rhythm_weightlifter_level_to_location(world)
     file += "#endregion"
 
     with open("RhythmDoctorBindings.cs", "w") as file_stream:
