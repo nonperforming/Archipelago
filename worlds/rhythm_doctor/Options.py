@@ -1,6 +1,14 @@
 from dataclasses import dataclass
 
-from Options import Choice, DeathLink, OptionGroup, PerGameCommonOptions, Range, Toggle
+from Options import (
+    Choice,
+    DeathLink,
+    DefaultOnToggle,
+    OptionGroup,
+    PerGameCommonOptions,
+    Range,
+    Toggle,
+)
 
 
 # region Options
@@ -56,6 +64,12 @@ class BossUnlockRequirement(Choice):
     option_a_rank_all = 2
     option_perfect_all = 3
     default = 0
+
+
+class PerfectRanksExcluded(DefaultOnToggle):
+    """Determines if Perfect/S rank locations are excluded in generation."""
+
+    display_name = "Exclude Perfect Ranks"
 
 
 # endregion
@@ -165,6 +179,7 @@ class RhythmDoctorOptions(PerGameCommonOptions):
     # Generation options
     end_goal: EndGoal
     boss_unlock_requirement: BossUnlockRequirement
+    perfect_ranks_excluded: PerfectRanksExcluded
 
     # Gameplay options
     trap_chance: TrapChance
@@ -188,6 +203,7 @@ groups: list[OptionGroup] = [
         [
             EndGoal,
             BossUnlockRequirement,
+            PerfectRanksExcluded,
         ],
     ),
     OptionGroup(
@@ -224,6 +240,7 @@ presets = {
     "Traps & Powerups": {
         "end_goal": EndGoal.option_helping_hands,
         "boss_unlock_requirement": BossUnlockRequirement.default,
+        "perfect_ranks_excluded": True,
         "trap_chance": 33,
         "enable_fragile_heart_trap": True,
         "enable_character_scramble_trap": True,

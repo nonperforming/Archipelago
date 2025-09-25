@@ -261,6 +261,11 @@ def create_locations(world: "RhythmDoctorWorld"):
             for stage_number in range(5,11):
                 world.get_location(f"5-B1 - Rhythm Weightlifter - Stage {stage_number} Clear").progress_type \
                     = LocationProgressType.EXCLUDED
+        elif world.options.s_ranks_excluded.value:
+            if isinstance(stage, _RegularStage) and stage.s_rank_location:
+                world.get_location(f"{stage.name} - S Rank").progress_type = LocationProgressType.EXCLUDED
+            elif isinstance(stage, _BossStage) and stage.clear_perfect_location:
+                world.get_location(f"{stage.name} - Perfect Clear").progress_type = LocationProgressType.EXCLUDED
 
     for stage in all_stages:
         if stage.short_name == "X-0" and world.options.end_goal.value == EndGoal.option_helping_hands:
