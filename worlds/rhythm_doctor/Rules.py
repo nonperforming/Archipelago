@@ -22,5 +22,5 @@ def set_rules(world: "RhythmDoctorWorld"):
             )
         case EndGoal.option_perfect_all | EndGoal.option_a_rank_all | EndGoal.option_b_rank_all:
             world.multiworld.completion_condition[world.player] = lambda state: state.has_all(
-                world.item_name_groups["Stages"]
+                world.item_name_groups["Stages"], world.player
             )
