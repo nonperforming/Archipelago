@@ -77,7 +77,8 @@ def create_and_connect_stage_regions(world: "RhythmDoctorWorld"):
             case "Act 5":
                 requires_count = 3
             case _:
-                raise KeyError(f"Rhythm Doctor: Could not find {boss_stage.act}'s requires_count")
+                error = f"Rhythm Doctor: Could not find {boss_stage.act}'s requires_count"
+                raise KeyError(error)
 
         # what?
         # python weirdness: splitting this out here makes things work properly
