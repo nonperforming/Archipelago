@@ -79,10 +79,6 @@ class RhythmDoctorWorld(World):
     def set_rules(self) -> None:
         set_rules(self)
 
-        from .tools import GenerateClientData
-
-        GenerateClientData.main(self)
-
     def create_items(self) -> None:
         create_items(self)
 
