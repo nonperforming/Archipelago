@@ -63,13 +63,13 @@ class RhythmDoctorWorld(World):
         local_item_name_groups["Stages"].append(stage.name)
     local_item_name_groups["Junk"] = []
     for junk in FILLER_JUNK:
-        local_item_name_groups["Junk"].append(junk)
+        local_item_name_groups["Junk"].append(junk.name)
     local_item_name_groups["Powerups"] = []
     for powerup in FILLER_POWERUPS:
-        local_item_name_groups["Powerups"].append(powerup)
+        local_item_name_groups["Powerups"].append(powerup.name)
     local_item_name_groups["Traps"] = []
     for trap in FILLER_TRAPS:
-        local_item_name_groups["Traps"].append(trap)
+        local_item_name_groups["Traps"].append(trap.name)
     item_name_groups = local_item_name_groups
 
     def create_regions(self) -> None:
@@ -139,9 +139,11 @@ class RhythmDoctorWorld(World):
 
     def generate_early(self) -> None:
         if (self.options.trap_chance.value + self.options.powerup_chance.value) > 100:
-            error = (f"Rhythm Doctor: Player {self.player_name}'s set "
-                     f"trap chance ({self.options.trap_chance}%) and "
-                     f"powerup chance ({self.options.powerup_chance}%) are over 100%")
+            error = (
+                f"Rhythm Doctor: Player {self.player_name}'s set "
+                f"trap chance ({self.options.trap_chance}%) and "
+                f"powerup chance ({self.options.powerup_chance}%) are over 100%"
+            )
             raise OptionError(error)
         if self.options.trap_chance.value != 0 and not (
             self.options.enable_fragile_heart_traps.value
@@ -151,16 +153,20 @@ class RhythmDoctorWorld(World):
             or self.options.enable_hard_difficulty_traps.value
             or self.options.enable_chilli_speed_traps.value
         ):
-            error = (f"Rhythm Doctor: Player {self.player_name}'s set trap chance "
-                     f"is {self.options.trap_chance}, but all traps are disabled")
+            error = (
+                f"Rhythm Doctor: Player {self.player_name}'s set trap chance "
+                f"is {self.options.trap_chance}, but all traps are disabled"
+            )
             raise OptionError(error)
         if self.options.powerup_chance.value != 0 and not (
             self.options.enable_easy_difficulty_powerups.value
             or self.options.enable_strong_heart_powerups.value
             or self.options.enable_ice_speed_powerups.value
         ):
-            error = (f"Rhythm Doctor: Player {self.player_name}'s set powerup chance "
-                     f"is {self.options.trap_chance}, but all powerups are disabled")
+            error = (
+                f"Rhythm Doctor: Player {self.player_name}'s set powerup chance "
+                f"is {self.options.trap_chance}, but all powerups are disabled"
+            )
             raise OptionError(error)
 
     def fill_slot_data(self) -> Mapping[str, Any]:

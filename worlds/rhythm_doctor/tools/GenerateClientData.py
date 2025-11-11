@@ -87,11 +87,11 @@ short_to_internal_name = {
 def build_internal_name_to_stage(world: "RhythmDoctorWorld") -> str:
     buffer = (
         "/// <summary>\n"
-         """/// <see cref="Level"/> to corresponding <see cref="LevelBase"/>\n"""
-         "/// </summary>\n"
-         """/// <seeAlso cref="RegularStage"/>\n"""
-         """/// <seeAlso cref="BossStage"/>\n"""
-         "internal static readonly Dictionary<Level, BaseStage> LevelToStage = new() {"
+        """/// <see cref="Level"/> to corresponding <see cref="LevelBase"/>\n"""
+        "/// </summary>\n"
+        """/// <seeAlso cref="RegularStage"/>\n"""
+        """/// <seeAlso cref="BossStage"/>\n"""
+        "internal static readonly Dictionary<Level, BaseStage> LevelToStage = new() {"
     )
 
     for regular_stage in all_regular_stages:
@@ -105,20 +105,11 @@ def build_internal_name_to_stage(world: "RhythmDoctorWorld") -> str:
             # Rhythm Weightlifter is a special case we handle separately
             continue
 
-        if regular_stage.b_rank_location:
-            constructor += str(world.location_name_to_id[f"{regular_stage.name} - B Rank"])
-        else:
-            constructor += "null"
+        constructor += str(regular_stage.b_rank_location_id or "null")
         constructor += ", "
-        if regular_stage.a_rank_location:
-            constructor += str(world.location_name_to_id[f"{regular_stage.name} - A Rank"])
-        else:
-            constructor += "null"
+        constructor += str(regular_stage.a_rank_location_id or "null")
         constructor += ", "
-        if regular_stage.s_rank_location:
-            constructor += str(world.location_name_to_id[f"{regular_stage.name} - S Rank"])
-        else:
-            constructor += "null"
+        constructor += str(regular_stage.s_rank_location_id or "null")
 
         buffer += f"\n  {{ {short_to_internal_name[regular_stage.short_name]}, new RegularStage({constructor}) }},"
 
@@ -129,20 +120,11 @@ def build_internal_name_to_stage(world: "RhythmDoctorWorld") -> str:
         if not (boss_stage.short_name == act_3_boss.short_name or boss_stage.short_name == act_3_secret_boss.short_name)
     ]:
         constructor = f"Act.{boss_stage.act.replace(' ', '')}, "
-        if boss_stage.clear_location:
-            constructor += str(world.location_name_to_id[f"{boss_stage.name} - Clear"])
-        else:
-            constructor += "null"
+        constructor += str(boss_stage.clear_location_id or "null")
         constructor += ", "
-        if boss_stage.clear_plus_location:
-            constructor += str(world.location_name_to_id[f"{boss_stage.name} - Complete+ Without Checkpoints"])
-        else:
-            constructor += "null"
+        constructor += str(boss_stage.clear_plus_location_id or "null")
         constructor += ", "
-        if boss_stage.clear_perfect_location:
-            constructor += str(world.location_name_to_id[f"{boss_stage.name} - Perfect Clear"])
-        else:
-            constructor += "null"
+        constructor += str(boss_stage.clear_perfect_location_id or "null")
 
         buffer += f"\n  {{ {short_to_internal_name[boss_stage.short_name]}, new BossStage({constructor}) }},"
 
@@ -168,9 +150,9 @@ def build_internal_name_to_stage(world: "RhythmDoctorWorld") -> str:
 def build_item_id_to_level(world: "RhythmDoctorWorld") -> str:
     buffer = (
         "/// <summary>\n"
-         """/// Level ID to corresponding <see cref="Level"/>\n"""
-         "/// </summary>\n"
-         "internal static readonly Dictionary<long, Level> ItemIdToLevel = new() {"
+        """/// Level ID to corresponding <see cref="Level"/>\n"""
+        "/// </summary>\n"
+        "internal static readonly Dictionary<long, Level> ItemIdToLevel = new() {"
     )
 
     for stage in all_regular_stages:
@@ -183,16 +165,16 @@ def build_item_id_to_level(world: "RhythmDoctorWorld") -> str:
 def build_item_id_to_trap(world: "RhythmDoctorWorld") -> str:
     buffer = (
         "/// <summary>\n"
-         '/// Trap item ID to corresponding <see cref="Level"/>\n'
-         "/// </summary>\n"
-         "internal static readonly Dictionary<long, Type> TrapItemIdToLevel =\n"
-         "  new()\n"
-         "  {\n"
+        '/// Trap and powerup item ID to corresponding <see cref="Level"/>\n'
+        "/// </summary>\n"
+        "internal static readonly Dictionary<long, Type> TrapItemIdToLevel =\n"
+        "  new()\n"
+        "  {\n"
     )
 
     # Requires someone to go in and fill in the types manually
     for trap in FILLER_TRAPS + FILLER_POWERUPS:
-        buffer += f"  {{ {world.item_name_to_id[trap]}, typeof({trap}) }},\n"
+        buffer += f"  {{ {world.item_name_to_id[trap.name]}, typeof({trap.name}) }},\n"
 
     buffer += "\n};\n\n"
 
@@ -202,11 +184,11 @@ def build_item_id_to_trap(world: "RhythmDoctorWorld") -> str:
 def build_key_item_id_to_ward(world: "RhythmDoctorWorld") -> str:
     buffer = (
         "/// <summary>\n"
-         '/// Key item ID to corresponding <see cref="Region"/>\n'
-         "/// </summary>\n"
-         "internal static readonly Dictionary<long, Region> KeyItemIdToWard =\n"
-         "  new()\n"
-         "  {\n"
+        '/// Key item ID to corresponding <see cref="Region"/>\n'
+        "/// </summary>\n"
+        "internal static readonly Dictionary<long, Region> KeyItemIdToWard =\n"
+        "  new()\n"
+        "  {\n"
     )
 
     for ward in REGIONS:
@@ -235,6 +217,7 @@ def build_rhythm_weightlifter_level_to_location(world: "RhythmDoctorWorld") -> s
 
     buffer += " ];"
     return buffer
+
 
 def main(world: "RhythmDoctorWorld"):
     """
