@@ -23,14 +23,24 @@ class _Item:
 
 
 GAME = "Rhythm Doctor"
-REGIONS = ["Main Ward", "SVT Ward", "Train", "Physiotherapy Ward", "Basement", "Art Room"]
+REGIONS = ["Main Ward", "SVT Ward", "Train", "Physiotherapy Ward", "Records Room", "Basement", "Garden Room"]
+LEVEL_COUNT_IN_ACT = {  # TODO: client should get this information also
+    "Act 1": 4,
+    "Act 2": 8,
+    "Act 3": 6,
+    "Act 4": 8,
+    "Act 5": 6,
+    "Act 6": 2,
+    "Act 7": 2,
+}
 
 KEYS = [
     _Item("SVT Ward Key", 44),
     _Item("Train Key", 45),
     _Item("Physiotherapy Ward Key", 46),
     _Item("Basement Key", 47),
-    _Item("Art Room Key", 48),
+    _Item("Garden Room Key", 48),
+    _Item("Records Room Key", 60),
 ]
 
 # TODO: Fix ids
@@ -67,8 +77,11 @@ class RhythmDoctorLocation(Location):
 @dataclass
 class _Stage(_Item, ABC):
     short_name: str
-    region_name: Literal["Main Ward", "SVT Ward", "Train", "Physiotherapy Ward", "Basement", "Art Room"]
-    act: Literal["Act 1", "Act 2", "Act 3", "Act 4", "Act 5"] | None
+    region_name: Literal[
+        "Main Ward", "SVT Ward", "Train", "Physiotherapy Ward", "Records Room", "Basement", "Garden Room"
+    ]
+
+    act: Literal["Act 1", "Act 2", "Act 3", "Act 4", "Act 5", "Act 6", "Act 7"] | None
     excluded: bool
 
     @abstractmethod
@@ -157,6 +170,7 @@ svt_ward_stages = [
     _RegularStage("2-4 - Song of the Sea", 19, "2-4", "SVT Ward", "Act 2", True, s_rank_location_id=61),
     _RegularStage("2-4N - Song of the Sea (Night)", 20, "2-4N", "SVT Ward", "Act 2", True, s_rank_location_id=62),
     _RegularStage("2-B1 - Beans Hopper", 21, "2-B1", "SVT Ward", "Act 2", False, 63, 64, 65),
+    _BossStage("2-XN - Bitter Times", 60, "2-XN", "SVT Ward", "Act 7", False, 150, 151, 152)
 ]
 
 train_stages = [
@@ -176,6 +190,7 @@ physiotherapy_ward_stages = [
     _RegularStage("5-2 - Lo-fi Beats For Patients To Chill To", 32, "5-2", "Physiotherapy Ward", "Act 5", False, 100, 101, 102),
     _RegularStage("5-2N - Unsustainable Inconsolable", 33, "5-2N", "Physiotherapy Ward", "Act 5", False, 103, 104, 105),
     _RegularStage("5-3 - Seventh Inning Stretch", 34, "5-3", "Physiotherapy Ward", "Act 5", True, s_rank_location_id=106),
+    _RegularStage("5-3N - Corazones Viejos", 61, "5-3N", "Physiotherapy Ward", "Act 5", False, 147, 148, 149),
     _RhythmWeightlifterStage(
         "5-B1 - Rhythm Weightlifter",
         44,
@@ -187,6 +202,12 @@ physiotherapy_ward_stages = [
     ),
 ]
 
+record_room_stages = [
+    _RegularStage("6-1 - Something To Tell You", 62, "6-1", "Records Room", "Act 6", False, 153, 154, 155),
+    _RegularStage("6-2 - Welcome Back", 63, "6-2", "Records Room", "Act 6", False, 156, 157, 158),
+    _RegularStage("7-1 - Blurred", 64, "7-1", "Records Room", "Act 7", False, 159, 160, 161),
+]
+
 other_stages = [
     _RegularStage("X-FTS - Fixations Towards the Stars", 35, "X-FTS", "Basement", None, False, 120, 121, 122),
     _RegularStage("X-KOB - Kingdom of Balloons", 36, "X-KOB", "Basement", None, False, 123, 124, 125),
@@ -195,7 +216,7 @@ other_stages = [
     _RegularStage("MD-1 - Blackest Luxury Car", 39, "MD-1", "Basement", None, False, 132, 133, 134),
     _RegularStage("MD-2 - tape/stop/night", 40, "MD-2", "Basement", None, False, 135, 136, 137),
     _RegularStage("MD-3 - The 90's Decision", 41, "MD-3", "Basement", None, False, 138, 139, 140),
-    _RegularStage("X-0 - Helping Hands", 42, "X-0", "Art Room", None, False, 141, 142, 143),
+    _RegularStage("X-0 - Helping Hands", 42, "X-0", "Garden Room", None, False, 141, 142, 143),
     _RegularStage("X-1 - Art Exercise", 43, "X-1", "Basement", None, False, 144, 145, 146),
 ]
 """
@@ -203,7 +224,9 @@ Stages that don't have a corresponding boss song or act.
 """
 # fmt: on
 
-all_regular_stages = main_ward_stages + svt_ward_stages + train_stages + physiotherapy_ward_stages + other_stages
+all_regular_stages = (
+    main_ward_stages + svt_ward_stages + train_stages + physiotherapy_ward_stages + record_room_stages + other_stages
+)
 # endregion
 
 # region Bosses
@@ -213,14 +236,21 @@ act_3_boss = _BossStage("3-X - One Shift More", None, "3-X", "Main Ward", "Act 3
 act_3_secret_boss = _BossStage("3-DOG - Rhythm Dogtor", None, "3-DOG", "Main Ward", "Act 3", False, 41, None, 42)
 act_4_boss = _BossStage("4-X - Super Battleworn Insomniac", None, "1-XN", "Main Ward", "Act 4", False, 92, None, 93)
 act_5_boss = _BossStage("5-X - Dreams Don't Stop", None, "5-X", "Physiotherapy Ward", "Act 5", False, 117, 118, 119)
+act_6_boss = _BossStage("6-X - Boss Fight", None, "6-X", "Records Room", "Act 6", False, 162, 163, 164)
+act_7_bosses = [  # For the sake of logic, the Abandoned Ward does not require a key, and is considered to be a part of the Main Ward.
+    _BossStage("7-X - Miracle Defibrillator", None, "7-X", "Main Ward", "Act 7", False, 165, 166, 167),
+    _BossStage("7-X2 - Miracle Defibrillator (Encore)", None, "7-X2", "Main Ward", "Act 7", False, 168, 169, 170),
+]
 
-all_boss_stages = [
+all_boss_stages: list[_BossStage] = [
     act_1_boss,
     act_2_boss,
     act_3_boss,
     act_3_secret_boss,
     act_4_boss,
     act_5_boss,
+    act_6_boss,
+    *act_7_bosses,
 ]
 
 # endregion
@@ -264,7 +294,11 @@ def create_items(world: "RhythmDoctorWorld"):
     item_pool = []
 
     for item in all_items:
-        if world.options.end_goal.value == EndGoal.option_helping_hands and isinstance(item, _RegularStage) and item.short_name == "X-0":
+        if (
+            world.options.end_goal.value == EndGoal.option_helping_hands
+            and isinstance(item, _RegularStage)
+            and item.short_name == "X-0"
+        ):
             continue
 
         create_item(item)
@@ -287,11 +321,16 @@ def create_locations(world: "RhythmDoctorWorld"):
                 world.get_location(
                     f"5-B1 - Rhythm Weightlifter - Stage {stage_number} Clear"
                 ).progress_type = LocationProgressType.EXCLUDED
-        elif world.options.perfect_ranks_excluded.value:
-            if isinstance(stage, _RegularStage) and stage.s_rank_location_id is not None:
-                world.get_location(f"{stage.name} - S Rank").progress_type = LocationProgressType.EXCLUDED
-            elif isinstance(stage, _BossStage) and stage.clear_perfect_location_id is not None:
-                world.get_location(f"{stage.name} - Perfect Clear").progress_type = LocationProgressType.EXCLUDED
+        else:
+            if isinstance(stage, _BossStage):
+                for location_name in locations.keys():
+                    world.get_location(location_name).progress_type = LocationProgressType.PRIORITY
+
+            if world.options.perfect_ranks_excluded.value:
+                if isinstance(stage, _RegularStage) and stage.s_rank_location_id is not None:
+                    world.get_location(f"{stage.name} - S Rank").progress_type = LocationProgressType.EXCLUDED
+                elif isinstance(stage, _BossStage) and stage.clear_perfect_location_id is not None:
+                    world.get_location(f"{stage.name} - Perfect Clear").progress_type = LocationProgressType.EXCLUDED
 
     for stage in all_stages:
         if stage.short_name == "X-0" and world.options.end_goal.value == EndGoal.option_helping_hands:

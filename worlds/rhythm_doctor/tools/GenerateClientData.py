@@ -63,10 +63,22 @@ short_to_internal_name = {
     "5-2": "Level.Freezeshot",  # Lofi Beats For Patients To Chill To
     "5-2N": "Level.FreezeshotH",  # Unsustainable Inconsolable
     "5-3": "Level.AthleteTherapy",  # Seventh Inning Stretch
+    "5-3N": "Level.StevensonsTango",  # Corazones Viejos
     "5-B1": "Level.RhythmWeightlifter",
     "5-X": "Level.AthleteFinale",  # Dreams Don't Stop
     # endregion
-    # region Bonus - Basement
+    # region Act 6 - Records Room
+    "6-1": "Level.HaileyDuet",  # Something to Tell You
+    "6-2": "Level.EdegaRave",  # Welcome Back
+    "6-X": "Level.PaigesReckoning",  # Boss Fight
+    # endregion
+    # region Act 7 - ??? (Abandoned Ward)
+    "7-1": "Level.Blurred",
+    "2-XN": "Level.Bitterness",  # Bitter Times
+    "7-X": "Level.Montage",  # Miracle Defibrillator
+    "7-X2": "Level.Montage2",  # Miracle Defibrillator (Encore)
+    # endregion
+    # region Extras - Basement
     "X-FTS": "Level.VividStasis",  # vivid/stasis - Fixations Toward the Stars
     "X-KOB": "Level.SparkLine",  # Circle of Sparks - Kingdom of Balloons
     "X-WOT": "Level.Unbeatable",  # UNBEATABLE - Worn Out Tapes
@@ -78,7 +90,7 @@ short_to_internal_name = {
     # endregion
     "X-1": "Level.ArtExercise",
     # endregion
-    # region Art Room
+    # region Garden Room
     "X-0": "Level.HelpingHands",
     # endregion
 }
