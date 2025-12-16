@@ -76,7 +76,7 @@ short_to_internal_name = {
     "7-1": "Level.Blurred",
     "2-XN": "Level.Bitterness",  # Bitter Times
     "7-X": "Level.Montage",  # Miracle Defibrillator
-    "7-X2": "Level.Montage2",  # Miracle Defibrillator (Encore)
+    "7-X2": "Level.Montage2",  # Cole's Song
     # endregion
     # region Extras - Basement
     "X-FTS": "Level.VividStasis",  # vivid/stasis - Fixations Toward the Stars

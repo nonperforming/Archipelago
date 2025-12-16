@@ -239,7 +239,7 @@ act_5_boss = _BossStage("5-X - Dreams Don't Stop", None, "5-X", "Physiotherapy W
 act_6_boss = _BossStage("6-X - Boss Fight", None, "6-X", "Records Room", "Act 6", False, 162, 163, 164)
 act_7_bosses = [  # For the sake of logic, the Abandoned Ward does not require a key, and is considered to be a part of the Main Ward.
     _BossStage("7-X - Miracle Defibrillator", None, "7-X", "Main Ward", "Act 7", False, 165, 166, 167),
-    _BossStage("7-X2 - Miracle Defibrillator (Encore)", None, "7-X2", "Main Ward", "Act 7", False, 168, 169, 170),
+    _BossStage("7-X2 - Cole's Song", None, "7-X2", "Main Ward", "Act 7", False, 168, 169, 170),
 ]
 
 all_boss_stages: list[_BossStage] = [
