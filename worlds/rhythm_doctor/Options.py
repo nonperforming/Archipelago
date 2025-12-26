@@ -75,6 +75,7 @@ class Act1BossUnlockRequirement(Range):
     range_end = 6
     default = 2
 
+
 class Act2BossUnlockRequirement(Range):
     """
     The number of levels required to be cleared (with the rank set in Boss Unlock Requirement) to unlock '2-X - All The Times'.
@@ -88,6 +89,7 @@ class Act2BossUnlockRequirement(Range):
     range_end = 9
     default = 4
 
+
 class Act3BossUnlockRequirement(Range):
     """
     The number of levels required to be cleared (with the rank set in Boss Unlock Requirement) to unlock '3-X - One Shift More'.
@@ -99,6 +101,7 @@ class Act3BossUnlockRequirement(Range):
     range_end = 6
     default = 3
 
+
 class Act4BossUnlockRequirement(Range):
     """
     The number of levels required to be cleared (with the rank set in Boss Unlock Requirement) to unlock '1-XN - Super Battleworn Insomniac'.
@@ -109,6 +112,7 @@ class Act4BossUnlockRequirement(Range):
     range_start = 1
     range_end = 8
     default = 4
+
 
 class Act5BossUnlockRequirement(Range):
     """
@@ -123,6 +127,7 @@ class Act5BossUnlockRequirement(Range):
     range_end = 6
     default = 3
 
+
 class Act6BossUnlockRequirement(Range):
     """
     The number of levels required to be cleared (with the rank set in Boss Unlock Requirement) to unlock '6-X - Boss Fight'.
@@ -133,6 +138,7 @@ class Act6BossUnlockRequirement(Range):
     range_start = 1
     range_end = 2
     default = 2
+
 
 class Act7BossUnlockRequirement(Range):
     """
