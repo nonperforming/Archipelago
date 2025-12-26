@@ -9,6 +9,8 @@ from worlds.rhythm_doctor.Data import (
     act_3_secret_boss,
     all_boss_stages,
     all_regular_stages,
+    _RegularStage,
+    _BossStage,
 )
 
 if TYPE_CHECKING:
@@ -62,7 +64,7 @@ short_to_internal_name = {
     "5-1N": "Level.Injury",  # One Slip Too Late
     "5-2": "Level.Freezeshot",  # Lofi Beats For Patients To Chill To
     "5-2N": "Level.FreezeshotH",  # Unsustainable Inconsolable
-    "5-3": "Level.AthleteTherapy",  # Seventh Inning Stretch
+    "5-3": "Level.AthleteTherapy",  # Seventh-Inning Stretch
     "5-3N": "Level.StevensonsTango",  # Corazones Viejos
     "5-B1": "Level.RhythmWeightlifter",
     "5-X": "Level.AthleteFinale",  # Dreams Don't Stop
@@ -76,7 +78,7 @@ short_to_internal_name = {
     "7-1": "Level.Blurred",
     "2-XN": "Level.Bitterness",  # Bitter Times
     "7-X": "Level.Montage",  # Miracle Defibrillator
-    "7-X2": "Level.Montage2",  # Cole's Song
+    "7-X2": "Level.Montage2",  # Miracle Defibrillator (Cole's Song)
     # endregion
     # region Extras - Basement
     "X-FTS": "Level.VividStasis",  # vivid/stasis - Fixations Toward the Stars
@@ -108,22 +110,39 @@ def build_internal_name_to_stage(world: "RhythmDoctorWorld") -> str:
 
     for regular_stage in all_regular_stages:
         constructor = ""
-        if regular_stage.act is None:
-            constructor += "Act.None, "
-        else:
-            constructor += f"Act.{regular_stage.act.replace(' ', '')}, "
 
         if regular_stage.short_name == "5-B1":
             # Rhythm Weightlifter is a special case we handle separately
             continue
 
-        constructor += str(regular_stage.b_rank_location_id or "null")
-        constructor += ", "
-        constructor += str(regular_stage.a_rank_location_id or "null")
-        constructor += ", "
-        constructor += str(regular_stage.s_rank_location_id or "null")
+        if isinstance(regular_stage, _RegularStage):
+            constructor += "new RegularStage("
+            if regular_stage.act is None:
+                constructor += "Act.None, "
+            else:
+                constructor += f"Act.{regular_stage.act.replace(' ', '')}, "
+            constructor += str(regular_stage.b_rank_location_id or "null")
+            constructor += ", "
+            constructor += str(regular_stage.a_rank_location_id or "null")
+            constructor += ", "
+            constructor += str(regular_stage.s_rank_location_id or "null")
+            constructor += ")"
+        elif isinstance(regular_stage, _BossStage):
+            constructor += "new BossStage("
+            if regular_stage.act is None:
+                constructor += "Act.None, "
+            else:
+                constructor += f"Act.{regular_stage.act.replace(' ', '')}, "
+            constructor += str(regular_stage.clear_location_id or "null")
+            constructor += ", "
+            constructor += str(regular_stage.clear_plus_location_id or "null")
+            constructor += ", "
+            constructor += str(regular_stage.clear_perfect_location_id or "null")
+            constructor += ")"
+        else:
+            raise NotImplementedError
 
-        buffer += f"\n  {{ {short_to_internal_name[regular_stage.short_name]}, new RegularStage({constructor}) }},"
+        buffer += f"\n  {{ {short_to_internal_name[regular_stage.short_name]}, {constructor} }},"
 
     # We exclude 3-X and 3-DOG here as they are a special case - they are handled separately afterward
     for boss_stage in [
