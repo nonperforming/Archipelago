@@ -2,7 +2,7 @@ from typing import TYPE_CHECKING
 
 from BaseClasses import Region
 
-from .Data import REGIONS, all_boss_stages, all_regular_stages, LEVEL_COUNT_IN_ACT
+from .Data import REGIONS, all_boss_stages, all_regular_stages
 from .Options import EndGoal
 
 if TYPE_CHECKING:
@@ -41,28 +41,41 @@ def create_and_connect_stage_regions(world: "RhythmDoctorWorld"):
 
     Must be run after create_main_regions()
     """
+
+    def get_boss_unlock_requirement_value_for_act(act: str):
+        match act:
+            case "Act 1":
+                return world.options.act_1_boss_unlock_requirement.value
+            case "Act 2":
+                return world.options.act_2_boss_unlock_requirement.value
+            case "Act 3":
+                return world.options.act_3_boss_unlock_requirement.value
+            case "Act 4":
+                return world.options.act_4_boss_unlock_requirement.value
+            case "Act 5":
+                return world.options.act_5_boss_unlock_requirement.value
+            case "Act 6":
+                return world.options.act_6_boss_unlock_requirement.value
+            case "Act 7":
+                return world.options.act_7_boss_unlock_requirement.value
+            case _:
+                raise NotImplementedError
+
     for stage in all_regular_stages:
         region = world.get_region(stage.region_name)
         stage_region = Region(stage.short_name, world.player, world.multiworld)
         world.multiworld.regions.append(stage_region)
 
-        level_required_multiplier = 1
-        if (
-            world.options.boss_unlock_requirement.value
-            == world.options.boss_unlock_requirement.option_clear_half_in_act
-        ):
-            level_required_multiplier = 0.5
-
         if stage.short_name == "X-0" and world.options.end_goal.value == EndGoal.option_helping_hands:
             # TODO: duplicated in Rules
             rule = lambda state: (
-                state.has_group("Act 1", world.player, int(LEVEL_COUNT_IN_ACT["Act 1"] * level_required_multiplier))
-                and state.has_group("Act 2", world.player, int(LEVEL_COUNT_IN_ACT["Act 2"] * level_required_multiplier))
-                and state.has_group("Act 3", world.player, int(LEVEL_COUNT_IN_ACT["Act 3"] * level_required_multiplier))
-                and state.has_group("Act 4", world.player, int(LEVEL_COUNT_IN_ACT["Act 4"] * level_required_multiplier))
-                and state.has_group("Act 5", world.player, int(LEVEL_COUNT_IN_ACT["Act 5"] * level_required_multiplier))
-                and state.has_group("Act 6", world.player, int(LEVEL_COUNT_IN_ACT["Act 6"] * level_required_multiplier))
-                and state.has_group("Act 7", world.player, int(LEVEL_COUNT_IN_ACT["Act 7"] * level_required_multiplier))
+                state.has_group("Act 1", world.player, world.options.act_1_boss_unlock_requirement.value)
+                and state.has_group("Act 2", world.player, world.options.act_2_boss_unlock_requirement.value)
+                and state.has_group("Act 3", world.player, world.options.act_3_boss_unlock_requirement.value)
+                and state.has_group("Act 4", world.player, world.options.act_4_boss_unlock_requirement.value)
+                and state.has_group("Act 5", world.player, world.options.act_5_boss_unlock_requirement.value)
+                and state.has_group("Act 6", world.player, world.options.act_6_boss_unlock_requirement.value)
+                and state.has_group("Act 7", world.player, world.options.act_7_boss_unlock_requirement.value)
             )
         else:
             rule = (lambda item_name: lambda state: state.has(item_name, world.player))(stage.name)
@@ -73,17 +86,10 @@ def create_and_connect_stage_regions(world: "RhythmDoctorWorld"):
         stage_region = Region(boss_stage.short_name, world.player, world.multiworld)
         world.multiworld.regions.append(stage_region)
 
-        level_required_multiplier = 1
-        if (
-            world.options.boss_unlock_requirement.value
-            == world.options.boss_unlock_requirement.option_clear_half_in_act
-        ):
-            level_required_multiplier = 0.5
-
         # what?
         # python weirdness: splitting this out here makes things work properly
         rule = (lambda act, count: lambda state: state.has_group(act, world.player, count))(
             boss_stage.act,
-            int(LEVEL_COUNT_IN_ACT[boss_stage.act] * level_required_multiplier),  # Python will truncate
+            get_boss_unlock_requirement_value_for_act(boss_stage.act),
         )
         region.connect(stage_region, f"{boss_stage.region_name} to {boss_stage.short_name}", rule)

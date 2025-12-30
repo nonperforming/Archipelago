@@ -173,5 +173,12 @@ class RhythmDoctorWorld(World):
         return self.options.as_dict(
             "end_goal",
             "boss_unlock_requirement",
+            "act_1_boss_unlock_requirement",
+            "act_2_boss_unlock_requirement",
+            "act_3_boss_unlock_requirement",
+            "act_4_boss_unlock_requirement",
+            "act_5_boss_unlock_requirement",
+            "act_6_boss_unlock_requirement",
+            "act_7_boss_unlock_requirement",
             "death_link",
         )

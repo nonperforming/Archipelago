@@ -24,15 +24,6 @@ class _Item:
 
 GAME = "Rhythm Doctor"
 REGIONS = ["Main Ward", "SVT Ward", "Train", "Physiotherapy Ward", "Records Room", "Basement", "Garden Room"]
-LEVEL_COUNT_IN_ACT = {  # TODO: client should get this information also
-    "Act 1": 4,
-    "Act 2": 8,
-    "Act 3": 6,
-    "Act 4": 8,
-    "Act 5": 6,
-    "Act 6": 2,
-    "Act 7": 2,
-}
 
 KEYS = [
     _Item("SVT Ward Key", 44),
