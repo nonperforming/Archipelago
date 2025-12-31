@@ -180,5 +180,7 @@ class RhythmDoctorWorld(World):
             "act_5_boss_unlock_requirement",
             "act_6_boss_unlock_requirement",
             "act_7_boss_unlock_requirement",
+            "sticky_traps",
+            # "sticky_powerups",
             "death_link",
         )

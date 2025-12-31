@@ -5,6 +5,7 @@ from Options import (
     DeathLink,
     DefaultOnToggle,
     OptionGroup,
+    OptionSet,
     PerGameCommonOptions,
     Range,
     Toggle,
@@ -217,6 +218,13 @@ class EnableGhostTapTraps(Toggle):
     display_name = "Enable Ghost Tap Traps"
 
 
+class StickyTraps(OptionSet):
+    """Determines the **set of traps that should be applied wherever possible**."""
+
+    display_name = "Sticky Traps"
+    valid_keys = ["Scramble Characters", "Scramble Beatsounds", "Scramble Hitsounds", "Ghost Tap"]
+
+
 # endregion
 
 
@@ -249,6 +257,12 @@ class EnableIceSpeedPowerups(Toggle):
     display_name = "Enable Ice Speed Powerups"
 
 
+# Currently we do not have any powerups that could be applied here.
+# class StickyPowerups(OptionSet):
+#    """Determines the **set of powerups that should be applied wherever possible**."""
+#
+#    display_name = "Sticky Powerups"
+#    valid_keys = [""]
 # endregion
 
 
@@ -287,10 +301,12 @@ class RhythmDoctorOptions(PerGameCommonOptions):
     enable_hard_difficulty_traps: EnableHardDifficultyTraps
     enable_chilli_speed_traps: EnableChilliSpeedTraps
     enable_ghost_tap_traps: EnableGhostTapTraps
+    sticky_traps: StickyTraps
     powerup_chance: PowerupChance
     enable_easy_difficulty_powerups: EnableEasyDifficultyPowerups
     enable_strong_heart_powerups: EnableStrongHeartPowerups
     enable_ice_speed_powerups: EnableIceSpeedPowerups
+    # sticky_powerups: StickyPowerups
     death_link: RhythmDoctorDeathLink
 
 
@@ -327,6 +343,7 @@ groups: list[OptionGroup] = [
             EnableHardDifficultyTraps,
             EnableChilliSpeedTraps,
             EnableGhostTapTraps,
+            StickyTraps,
         ],
     ),
     OptionGroup(
@@ -336,6 +353,7 @@ groups: list[OptionGroup] = [
             EnableEasyDifficultyPowerups,
             EnableStrongHeartPowerups,
             EnableIceSpeedPowerups,
+            # StickyPowerups,
         ],
     ),
 ]
@@ -359,10 +377,12 @@ presets = {
         "enable_hitsound_scramble_traps": True,
         "enable_hard_difficulty_traps": True,
         "enable_chilli_speed_traps": True,
+        "sticky_traps": StickyTraps.default,
         "powerup_chance": 33,
         "enable_easy_difficulty_powerups": True,
         "enable_strong_heart_powerups": True,
         "enable_ice_speed_powerups": True,
+        # "sticky_powerups": StickyPowerups.default,
         "death_link": False,
     },
 }
