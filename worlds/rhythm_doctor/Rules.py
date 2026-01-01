@@ -20,8 +20,9 @@ def set_rules(world: "RhythmDoctorWorld"):
                 and state.has_group("Act 5", world.player, world.options.act_5_boss_unlock_requirement.value)
                 and state.has_group("Act 6", world.player, world.options.act_6_boss_unlock_requirement.value)
                 and state.has_group("Act 7", world.player, world.options.act_7_boss_unlock_requirement.value)
+                and state.has_group("Keys", world.player, len(world.item_name_groups["Keys"]))
             )
         case EndGoal.option_perfect_all | EndGoal.option_a_rank_all | EndGoal.option_b_rank_all:
             world.multiworld.completion_condition[world.player] = lambda state: state.has_all(
                 world.item_name_groups["Stages"], world.player
-            )
+            ) and state.has_group("Keys", world.player, len(world.item_name_groups["Keys"]))

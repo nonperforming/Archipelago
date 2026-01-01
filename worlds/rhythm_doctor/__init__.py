@@ -10,6 +10,7 @@ from .Data import (
     FILLER_JUNK,
     FILLER_POWERUPS,
     FILLER_TRAPS,
+    KEYS,
     GAME,
     RhythmDoctorItem,
     all_boss_stages,
@@ -70,6 +71,9 @@ class RhythmDoctorWorld(World):
     local_item_name_groups["Traps"] = []
     for trap in FILLER_TRAPS:
         local_item_name_groups["Traps"].append(trap.name)
+    local_item_name_groups["Keys"] = []
+    for key in KEYS:
+        local_item_name_groups["Keys"].append(key.name)
     item_name_groups = local_item_name_groups
 
     def create_regions(self) -> None:
@@ -126,7 +130,6 @@ class RhythmDoctorWorld(World):
         elif result < self.options.trap_chance.value + self.options.powerup_chance.value:
             pool = powerup_pool
         else:
-            # FIXME: Currently Sleeve Paint is not progressive - so it should only have one item.
             pool = self.item_name_groups["Junk"]
 
         item_name = self.random.choice(list(pool))
