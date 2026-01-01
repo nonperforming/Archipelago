@@ -187,7 +187,7 @@ physiotherapy_ward_stages = [
         44,
         "5-B1",
         "Physiotherapy Ward",
-        "Act 5",
+        None, # intentionally does not count towards 5-X
         False,
         stages=[107, 108, 109, 110, 111, 112, 113, 114, 115, 116],
     ),
