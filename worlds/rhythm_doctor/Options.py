@@ -377,6 +377,7 @@ presets = {
         "enable_hitsound_scramble_traps": True,
         "enable_hard_difficulty_traps": True,
         "enable_chilli_speed_traps": True,
+        "enable_ghost_tap_traps": True,
         "sticky_traps": StickyTraps.default,
         "powerup_chance": 33,
         "enable_easy_difficulty_powerups": True,
