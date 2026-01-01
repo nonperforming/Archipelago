@@ -169,6 +169,20 @@ class RhythmDoctorWorld(World):
             )
             raise OptionError(error)
 
+        for trap in self.options.sticky_traps.value:
+            if trap == "Scramble Characters" and not self.options.enable_character_scramble_traps.value:
+                error = f"Rhythm Doctor: Player {self.player_name} has \"Scramble Characters\" in sticky traps, which is also available in the item pool."
+                raise OptionError(error)
+            elif trap == "Scramble Beatsounds" and not self.options.enable_beatsound_scramble_traps.value:
+                error = f"Rhythm Doctor: Player {self.player_name} has \"Scramble Beatsounds\" in sticky traps, which is also available in the item pool."
+                raise OptionError(error)
+            elif trap == "Scramble Hitsounds" and not self.options.enable_hitsound_scramble_traps.value:
+                error = f"Rhythm Doctor: Player {self.player_name} has \"Scramble Hitsounds\" in sticky traps, which is also available in the item pool."
+                raise OptionError(error)
+            elif trap == "Ghost Tap" and not self.options.enable_ghost_tap_traps.value:
+                error = f"Rhythm Doctor: Player {self.player_name} has \"Ghost Tap\" in sticky traps, which is also available in the item pool."
+                raise OptionError(error)
+
     def fill_slot_data(self) -> Mapping[str, Any]:
         return self.options.as_dict(
             "end_goal",
