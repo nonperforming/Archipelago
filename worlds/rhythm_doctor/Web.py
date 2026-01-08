@@ -17,8 +17,8 @@ class RhythmDoctorWeb(WebWorld):
             "Multiworld Setup Guide",
             "A guide for setting up Rhythm Doctor for Archipelago.",
             "English",
-            "setup_en_US.md",
-            "setup/en_US",
+            "setup_en.md",
+            "setup/en",
             [""],  # TODO: Fill this in with whoever writes the doc
         )
     ]
