@@ -252,6 +252,8 @@ all_stages = all_regular_stages + all_boss_stages
 # endregion
 
 all_items = all_regular_stages + FILLER + KEYS
+
+all_progression_items = all_regular_stages + KEYS
 # endregion
 
 
@@ -284,7 +286,7 @@ def create_items(world: "RhythmDoctorWorld"):
     total_locations = len(world.multiworld.get_unfilled_locations(world.player))
     item_pool = []
 
-    for item in all_items:
+    for item in all_progression_items:
         if (
             world.options.end_goal.value == EndGoal.option_helping_hands
             and isinstance(item, _RegularStage)
