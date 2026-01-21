@@ -26,31 +26,31 @@ GAME = "Rhythm Doctor"
 REGIONS = ["Main Ward", "SVT Ward", "Train", "Physiotherapy Ward", "Records Room", "Basement", "Garden Room"]
 
 KEYS = [
-    _Item("SVT Ward Key", 44),
-    _Item("Train Key", 45),
-    _Item("Physiotherapy Ward Key", 46),
-    _Item("Basement Key", 47),
-    _Item("Garden Room Key", 48),
-    _Item("Records Room Key", 60),
+    _Item("SVT Ward Key", 50),
+    _Item("Train Key", 51),
+    _Item("Physiotherapy Ward Key", 52),
+    _Item("Basement Key", 53),
+    _Item("Garden Room Key", 54),
+    _Item("Records Room Key", 55),
 ]
 
 # TODO: Fix ids
 FILLER_JUNK = [
-    _Item("Sleeve Paint", 49),
+    _Item("Sleeve Paint", 56),
 ]
 FILLER_POWERUPS = [
-    _Item("Strong Heart Powerup", 50),
-    _Item("Easy Difficulty Powerup", 51),
-    _Item("Ice Speed Powerup", 52),
+    _Item("Strong Heart Powerup", 57),
+    _Item("Easy Difficulty Powerup", 58),
+    _Item("Ice Speed Powerup", 59),
 ]
 FILLER_TRAPS = [
-    _Item("Fragile Heart Trap", 53),
-    _Item("Hard Difficulty Trap", 54),
-    _Item("Scramble Characters Trap", 55),
-    _Item("Scramble Beatsound Trap", 56),
-    _Item("Scramble Hitsound Trap", 57),
-    _Item("Chilli Speed Trap", 58),
-    _Item("Ghost Tap Trap", 59),
+    _Item("Fragile Heart Trap", 60),
+    _Item("Hard Difficulty Trap", 61),
+    _Item("Scramble Characters Trap", 62),
+    _Item("Scramble Beatsound Trap", 63),
+    _Item("Scramble Hitsound Trap", 64),
+    _Item("Chilli Speed Trap", 65),
+    _Item("Ghost Tap Trap", 66),
 ]
 FILLER = FILLER_JUNK + FILLER_POWERUPS + FILLER_TRAPS
 
@@ -161,54 +161,54 @@ svt_ward_stages = [
     _RegularStage("2-4 - Song of the Sea", 19, "2-4", "SVT Ward", "Act 2", True, s_rank_location_id=61),
     _RegularStage("2-4N - Song of the Sea (Night)", 20, "2-4N", "SVT Ward", "Act 2", True, s_rank_location_id=62),
     _RegularStage("2-B1 - Beans Hopper", 21, "2-B1", "SVT Ward", "Act 2", False, 63, 64, 65),
-    _BossStage("2-XN - Bitter Times", 60, "2-XN", "SVT Ward", "Act 7", False, 150, 151, 152)
+    _BossStage("2-XN - Bitter Times", 22, "2-XN", "SVT Ward", "Act 7", False, 66, 67, 68)
 ]
 
 train_stages = [
-    _RegularStage("4-1 - Training Doctor's Train Ride Performance", 22, "4-1", "Train", "Act 4", False, 68, 69, 70),
-    _RegularStage("4-1N - Rollerdisco Rumble", 23, "4-1N", "Train", "Act 4", False, 71, 72, 73),
-    _RegularStage("4-2 - Invisible", 24, "4-2", "Train", "Act 4", False, 74, 75, 76),
-    _RegularStage("4-2N - Invisible (Night)", 25, "4-2N", "Train", "Act 4", False, 77, 78, 79),
-    _RegularStage("4-3 - Steinway", 26, "4-3", "Train", "Act 4", False, 80, 81, 82),
-    _RegularStage("4-3N - Steinway Reprise", 27, "4-3N", "Train", "Act 4", False, 83, 84, 85),
-    _RegularStage("4-4 - Know You", 28, "4-4", "Train", "Act 4", False, 86, 87, 88),
-    _RegularStage("4-4N - Murmurs", 29, "4-4N", "Train", "Act 4", False, 89, 90, 91),
+    _RegularStage("4-1 - Training Doctor's Train Ride Performance", 23, "4-1", "Train", "Act 4", False, 71, 72, 73),
+    _RegularStage("4-1N - Rollerdisco Rumble", 24, "4-1N", "Train", "Act 4", False, 74, 75, 76),
+    _RegularStage("4-2 - Invisible", 25, "4-2", "Train", "Act 4", False, 77, 78, 79),
+    _RegularStage("4-2N - Invisible (Night)", 26, "4-2N", "Train", "Act 4", False, 80, 81, 82),
+    _RegularStage("4-3 - Steinway", 27, "4-3", "Train", "Act 4", False, 83, 84, 85),
+    _RegularStage("4-3N - Steinway Reprise", 28, "4-3N", "Train", "Act 4", False, 86, 87, 88),
+    _RegularStage("4-4 - Know You", 29, "4-4", "Train", "Act 4", False, 89, 90, 91),
+    _RegularStage("4-4N - Murmurs", 30, "4-4N", "Train", "Act 4", False, 92, 93, 94),
 ]
 
 physiotherapy_ward_stages = [
-    _RegularStage("5-1 - Lucky Break", 30, "5-1", "Physiotherapy Ward", "Act 5", False, 94, 95, 96),
-    _RegularStage("5-1N - One Slip Too Late", 31, "5-1N", "Physiotherapy Ward", "Act 5", False, 97, 98, 99),
-    _RegularStage("5-2 - Lo-fi Beats For Patients To Chill To", 32, "5-2", "Physiotherapy Ward", "Act 5", False, 100, 101, 102),
-    _RegularStage("5-2N - Unsustainable Inconsolable", 33, "5-2N", "Physiotherapy Ward", "Act 5", False, 103, 104, 105),
-    _RegularStage("5-3 - Seventh-Inning Stretch", 34, "5-3", "Physiotherapy Ward", "Act 5", True, s_rank_location_id=106),
-    _RegularStage("5-3N - Corazones Viejos", 61, "5-3N", "Physiotherapy Ward", "Act 5", False, 147, 148, 149),
+    _RegularStage("5-1 - Lucky Break", 31, "5-1", "Physiotherapy Ward", "Act 5", False, 97, 98, 99),
+    _RegularStage("5-1N - One Slip Too Late", 32, "5-1N", "Physiotherapy Ward", "Act 5", False, 100, 101, 102),
+    _RegularStage("5-2 - Lo-fi Beats For Patients To Chill To", 33, "5-2", "Physiotherapy Ward", "Act 5", False, 103, 104, 105),
+    _RegularStage("5-2N - Unsustainable Inconsolable", 34, "5-2N", "Physiotherapy Ward", "Act 5", False, 106, 107, 108),
+    _RegularStage("5-3 - Seventh-Inning Stretch", 35, "5-3", "Physiotherapy Ward", "Act 5", True, s_rank_location_id=109),
+    _RegularStage("5-3N - Corazones Viejos", 36, "5-3N", "Physiotherapy Ward", "Act 5", False, 110, 111, 112),
     _RhythmWeightlifterStage(
         "5-B1 - Rhythm Weightlifter",
-        44,
+        37,
         "5-B1",
         "Physiotherapy Ward",
         None, # intentionally does not count towards 5-X
         False,
-        stages=[107, 108, 109, 110, 111, 112, 113, 114, 115, 116],
+        stages=[113, 114, 115, 116, 117, 118, 119, 120, 121, 122],
     ),
 ]
 
 record_room_stages = [
-    _RegularStage("6-1 - Something To Tell You", 62, "6-1", "Records Room", "Act 6", False, 153, 154, 155),
-    _RegularStage("6-2 - Welcome Back", 63, "6-2", "Records Room", "Act 6", False, 156, 157, 158),
-    _RegularStage("7-1 - Blurred", 64, "7-1", "Records Room", "Act 7", False, 159, 160, 161),
+    _RegularStage("6-1 - Something To Tell You", 38, "6-1", "Records Room", "Act 6", False, 126, 127, 128),
+    _RegularStage("6-2 - Welcome Back", 39, "6-2", "Records Room", "Act 6", False, 129, 130, 131),
+    _RegularStage("7-1 - Blurred", 40, "7-1", "Records Room", "Act 7", False, 135, 136, 137),
 ]
 
 other_stages = [
-    _RegularStage("X-FTS - Fixations Towards the Stars", 35, "X-FTS", "Basement", None, False, 120, 121, 122),
-    _RegularStage("X-KOB - Kingdom of Balloons", 36, "X-KOB", "Basement", None, False, 123, 124, 125),
-    _RegularStage("X-WOT - Worn Out Tapes", 37, "X-WOT", "Basement", None, False, 126, 127, 128),
-    _RegularStage("X-MAT - Meet and Tweet", 38, "X-MAT", "Basement", None, False, 129, 130, 131),
-    _RegularStage("MD-1 - Blackest Luxury Car", 39, "MD-1", "Basement", None, False, 132, 133, 134),
-    _RegularStage("MD-2 - tape/stop/night", 40, "MD-2", "Basement", None, False, 135, 136, 137),
-    _RegularStage("MD-3 - The 90's Decision", 41, "MD-3", "Basement", None, False, 138, 139, 140),
-    _RegularStage("X-0 - Helping Hands", 42, "X-0", "Garden Room", None, False, 141, 142, 143),
-    _RegularStage("X-1 - Art Exercise", 43, "X-1", "Basement", None, False, 144, 145, 146),
+    _RegularStage("X-FTS - Fixations Towards the Stars", 41, "X-FTS", "Basement", None, False, 144, 145, 146),
+    _RegularStage("X-KOB - Kingdom of Balloons", 42, "X-KOB", "Basement", None, False, 147, 148, 149),
+    _RegularStage("X-WOT - Worn Out Tapes", 43, "X-WOT", "Basement", None, False, 150, 151, 152),
+    _RegularStage("X-MAT - Meet and Tweet", 44, "X-MAT", "Basement", None, False, 153, 154, 155),
+    _RegularStage("MD-1 - Blackest Luxury Car", 45, "MD-1", "Basement", None, False, 156, 157, 158),
+    _RegularStage("MD-2 - tape/stop/night", 46, "MD-2", "Basement", None, False, 159, 160, 161),
+    _RegularStage("MD-3 - The 90's Decision", 47, "MD-3", "Basement", None, False, 162, 163, 164),
+    _RegularStage("X-0 - Helping Hands", 48, "X-0", "Garden Room", None, False, 165, 166, 167),
+    _RegularStage("X-1 - Art Exercise", 49, "X-1", "Basement", None, False, 168, 169, 170),
 ]
 """
 Stages that don't have a corresponding boss song or act.
@@ -222,15 +222,15 @@ all_regular_stages = (
 
 # region Bosses
 act_1_boss = _BossStage("1-X - Battleworn Insomniac", None, "1-X", "Main Ward", "Act 1", False, 19, None, 20)
-act_2_boss = _BossStage("2-X - All The Times", None, "2-X", "SVT Ward", "Act 2", False, 66, None, 67)
+act_2_boss = _BossStage("2-X - All The Times", None, "2-X", "SVT Ward", "Act 2", False, 69, None, 70)
 act_3_boss = _BossStage("3-X - One Shift More", None, "3-X", "Main Ward", "Act 3", False, 39, None, 40)
 act_3_secret_boss = _BossStage("3-DOG - Rhythm Dogtor", None, "3-DOG", "Main Ward", "Act 3", False, 41, None, 42)
-act_4_boss = _BossStage("4-X - Super Battleworn Insomniac", None, "1-XN", "Main Ward", "Act 4", False, 92, None, 93)
-act_5_boss = _BossStage("5-X - Dreams Don't Stop", None, "5-X", "Physiotherapy Ward", "Act 5", False, 117, 118, 119)
-act_6_boss = _BossStage("6-X - Boss Fight", None, "6-X", "Records Room", "Act 6", False, 162, 163, 164)
+act_4_boss = _BossStage("4-X - Super Battleworn Insomniac", None, "1-XN", "Main Ward", "Act 4", False, 95, None, 96)
+act_5_boss = _BossStage("5-X - Dreams Don't Stop", None, "5-X", "Physiotherapy Ward", "Act 5", False, 123, 124, 125)
+act_6_boss = _BossStage("6-X - Boss Fight", None, "6-X", "Records Room", "Act 6", False, 132, 133, 134)
 act_7_bosses = [  # For the sake of logic, the Abandoned Ward does not require a key, and is considered to be a part of the Main Ward.
-    _BossStage("7-X - Miracle Defibrillator", None, "7-X", "Main Ward", "Act 7", False, 165, 166, 167),
-    _BossStage("7-X2 - Miracle Defibrillator (Cole's Song)", None, "7-X2", "Main Ward", "Act 7", False, 168, 169, 170),
+    _BossStage("7-X - Miracle Defibrillator", None, "7-X", "Main Ward", "Act 7", False, 138, 139, 140),
+    _BossStage("7-X2 - Miracle Defibrillator (Cole's Song)", None, "7-X2", "Main Ward", "Act 7", False, 141, 142, 143),
 ]
 
 all_boss_stages: list[_BossStage] = [
@@ -255,16 +255,6 @@ all_items = all_regular_stages + FILLER + KEYS
 
 all_progression_items = all_regular_stages + KEYS
 # endregion
-
-
-@dataclass
-class _Stage(ABC):
-    name: str
-    excluded: bool
-
-    @abstractmethod
-    def get_locations(self) -> dict[str, int]:
-        raise NotImplementedError
 
 
 def create_items(world: "RhythmDoctorWorld"):
