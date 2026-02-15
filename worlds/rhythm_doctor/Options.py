@@ -155,10 +155,10 @@ class Act7BossUnlockRequirement(Range):
     default = 2
 
 
-class PerfectRanksExcluded(DefaultOnToggle):
-    """Determines if Perfect/S rank locations are excluded in generation."""
+class PerfectRankLocations(DefaultOnToggle):
+    """Determines if Perfect/S rank locations should be placed in the world."""
 
-    display_name = "Exclude Perfect Ranks"
+    display_name = "Perfect Rank Locations"
 
 
 # endregion
@@ -290,7 +290,7 @@ class RhythmDoctorOptions(PerGameCommonOptions):
     act_5_boss_unlock_requirement: Act5BossUnlockRequirement
     act_6_boss_unlock_requirement: Act6BossUnlockRequirement
     act_7_boss_unlock_requirement: Act7BossUnlockRequirement
-    perfect_ranks_excluded: PerfectRanksExcluded
+    perfect_rank_locations: PerfectRankLocations
 
     # Gameplay options
     trap_chance: TrapChance
@@ -323,7 +323,7 @@ groups: list[OptionGroup] = [
             Act5BossUnlockRequirement,
             Act6BossUnlockRequirement,
             Act7BossUnlockRequirement,
-            PerfectRanksExcluded,
+            PerfectRankLocations,
         ],
     ),
     OptionGroup(
@@ -369,7 +369,7 @@ presets = {
         "act_5_boss_unlock_requirement": Act5BossUnlockRequirement.default,
         "act_6_boss_unlock_requirement": Act6BossUnlockRequirement.default,
         "act_7_boss_unlock_requirement": Act7BossUnlockRequirement.default,
-        "perfect_ranks_excluded": True,
+        "perfect_rank_locations": True,
         "trap_chance": 33,
         "enable_fragile_heart_traps": True,
         "enable_character_scramble_traps": True,

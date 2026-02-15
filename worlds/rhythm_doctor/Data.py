@@ -76,7 +76,7 @@ class _Stage(_Item, ABC):
     excluded: bool
 
     @abstractmethod
-    def get_locations(self) -> dict[str, int]:
+    def get_locations(self, with_perfect: bool) -> dict[str, int]:
         raise NotImplementedError
 
 
@@ -86,7 +86,7 @@ class _RegularStage(_Stage):
     a_rank_location_id: int | None = None
     s_rank_location_id: int | None = None
 
-    def get_locations(self) -> dict[str, int]:
+    def get_locations(self, with_perfect: bool) -> dict[str, int]:
         locations = {}
         if self.b_rank_location_id is not None:
             name = f"{self.name} - B Rank"
@@ -94,7 +94,7 @@ class _RegularStage(_Stage):
         if self.a_rank_location_id is not None:
             name = f"{self.name} - A Rank"
             locations[name] = self.a_rank_location_id
-        if self.s_rank_location_id is not None:
+        if self.s_rank_location_id is not None and with_perfect:
             name = f"{self.name} - S Rank"
             locations[name] = self.s_rank_location_id
 
@@ -107,7 +107,7 @@ class _BossStage(_Stage):
     clear_plus_location_id: int | None
     clear_perfect_location_id: int | None
 
-    def get_locations(self) -> dict[str, int]:
+    def get_locations(self, with_perfect: bool) -> dict[str, int]:
         locations = {}
         if self.clear_location_id is not None:
             name = f"{self.name} - Clear"
@@ -115,7 +115,7 @@ class _BossStage(_Stage):
         if self.clear_plus_location_id is not None:
             name = f"{self.name} - Complete+ Without Checkpoints"
             locations[name] = self.clear_plus_location_id
-        if self.clear_perfect_location_id is not None:
+        if self.clear_perfect_location_id is not None and with_perfect:
             name = f"{self.name} - Perfect Clear"
             locations[name] = self.clear_perfect_location_id
         return locations
@@ -125,7 +125,7 @@ class _BossStage(_Stage):
 class _RhythmWeightlifterStage(_Stage):
     stages: list[int]
 
-    def get_locations(self) -> dict[str, int]:
+    def get_locations(self, with_perfect: bool) -> dict[str, int]:
         locations = {}
         for stage_number, location_id in enumerate(self.stages, 1):
             name = f"{self.name} - Stage {stage_number} Clear"
@@ -293,7 +293,7 @@ def create_items(world: "RhythmDoctorWorld"):
 def create_locations(world: "RhythmDoctorWorld"):
     def create_locations_from_stage(stage: _Stage):
         # TODO: Could probably do with a clean up
-        locations = stage.get_locations()
+        locations = stage.get_locations(bool(world.options.perfect_rank_locations.value))
         world.get_region(stage.short_name).add_locations(locations, RhythmDoctorLocation)
 
         if stage.excluded:
@@ -304,16 +304,9 @@ def create_locations(world: "RhythmDoctorWorld"):
                 world.get_location(
                     f"5-B1 - Rhythm Weightlifter - Stage {stage_number} Clear"
                 ).progress_type = LocationProgressType.EXCLUDED
-        else:
-            if isinstance(stage, _BossStage):
-                for location_name in locations.keys():
-                    world.get_location(location_name).progress_type = LocationProgressType.PRIORITY
-
-            if world.options.perfect_ranks_excluded.value:
-                if isinstance(stage, _RegularStage) and stage.s_rank_location_id is not None:
-                    world.get_location(f"{stage.name} - S Rank").progress_type = LocationProgressType.EXCLUDED
-                elif isinstance(stage, _BossStage) and stage.clear_perfect_location_id is not None:
-                    world.get_location(f"{stage.name} - Perfect Clear").progress_type = LocationProgressType.EXCLUDED
+        elif isinstance(stage, _BossStage):
+            for location_name in locations.keys():
+                world.get_location(location_name).progress_type = LocationProgressType.PRIORITY
 
     for stage in all_stages:
         if stage.short_name == "X-0" and world.options.end_goal.value == EndGoal.option_helping_hands:
@@ -326,7 +319,7 @@ def get_location_name_to_id() -> dict[str, int]:
     location_name_to_id = {}
 
     for stage in all_stages:
-        for location_name, location_id in stage.get_locations().items():
+        for location_name, location_id in stage.get_locations(True).items():
             location_name_to_id[location_name] = location_id
 
     return location_name_to_id
