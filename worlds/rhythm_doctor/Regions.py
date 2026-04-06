@@ -2,10 +2,10 @@ from typing import TYPE_CHECKING, Literal
 
 from BaseClasses import Region
 from rule_builder.options import OptionFilter
-from rule_builder.rules import Has, HasGroup
+from rule_builder.rules import Has, HasGroup, CanReachEntrance
 
 from .Data import REGIONS, all_boss_stages, all_regular_stages
-from .Options import EndGoal
+from .Options import EndGoal, Act7BossUnlockRequirement
 
 if TYPE_CHECKING:
     from . import RhythmDoctorWorld
@@ -33,10 +33,8 @@ def connect_main_regions(world: "RhythmDoctorWorld"):
             continue
 
         region = world.get_region(region_name)
-        rule = Has(f"{region_name} Key")
         entrance = main_ward_region.connect(region, f"{world.origin_region_name} to {region_name}")
-        world.set_rule(entrance, rule)
-
+        world.set_rule(entrance, Has(f"{region_name} Key"))
 
 def create_and_connect_stage_regions(world: "RhythmDoctorWorld"):
     """
@@ -73,10 +71,14 @@ def create_and_connect_stage_regions(world: "RhythmDoctorWorld"):
             # TODO: duplicated in Rules
             rule = HasGroup("Act 1", count=world.options.act_1_boss_unlock_requirement.value) \
                    & HasGroup("Act 2", count=world.options.act_2_boss_unlock_requirement.value) \
+                   & CanReachEntrance(f"{world.origin_region_name} to SVT Ward") \
                    & HasGroup("Act 3", count=world.options.act_3_boss_unlock_requirement.value) \
                    & HasGroup("Act 4", count=world.options.act_4_boss_unlock_requirement.value) \
+                   & CanReachEntrance(f"{world.origin_region_name} to Train") \
                    & HasGroup("Act 5", count=world.options.act_5_boss_unlock_requirement.value) \
+                   & CanReachEntrance(f"{world.origin_region_name} to Physiotherapy Ward") \
                    & HasGroup("Act 6", count=world.options.act_6_boss_unlock_requirement.value) \
+                   & CanReachEntrance(f"{world.origin_region_name} to Records Room") \
                    & HasGroup("Act 7", count=world.options.act_7_boss_unlock_requirement.value)
         else:
             rule = Has(stage.name)
@@ -90,4 +92,14 @@ def create_and_connect_stage_regions(world: "RhythmDoctorWorld"):
 
         entrance = region.connect(stage_region, f"{boss_stage.region_name} to {boss_stage.short_name}")
         rule = HasGroup(boss_stage.act, get_boss_unlock_requirement_value_for_act(boss_stage.act))
+        if boss_stage.short_name == "7-X":
+            # TODO: There should be a better way to do this! This will break when more levels are added to Act 7
+            # Due to 7-X being considered in Main Ward while requiring levels in either/both SVT Ward and
+            # Records Room to unlock, it must be considered for here.
+            bitter_times_rule = CanReachEntrance("SVT Ward to 2-XN")
+            blurred_rule = CanReachEntrance("Records Room to 7-1")
+            if OptionFilter(Act7BossUnlockRequirement, 1):
+                rule = rule & (bitter_times_rule if world.random.getrandbits(1) else blurred_rule)
+            else:
+                rule = rule & bitter_times_rule & blurred_rule
         world.set_rule(entrance, rule)
