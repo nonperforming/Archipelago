@@ -83,7 +83,7 @@ def create_and_connect_stage_regions(world: "RhythmDoctorWorld"):
         else:
             rule = Has(stage.name)
         entrance = region.connect(stage_region, f"{stage.region_name} to {stage.short_name}")
-        world.set_rule(entrance, rule)
+        world.set_rule(entrance, rule) # Key rule is handled by the region
 
     for boss_stage in all_boss_stages:
         region = world.get_region(boss_stage.region_name)
@@ -92,14 +92,21 @@ def create_and_connect_stage_regions(world: "RhythmDoctorWorld"):
 
         entrance = region.connect(stage_region, f"{boss_stage.region_name} to {boss_stage.short_name}")
         rule = HasGroup(boss_stage.act, get_boss_unlock_requirement_value_for_act(boss_stage.act))
+        if boss_stage.region_name != world.origin_region_name:
+            rule = rule & Has(f"{boss_stage.region_name} Key")
+
         if boss_stage.short_name == "7-X":
             # TODO: There should be a better way to do this! This will break when more levels are added to Act 7
             # Due to 7-X being considered in Main Ward while requiring levels in either/both SVT Ward and
             # Records Room to unlock, it must be considered for here.
+
             bitter_times_rule = CanReachEntrance("SVT Ward to 2-XN")
             blurred_rule = CanReachEntrance("Records Room to 7-1")
             if OptionFilter(Act7BossUnlockRequirement, 1):
-                rule = rule & (bitter_times_rule if world.random.getrandbits(1) else blurred_rule)
+                rule = rule & (bitter_times_rule | blurred_rule)
             else:
                 rule = rule & bitter_times_rule & blurred_rule
+        elif boss_stage.short_name == "7-X2":
+            # To reach 7-X2 you must first clear 7-X.
+            rule = CanReachEntrance("Main Ward to 7-X")
         world.set_rule(entrance, rule)

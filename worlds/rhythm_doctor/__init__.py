@@ -4,7 +4,6 @@ from typing import Any
 from BaseClasses import ItemClassification
 
 from Options import OptionError
-from rule_builder.cached_world import CachedRuleBuilderWorld
 
 from .Data import (
     FILLER_JUNK,
@@ -24,9 +23,10 @@ from .Options import RhythmDoctorOptions
 from .Regions import create_and_connect_regions
 from .Rules import set_rules
 from .Web import RhythmDoctorWeb
+from ..AutoWorld import World
 
 
-class RhythmDoctorWorld(CachedRuleBuilderWorld):
+class RhythmDoctorWorld(World):
     """
     Save lives with your spacebar!
 
