@@ -148,7 +148,6 @@ def build_internal_name_to_stage(world: "RhythmDoctorWorld") -> str:
     for boss_stage in [
         boss_stage
         for boss_stage in all_boss_stages
-        if not (boss_stage.short_name == act_3_boss.short_name or boss_stage.short_name == act_3_secret_boss.short_name)
     ]:
         constructor = f"Act.{boss_stage.act.replace(' ', '')}, "
         constructor += str(boss_stage.clear_location_id or "null")
@@ -158,21 +157,6 @@ def build_internal_name_to_stage(world: "RhythmDoctorWorld") -> str:
         constructor += str(boss_stage.clear_perfect_location_id or "null")
 
         buffer += f"\n  {{ {short_to_internal_name[boss_stage.short_name]}, new BossStage({constructor}) }},"
-
-    # Handle special 3-X/3-DOG case
-    lesmis_constructor = (
-        "Act.Act3, "
-        f"{world.location_name_to_id[f'{act_3_boss.name} - Clear']}, "
-        f"null, "
-        f"{world.location_name_to_id[f'{act_3_boss.name} - Perfect Clear']}"
-    )
-    buffer += (
-        f"\n  {{ Level.Lesmis, new BossStage({lesmis_constructor}, "
-        f"new Dictionary<string, long> "
-        f'{{ {{ "dog_clear", {world.location_name_to_id[f"{act_3_secret_boss.name} - Clear"]} }}, '
-        f'{{ "dog_perfect", {world.location_name_to_id[f"{act_3_secret_boss.name} - Perfect Clear"]} }} '
-        f"}}) }},"
-    )
 
     buffer += "\n};\n\n"
     return buffer
