@@ -158,8 +158,8 @@ svt_ward_stages = [
     _RegularStage("2-2N - Unreachable", 16, "2-2N", "SVT Ward", "Act 2", False, 52, 53, 54),
     _RegularStage("2-3 - Puff Piece", 17, "2-3", "SVT Ward", "Act 2", False, 55, 56, 57),
     _RegularStage("2-3N - Bomb-Sniffing Pomeranian", 18, "2-3N", "SVT Ward", "Act 2", False, 58, 59, 60),
-    _RegularStage("2-4 - Song of the Sea", 19, "2-4", "SVT Ward", "Act 2", True, s_rank_location_id=61),
-    _RegularStage("2-4N - Song of the Sea (Night)", 20, "2-4N", "SVT Ward", "Act 2", True, s_rank_location_id=62),
+    _RegularStage("2-4 - Song of the Sea", 19, "2-4", "SVT Ward", "Act 2", True, 171, 172, 61),
+    _RegularStage("2-4N - Song of the Sea (Night)", 20, "2-4N", "SVT Ward", "Act 2", True, 173, 174, 62),
     _RegularStage("2-B1 - Beans Hopper", 21, "2-B1", "SVT Ward", "Act 2", False, 63, 64, 65),
     _BossStage("2-XN - Bitter Times", 22, "2-XN", "SVT Ward", "Act 7", False, 66, 67, 68)
 ]
@@ -180,7 +180,7 @@ physiotherapy_ward_stages = [
     _RegularStage("5-1N - One Slip Too Late", 32, "5-1N", "Physiotherapy Ward", "Act 5", False, 100, 101, 102),
     _RegularStage("5-2 - Lo-fi Beats For Patients To Chill To", 33, "5-2", "Physiotherapy Ward", "Act 5", False, 103, 104, 105),
     _RegularStage("5-2N - Unsustainable Inconsolable", 34, "5-2N", "Physiotherapy Ward", "Act 5", False, 106, 107, 108),
-    _RegularStage("5-3 - Seventh-Inning Stretch", 35, "5-3", "Physiotherapy Ward", "Act 5", True, s_rank_location_id=109),
+    _RegularStage("5-3 - Seventh-Inning Stretch", 35, "5-3", "Physiotherapy Ward", "Act 5", True, 175, 176, 109),
     _RegularStage("5-3N - Corazones Viejos", 36, "5-3N", "Physiotherapy Ward", "Act 5", False, 110, 111, 112),
     _RhythmWeightlifterStage(
         "5-B1 - Rhythm Weightlifter",
