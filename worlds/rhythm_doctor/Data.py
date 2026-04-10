@@ -227,7 +227,7 @@ act_3_boss = _BossStage("3-X - One Shift More", None, "3-X", "Main Ward", "Act 3
 act_3_secret_boss = _BossStage("3-DOG - Rhythm Dogtor", None, "3-DOG", "Main Ward", "Act 3", False, 41, None, 42)
 act_4_boss = _BossStage("1-XN - Super Battleworn Insomniac", None, "1-XN", "Main Ward", "Act 4", False, 95, None, 96)
 act_5_boss = _BossStage("5-X - Dreams Don't Stop", None, "5-X", "Physiotherapy Ward", "Act 5", False, 123, 124, 125)
-act_6_boss = _BossStage("6-X - Boss Fight", None, "6-X", "Records Room", "Act 6", False, 132, 133, 134)
+act_6_boss = _BossStage("6-X - Boss Fight", None, "6-X", "Records Room", "Act 6", False, 132, None, 134)
 act_7_bosses = [  # For the sake of logic, the Abandoned Ward does not require a key, and is considered to be a part of the Main Ward.
     _BossStage("7-X - Miracle Defibrillator", None, "7-X", "Main Ward", "Act 7", False, 138, 139, 140),
     _BossStage("7-X2 - Miracle Defibrillator (Cole's Song)", None, "7-X2", "Main Ward", "Act 7", False, 141, 142, 143),
