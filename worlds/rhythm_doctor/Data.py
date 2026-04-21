@@ -209,6 +209,7 @@ other_stages = [
     _RegularStage("MD-3 - The 90's Decision", 47, "MD-3", "Basement", None, False, 162, 163, 164),
     _RegularStage("X-0 - Helping Hands", 48, "X-0", "Garden Room", None, False, 165, 166, 167),
     _RegularStage("X-1 - Art Exercise", 49, "X-1", "Basement", None, False, 168, 169, 170),
+    _RegularStage("X-PBC - público cautivo", 67, "X-PBC", "Basement", None, False, 177, 178, 179),
 ]
 """
 Stages that don't have a corresponding boss song or act.

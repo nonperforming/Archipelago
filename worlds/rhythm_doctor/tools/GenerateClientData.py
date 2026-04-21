@@ -85,6 +85,7 @@ short_to_internal_name = {
     "X-KOB": "Level.SparkLine",  # Circle of Sparks - Kingdom of Balloons
     "X-WOT": "Level.Unbeatable",  # UNBEATABLE - Worn Out Tapes
     "X-MAT": "Level.MeetAndTweet",  # Bits & Bops - Meet and Tweet
+    "X-PBC": "Level.Beatblock", # Beatblock - público cautivo
     # region Muse Dash
     "MD-1": "Level.BlackestLuxuryCar",
     "MD-2": "Level.TapeStopNight",
