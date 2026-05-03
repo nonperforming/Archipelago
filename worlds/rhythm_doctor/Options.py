@@ -19,7 +19,7 @@ class EndGoal(Choice):
     The end goal required to beat the game.
 
     **X-0 - Helping Hands:**
-    Clear all other bosses (1-X, 2-X, 3-X, 1-XN, 5-X, 6-X, 7-X, 7-X2) to unlock X-0 - Helping Hands.
+    Clear all other bosses (1-X, 2-X, 3-X, 3-DOG, 1-XN, 5-X, 6-X, 7-X, 7-X2) to unlock X-0 - Helping Hands.
     Then, clear X-0 to beat the game!
 
     **B Rank All Levels:**
