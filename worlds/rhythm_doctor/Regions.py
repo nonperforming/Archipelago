@@ -34,7 +34,10 @@ def connect_main_regions(world: "RhythmDoctorWorld"):
 
         region = world.get_region(region_name)
         entrance = main_ward_region.connect(region, f"{world.origin_region_name} to {region_name}")
-        world.set_rule(entrance, Has(f"{region_name} Key"))
+
+        if region_name == "Garden Room" and OptionFilter(EndGoal, EndGoal.option_helping_hands, "ne"):
+            world.set_rule(entrance, Has(f"{region_name} Key"))
+
 
 def create_and_connect_stage_regions(world: "RhythmDoctorWorld"):
     """
@@ -63,7 +66,17 @@ def create_and_connect_stage_regions(world: "RhythmDoctorWorld"):
                 raise NotImplementedError
 
     for stage in all_regular_stages:
-        region = world.get_region(stage.region_name)
+        if stage.region_name is None:
+            if stage.short_name == "X-1":
+                if OptionFilter(EndGoal, EndGoal.option_helping_hands):
+                    region = world.get_region("Basement")
+                else:
+                    region = world.get_region("Garden Room")
+            else:
+                err = f"Region name for {stage.short_name} is none and does not have special definition defined"
+                raise NotImplementedError(err)
+        else:
+            region = world.get_region(stage.region_name)
         stage_region = Region(stage.short_name, world.player, world.multiworld)
         world.multiworld.regions.append(stage_region)
 
@@ -86,12 +99,12 @@ def create_and_connect_stage_regions(world: "RhythmDoctorWorld"):
         world.set_rule(entrance, rule) # Key rule is handled by the region
 
     for boss_stage in all_boss_stages:
-        region = world.get_region(boss_stage.region_name)
+        region = world.get_region(boss_stage.region_name)  # noqa: no boss stages have special region cases
         stage_region = Region(boss_stage.short_name, world.player, world.multiworld)
         world.multiworld.regions.append(stage_region)
 
         entrance = region.connect(stage_region, f"{boss_stage.region_name} to {boss_stage.short_name}")
-        rule = HasGroup(boss_stage.act, get_boss_unlock_requirement_value_for_act(boss_stage.act))
+        rule = HasGroup(boss_stage.act, get_boss_unlock_requirement_value_for_act(boss_stage.act))   # noqa: all boss stages have act
         if boss_stage.region_name != world.origin_region_name:
             rule = rule & Has(f"{boss_stage.region_name} Key")
 

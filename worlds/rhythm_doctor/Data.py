@@ -70,7 +70,7 @@ class _Stage(_Item, ABC):
     short_name: str
     region_name: Literal[
         "Main Ward", "SVT Ward", "Train", "Physiotherapy Ward", "Records Room", "Basement", "Garden Room"
-    ]
+    ] | None
 
     act: Literal["Act 1", "Act 2", "Act 3", "Act 4", "Act 5", "Act 6", "Act 7"] | None
     excluded: bool
@@ -208,7 +208,7 @@ other_stages = [
     _RegularStage("MD-2 - tape/stop/night", 46, "MD-2", "Basement", None, False, 159, 160, 161),
     _RegularStage("MD-3 - The 90's Decision", 47, "MD-3", "Basement", None, False, 162, 163, 164),
     _RegularStage("X-0 - Helping Hands", 48, "X-0", "Garden Room", None, False, 165, 166, 167),
-    _RegularStage("X-1 - Art Exercise", 49, "X-1", "Basement", None, False, 168, 169, 170),
+    _RegularStage("X-1 - Art Exercise", 49, "X-1", None, None, False, 168, 169, 170), # special case: with X-0 goal this is moved to basement, otherwise garden room
     _RegularStage("X-PBC - público cautivo", 67, "X-PBC", "Basement", None, False, 177, 178, 179),
 ]
 """
