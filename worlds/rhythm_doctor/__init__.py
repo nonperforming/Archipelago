@@ -195,4 +195,5 @@ class RhythmDoctorWorld(World):
             "sticky_traps",
             # "sticky_powerups",
             "death_link",
+            "perfect_rank_locations",
         )
