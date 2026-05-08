@@ -19,7 +19,7 @@ def create_and_connect_regions(world: "RhythmDoctorWorld"):
 
 def create_main_regions(world: "RhythmDoctorWorld"):
     """
-    Create regions for each of the Wards (and Art Room + Basement)
+    Create regions for each of the Wards (and Garden Room + Basement)
     """
     for region_name in REGIONS:
         region = Region(region_name, world.player, world.multiworld)
@@ -35,7 +35,8 @@ def connect_main_regions(world: "RhythmDoctorWorld"):
         region = world.get_region(region_name)
         entrance = main_ward_region.connect(region, f"{world.origin_region_name} to {region_name}")
 
-        if region_name == "Garden Room" and OptionFilter(EndGoal, EndGoal.option_helping_hands, "ne"):
+        if (region_name != "Garden Room" and OptionFilter(EndGoal, EndGoal.option_helping_hands)) or \
+           (region_name == "Garden Room" and OptionFilter(EndGoal, EndGoal.option_helping_hands, "ne")):
             world.set_rule(entrance, Has(f"{region_name} Key"))
 
 
