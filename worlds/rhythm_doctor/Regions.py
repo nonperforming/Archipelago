@@ -1,11 +1,10 @@
 from typing import TYPE_CHECKING, Literal
 
 from BaseClasses import Region
-from rule_builder.options import OptionFilter
-from rule_builder.rules import Has, HasGroup, CanReachEntrance
+from rule_builder.rules import CanReachEntrance, Has, HasGroup
 
-from .Data import REGIONS, all_boss_stages, all_regular_stages
-from .Options import EndGoal, Act7BossUnlockRequirement
+from .Data import HELPING_HANDS_STAGE, REGIONS, all_boss_stages, all_regular_stages
+from .Options import EndGoal
 
 if TYPE_CHECKING:
     from . import RhythmDoctorWorld
@@ -35,8 +34,8 @@ def connect_main_regions(world: "RhythmDoctorWorld"):
         region = world.get_region(region_name)
         entrance = main_ward_region.connect(region, f"{world.origin_region_name} to {region_name}")
 
-        if (region_name != "Garden Room" and OptionFilter(EndGoal, EndGoal.option_helping_hands)) or \
-           (region_name == "Garden Room" and OptionFilter(EndGoal, EndGoal.option_helping_hands, "ne")):
+        if (region_name != "Garden Room" and world.options.end_goal.value == EndGoal.option_helping_hands) or \
+           (region_name == "Garden Room" and world.options.end_goal.value != EndGoal.option_helping_hands):
             world.set_rule(entrance, Has(f"{region_name} Key"))
 
 
@@ -69,7 +68,7 @@ def create_and_connect_stage_regions(world: "RhythmDoctorWorld"):
     for stage in all_regular_stages:
         if stage.region_name is None:
             if stage.short_name == "X-1":
-                if OptionFilter(EndGoal, EndGoal.option_helping_hands):
+                if world.options.end_goal.value == EndGoal.option_helping_hands:
                     region = world.get_region("Basement")
                 else:
                     region = world.get_region("Garden Room")
@@ -81,7 +80,7 @@ def create_and_connect_stage_regions(world: "RhythmDoctorWorld"):
         stage_region = Region(stage.short_name, world.player, world.multiworld)
         world.multiworld.regions.append(stage_region)
 
-        if OptionFilter(EndGoal, EndGoal.option_helping_hands) and stage.short_name == "X-0":
+        if world.options.end_goal.value == EndGoal.option_helping_hands and stage.name == HELPING_HANDS_STAGE.name:
             # TODO: duplicated in Rules
             rule = HasGroup("Act 1", count=world.options.act_1_boss_unlock_requirement.value) \
                    & HasGroup("Act 2", count=world.options.act_2_boss_unlock_requirement.value) \

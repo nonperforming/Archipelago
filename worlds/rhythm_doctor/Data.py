@@ -25,12 +25,13 @@ class _Item:
 GAME = "Rhythm Doctor"
 REGIONS = ["Main Ward", "SVT Ward", "Train", "Physiotherapy Ward", "Records Room", "Basement", "Garden Room"]
 
+GARDEN_ROOM_KEY = _Item("Garden Room Key", 54)
 KEYS = [
     _Item("SVT Ward Key", 50),
     _Item("Train Key", 51),
     _Item("Physiotherapy Ward Key", 52),
     _Item("Basement Key", 53),
-    _Item("Garden Room Key", 54),
+    GARDEN_ROOM_KEY,
     _Item("Records Room Key", 55),
 ]
 
@@ -199,6 +200,7 @@ record_room_stages = [
     _RegularStage("7-1 - Blurred", 40, "7-1", "Records Room", "Act 7", False, 135, 136, 137),
 ]
 
+HELPING_HANDS_STAGE = _RegularStage("X-0 - Helping Hands", 48, "X-0", "Garden Room", None, False, 165, 166, 167)
 other_stages = [
     _RegularStage("X-FTS - Fixations Towards the Stars", 41, "X-FTS", "Basement", None, False, 144, 145, 146),
     _RegularStage("X-KOB - Kingdom of Balloons", 42, "X-KOB", "Basement", None, False, 147, 148, 149),
@@ -207,7 +209,7 @@ other_stages = [
     _RegularStage("MD-1 - Blackest Luxury Car", 45, "MD-1", "Basement", None, False, 156, 157, 158),
     _RegularStage("MD-2 - tape/stop/night", 46, "MD-2", "Basement", None, False, 159, 160, 161),
     _RegularStage("MD-3 - The 90's Decision", 47, "MD-3", "Basement", None, False, 162, 163, 164),
-    _RegularStage("X-0 - Helping Hands", 48, "X-0", "Garden Room", None, False, 165, 166, 167),
+    HELPING_HANDS_STAGE,
     _RegularStage("X-1 - Art Exercise", 49, "X-1", None, None, False, 168, 169, 170), # special case: with X-0 goal this is moved to basement, otherwise garden room
     _RegularStage("X-PBC - público cautivo", 67, "X-PBC", "Basement", None, False, 177, 178, 179),
 ]
@@ -280,8 +282,7 @@ def create_items(world: "RhythmDoctorWorld"):
     for item in all_progression_items:
         if (
             world.options.end_goal.value == EndGoal.option_helping_hands
-            and isinstance(item, _RegularStage)
-            and item.short_name == "X-0"
+            and (item.name is HELPING_HANDS_STAGE.name or item.name is GARDEN_ROOM_KEY.name)
         ):
             continue
 
@@ -310,7 +311,7 @@ def create_locations(world: "RhythmDoctorWorld"):
                 world.get_location(location_name).progress_type = LocationProgressType.PRIORITY
 
     for stage in all_stages:
-        if stage.short_name == "X-0" and world.options.end_goal.value == EndGoal.option_helping_hands:
+        if stage.name is HELPING_HANDS_STAGE.name and world.options.end_goal.value == EndGoal.option_helping_hands:
             continue
 
         create_locations_from_stage(stage)

@@ -1,6 +1,6 @@
 {
     "game": "Rhythm Doctor",
     "minimum_ap_version": "0.6.7",
-    "world_version": "0.0.9",
+    "world_version": "0.0.10",
     "authors": ["nonperforming", "crimsonDestroyer"]
 }
