@@ -2,5 +2,10 @@
     "game": "Rhythm Doctor",
     "minimum_ap_version": "0.6.7",
     "world_version": "0.0.10",
-    "authors": ["nonperforming", "crimsonDestroyer"]
+    "authors": ["nonperforming", "crimsonDestroyer"],
+    "tracker": "https://github.com/jetenergy/rhythm-doctor-poptracker",
+    "igdb_id": 27907,
+    "license": "MIT",
+    "repo_url": "https://github.com/nonperforming/Archipelago",
+    "flags": ["unready", "supports_deathlink"]
 }
