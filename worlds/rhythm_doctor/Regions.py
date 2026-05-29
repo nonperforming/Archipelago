@@ -3,7 +3,7 @@ from typing import TYPE_CHECKING, Literal
 from BaseClasses import Region
 from rule_builder.rules import CanReachEntrance, Has, HasGroup
 
-from .Data import HELPING_HANDS_STAGE, REGIONS, all_boss_stages, all_regular_stages
+from .Data import HELPING_HANDS_STAGE, REGIONS, ALL_BOSS_STAGES, ALL_REGULAR_STAGES
 from .Options import EndGoal
 
 if TYPE_CHECKING:
@@ -65,7 +65,7 @@ def create_and_connect_stage_regions(world: "RhythmDoctorWorld"):
             case _:
                 raise NotImplementedError
 
-    for stage in all_regular_stages:
+    for stage in ALL_REGULAR_STAGES:
         if stage.region_name is None:
             if stage.short_name == "X-1":
                 if world.options.end_goal.value == EndGoal.option_helping_hands:
@@ -82,29 +82,31 @@ def create_and_connect_stage_regions(world: "RhythmDoctorWorld"):
 
         if world.options.end_goal.value == EndGoal.option_helping_hands and stage.name == HELPING_HANDS_STAGE.name:
             # TODO: duplicated in Rules
-            rule = HasGroup("Act 1", count=world.options.act_1_boss_unlock_requirement.value) \
-                   & HasGroup("Act 2", count=world.options.act_2_boss_unlock_requirement.value) \
-                   & CanReachEntrance(f"{world.origin_region_name} to SVT Ward") \
-                   & HasGroup("Act 3", count=world.options.act_3_boss_unlock_requirement.value) \
-                   & HasGroup("Act 4", count=world.options.act_4_boss_unlock_requirement.value) \
-                   & CanReachEntrance(f"{world.origin_region_name} to Train") \
-                   & HasGroup("Act 5", count=world.options.act_5_boss_unlock_requirement.value) \
-                   & CanReachEntrance(f"{world.origin_region_name} to Physiotherapy Ward") \
-                   & HasGroup("Act 6", count=world.options.act_6_boss_unlock_requirement.value) \
-                   & CanReachEntrance(f"{world.origin_region_name} to Records Room") \
-                   & HasGroup("Act 7", count=world.options.act_7_boss_unlock_requirement.value)
+            rule = (
+                HasGroup("Act 1", count=world.options.act_1_boss_unlock_requirement.value)
+                & HasGroup("Act 2", count=world.options.act_2_boss_unlock_requirement.value)
+                & CanReachEntrance(f"{world.origin_region_name} to SVT Ward")
+                & HasGroup("Act 3", count=world.options.act_3_boss_unlock_requirement.value)
+                & HasGroup("Act 4", count=world.options.act_4_boss_unlock_requirement.value)
+                & CanReachEntrance(f"{world.origin_region_name} to Train")
+                & HasGroup("Act 5", count=world.options.act_5_boss_unlock_requirement.value)
+                & CanReachEntrance(f"{world.origin_region_name} to Physiotherapy Ward")
+                & HasGroup("Act 6", count=world.options.act_6_boss_unlock_requirement.value)
+                & CanReachEntrance(f"{world.origin_region_name} to Records Room")
+                & HasGroup("Act 7", count=world.options.act_7_boss_unlock_requirement.value)
+            )
         else:
             rule = Has(stage.name)
         entrance = region.connect(stage_region, f"{stage.region_name} to {stage.short_name}")
-        world.set_rule(entrance, rule) # Key rule is handled by the region
+        world.set_rule(entrance, rule)  # Key rule is handled by the region
 
-    for boss_stage in all_boss_stages:
+    for boss_stage in ALL_BOSS_STAGES:
         region = world.get_region(boss_stage.region_name)  # noqa: no boss stages have special region cases
         stage_region = Region(boss_stage.short_name, world.player, world.multiworld)
         world.multiworld.regions.append(stage_region)
 
         entrance = region.connect(stage_region, f"{boss_stage.region_name} to {boss_stage.short_name}")
-        rule = HasGroup(boss_stage.act, get_boss_unlock_requirement_value_for_act(boss_stage.act))   # noqa: all boss stages have act
+        rule = HasGroup(boss_stage.act, get_boss_unlock_requirement_value_for_act(boss_stage.act))  # noqa: all boss stages have act
         if boss_stage.region_name != world.origin_region_name:
             rule = rule & Has(f"{boss_stage.region_name} Key")
 

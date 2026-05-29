@@ -137,7 +137,7 @@ class _RhythmWeightlifterStage(_Stage):
 
 # region Main stages
 # fmt: off
-main_ward_stages = [
+MAIN_WARD_STAGES = [
     _RegularStage("1-1 - Samurai Techno", 1, "1-1", "Main Ward", "Act 1", False, 1, 2, 3),
     _RegularStage("1-1N - Samurai Dubstep", 2, "1-1N", "Main Ward", "Act 1", False, 4, 5, 6),
     _RegularStage("1-2 - Intimate", 3, "1-2", "Main Ward", "Act 1", False, 7, 8, 9),
@@ -152,7 +152,7 @@ main_ward_stages = [
     _RegularStage("3-3N - Distant Duet (Night)", 12, "3-3N", "Main Ward", "Act 3", False, 36, 37, 38),
 ]
 
-svt_ward_stages = [
+SVT_WARD_STAGES = [
     _RegularStage("2-1 - Lo-fi Hip-Hop Beats To Treat Patients To", 13, "2-1", "SVT Ward", "Act 2", False, 43, 44, 45),
     _RegularStage("2-1N - wish i could care less", 14, "2-1N", "SVT Ward", "Act 2", False, 46, 47, 48),
     _RegularStage("2-2 - Supraventricular Tachycardia", 15, "2-2", "SVT Ward", "Act 2", False, 49, 50, 51),
@@ -165,7 +165,7 @@ svt_ward_stages = [
     _BossStage("2-XN - Bitter Times", 22, "2-XN", "SVT Ward", "Act 7", False, 66, 67, 68)
 ]
 
-train_stages = [
+TRAIN_STAGES = [
     _RegularStage("4-1 - Training Doctor's Train Ride Performance", 23, "4-1", "Train", "Act 4", False, 71, 72, 73),
     _RegularStage("4-1N - Rollerdisco Rumble", 24, "4-1N", "Train", "Act 4", False, 74, 75, 76),
     _RegularStage("4-2 - Invisible", 25, "4-2", "Train", "Act 4", False, 77, 78, 79),
@@ -176,32 +176,33 @@ train_stages = [
     _RegularStage("4-4N - Murmurs", 30, "4-4N", "Train", "Act 4", False, 92, 93, 94),
 ]
 
-physiotherapy_ward_stages = [
+RHYTHM_WEIGHTLIFTER_STAGE = _RhythmWeightlifterStage(
+    "5-B1 - Rhythm Weightlifter",
+    37,
+    "5-B1",
+    "Physiotherapy Ward",
+    None, # intentionally does not count towards 5-X
+    False,
+    stages=[113, 114, 115, 116, 117, 118, 119, 120, 121, 122, 180, 181],
+)
+PHYSIOTHERAPY_WARD_STAGES = [
     _RegularStage("5-1 - Lucky Break", 31, "5-1", "Physiotherapy Ward", "Act 5", False, 97, 98, 99),
     _RegularStage("5-1N - One Slip Too Late", 32, "5-1N", "Physiotherapy Ward", "Act 5", False, 100, 101, 102),
     _RegularStage("5-2 - Lo-fi Beats For Patients To Chill To", 33, "5-2", "Physiotherapy Ward", "Act 5", False, 103, 104, 105),
     _RegularStage("5-2N - Unsustainable Inconsolable", 34, "5-2N", "Physiotherapy Ward", "Act 5", False, 106, 107, 108),
     _RegularStage("5-3 - Seventh-Inning Stretch", 35, "5-3", "Physiotherapy Ward", "Act 5", True, 175, 176, 109),
     _RegularStage("5-3N - Corazones Viejos", 36, "5-3N", "Physiotherapy Ward", "Act 5", False, 110, 111, 112),
-    _RhythmWeightlifterStage(
-        "5-B1 - Rhythm Weightlifter",
-        37,
-        "5-B1",
-        "Physiotherapy Ward",
-        None, # intentionally does not count towards 5-X
-        False,
-        stages=[113, 114, 115, 116, 117, 118, 119, 120, 121, 122],
-    ),
+    RHYTHM_WEIGHTLIFTER_STAGE,
 ]
 
-record_room_stages = [
+RECORDS_ROOM_STAGES = [
     _RegularStage("6-1 - Something To Tell You", 38, "6-1", "Records Room", "Act 6", False, 126, 127, 128),
     _RegularStage("6-2 - Welcome Back", 39, "6-2", "Records Room", "Act 6", False, 129, 130, 131),
     _RegularStage("7-1 - Blurred", 40, "7-1", "Records Room", "Act 7", False, 135, 136, 137),
 ]
 
 HELPING_HANDS_STAGE = _RegularStage("X-0 - Helping Hands", 48, "X-0", "Garden Room", None, False, 165, 166, 167)
-other_stages = [
+OTHER_STAGES = [
     _RegularStage("X-FTS - Fixations Towards the Stars", 41, "X-FTS", "Basement", None, False, 144, 145, 146),
     _RegularStage("X-KOB - Kingdom of Balloons", 42, "X-KOB", "Basement", None, False, 147, 148, 149),
     _RegularStage("X-WOT - Worn Out Tapes", 43, "X-WOT", "Basement", None, False, 150, 151, 152),
@@ -218,45 +219,44 @@ Stages that don't have a corresponding boss song or act.
 """
 # fmt: on
 
-all_regular_stages = (
-    main_ward_stages + svt_ward_stages + train_stages + physiotherapy_ward_stages + record_room_stages + other_stages
+ALL_REGULAR_STAGES = (
+    MAIN_WARD_STAGES + SVT_WARD_STAGES + TRAIN_STAGES + PHYSIOTHERAPY_WARD_STAGES + RECORDS_ROOM_STAGES + OTHER_STAGES
 )
 # endregion
 
 # region Bosses
-act_1_boss = _BossStage("1-X - Battleworn Insomniac", None, "1-X", "Main Ward", "Act 1", False, 19, None, 20)
-act_2_boss = _BossStage("2-X - All The Times", None, "2-X", "SVT Ward", "Act 2", False, 69, None, 70)
-act_3_boss = _BossStage("3-X - One Shift More", None, "3-X", "Main Ward", "Act 3", False, 39, None, 40)
-act_3_secret_boss = _BossStage("3-DOG - Rhythm Dogtor", None, "3-DOG", "Main Ward", "Act 3", False, 41, None, 42)
-act_4_boss = _BossStage("1-XN - Super Battleworn Insomniac", None, "1-XN", "Main Ward", "Act 4", False, 95, None, 96)
-act_5_boss = _BossStage("5-X - Dreams Don't Stop", None, "5-X", "Physiotherapy Ward", "Act 5", False, 123, 124, 125)
-act_6_boss = _BossStage("6-X - Boss Fight", None, "6-X", "Records Room", "Act 6", False, 132, None, 134)
-act_7_bosses = [  # For the sake of logic, the Abandoned Ward does not require a key, and is considered to be a part of the Main Ward.
+ACT_1_BOSS = _BossStage("1-X - Battleworn Insomniac", None, "1-X", "Main Ward", "Act 1", False, 19, None, 20)
+ACT_2_BOSS = _BossStage("2-X - All The Times", None, "2-X", "SVT Ward", "Act 2", False, 69, None, 70)
+ACT_3_BOSS = _BossStage("3-X - One Shift More", None, "3-X", "Main Ward", "Act 3", False, 39, None, 40)
+ACT_3_SECRET_BOSS = _BossStage("3-DOG - Rhythm Dogtor", None, "3-DOG", "Main Ward", "Act 3", False, 41, None, 42)
+ACT_4_BOSS = _BossStage("1-XN - Super Battleworn Insomniac", None, "1-XN", "Main Ward", "Act 4", False, 95, None, 96)
+ACT_5_BOSS = _BossStage("5-X - Dreams Don't Stop", None, "5-X", "Physiotherapy Ward", "Act 5", False, 123, 124, 125)
+ACT_6_BOSS = _BossStage("6-X - Boss Fight", None, "6-X", "Records Room", "Act 6", False, 132, None, 134)
+ACT_7_BOSSES = [  # For the sake of logic, the Abandoned Ward does not require a key, and is considered to be a part of the Main Ward.
     _BossStage("7-X - Miracle Defibrillator", None, "7-X", "Main Ward", "Act 7", False, 138, 139, 140),
     _BossStage("7-X2 - Miracle Defibrillator (Cole's Song)", None, "7-X2", "Main Ward", "Act 7", False, 141, 142, 143),
 ]
 
-all_boss_stages: list[_BossStage] = [
-    act_1_boss,
-    act_2_boss,
-    act_3_boss,
-    act_3_secret_boss,
-    act_4_boss,
-    act_5_boss,
-    act_6_boss,
-    *act_7_bosses,
+ALL_BOSS_STAGES: list[_BossStage] = [
+    ACT_1_BOSS,
+    ACT_2_BOSS,
+    ACT_3_BOSS,
+    ACT_3_SECRET_BOSS,
+    ACT_4_BOSS,
+    ACT_5_BOSS,
+    ACT_6_BOSS,
+    *ACT_7_BOSSES,
 ]
 
 # endregion
 
-all_stages = all_regular_stages + all_boss_stages
+ALL_STAGES = ALL_REGULAR_STAGES + ALL_BOSS_STAGES
 # endregion
 
 # endregion
 
-all_items = all_regular_stages + FILLER + KEYS
-
-all_progression_items = all_regular_stages + KEYS
+ALL_PROGRESSION_ITEMS = ALL_REGULAR_STAGES + KEYS
+ALL_ITEMS = ALL_PROGRESSION_ITEMS + FILLER
 # endregion
 
 
@@ -279,10 +279,9 @@ def create_items(world: "RhythmDoctorWorld"):
     total_locations = len(world.multiworld.get_unfilled_locations(world.player))
     item_pool = []
 
-    for item in all_progression_items:
-        if (
-            world.options.end_goal.value == EndGoal.option_helping_hands
-            and (item.name is HELPING_HANDS_STAGE.name or item.name is GARDEN_ROOM_KEY.name)
+    for item in ALL_PROGRESSION_ITEMS:
+        if world.options.end_goal.value == EndGoal.option_helping_hands and (
+            item.name is HELPING_HANDS_STAGE.name or item.name is GARDEN_ROOM_KEY.name
         ):
             continue
 
@@ -302,7 +301,7 @@ def create_locations(world: "RhythmDoctorWorld"):
             for location_name in locations.keys():
                 world.get_location(location_name).progress_type = LocationProgressType.EXCLUDED
         elif stage.short_name == "5-B1":
-            for stage_number in range(5, 11):
+            for stage_number in range(5, len(RHYTHM_WEIGHTLIFTER_STAGE.stages) + 1):
                 world.get_location(
                     f"5-B1 - Rhythm Weightlifter - Stage {stage_number} Clear"
                 ).progress_type = LocationProgressType.EXCLUDED
@@ -310,7 +309,7 @@ def create_locations(world: "RhythmDoctorWorld"):
             for location_name in locations.keys():
                 world.get_location(location_name).progress_type = LocationProgressType.PRIORITY
 
-    for stage in all_stages:
+    for stage in ALL_STAGES:
         if stage.name is HELPING_HANDS_STAGE.name and world.options.end_goal.value == EndGoal.option_helping_hands:
             continue
 
@@ -320,7 +319,7 @@ def create_locations(world: "RhythmDoctorWorld"):
 def get_location_name_to_id() -> dict[str, int]:
     location_name_to_id = {}
 
-    for stage in all_stages:
+    for stage in ALL_STAGES:
         for location_name, location_id in stage.get_locations(True).items():
             location_name_to_id[location_name] = location_id
 
@@ -330,7 +329,7 @@ def get_location_name_to_id() -> dict[str, int]:
 def get_item_name_to_id() -> dict[str, int]:
     item_name_to_id = {}
 
-    for item_name, item_id in [item.get_item() for item in all_items if item.get_item() is not None]:
+    for item_name, item_id in [item.get_item() for item in ALL_ITEMS if item.get_item() is not None]:
         item_name_to_id[item_name] = item_id
 
     return item_name_to_id

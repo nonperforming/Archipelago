@@ -12,8 +12,8 @@ from .Data import (
     KEYS,
     GAME,
     RhythmDoctorItem,
-    all_boss_stages,
-    all_stages,
+    ALL_BOSS_STAGES,
+    ALL_STAGES,
     create_items,
     create_locations,
     get_item_name_to_id,
@@ -52,10 +52,10 @@ class RhythmDoctorWorld(World):
     # Populate item_name_groups
     # FIXME: frozenset or list?
     local_item_name_groups: dict[str, list[str]] = {"Stages": []}
-    for stage in all_stages:
+    for stage in ALL_STAGES:
         if stage.act is None:
             continue
-        if stage in all_boss_stages:
+        if stage in ALL_BOSS_STAGES:
             continue
 
         if stage.act not in local_item_name_groups:

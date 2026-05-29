@@ -5,10 +5,10 @@ from worlds.rhythm_doctor.Data import (
     FILLER_POWERUPS,
     FILLER_TRAPS,
     REGIONS,
-    act_3_boss,
-    act_3_secret_boss,
-    all_boss_stages,
-    all_regular_stages,
+    ACT_3_BOSS,
+    ACT_3_SECRET_BOSS,
+    ALL_BOSS_STAGES,
+    ALL_REGULAR_STAGES,
     _RegularStage,
     _BossStage,
 )
@@ -85,7 +85,7 @@ short_to_internal_name = {
     "X-KOB": "Level.SparkLine",  # Circle of Sparks - Kingdom of Balloons
     "X-WOT": "Level.Unbeatable",  # UNBEATABLE - Worn Out Tapes
     "X-MAT": "Level.MeetAndTweet",  # Bits & Bops - Meet and Tweet
-    "X-PBC": "Level.Beatblock", # Beatblock - público cautivo
+    "X-PBC": "Level.Beatblock",  # Beatblock - público cautivo
     # region Muse Dash
     "MD-1": "Level.BlackestLuxuryCar",
     "MD-2": "Level.TapeStopNight",
@@ -109,7 +109,7 @@ def build_internal_name_to_stage(world: "RhythmDoctorWorld") -> str:
         "internal static readonly Dictionary<Level, BaseStage> LevelToStage = new() {"
     )
 
-    for regular_stage in all_regular_stages:
+    for regular_stage in ALL_REGULAR_STAGES:
         constructor = ""
 
         if regular_stage.short_name == "5-B1":
@@ -146,10 +146,7 @@ def build_internal_name_to_stage(world: "RhythmDoctorWorld") -> str:
         buffer += f"\n  {{ {short_to_internal_name[regular_stage.short_name]}, {constructor} }},"
 
     # We exclude 3-X and 3-DOG here as they are a special case - they are handled separately afterward
-    for boss_stage in [
-        boss_stage
-        for boss_stage in all_boss_stages
-    ]:
+    for boss_stage in [boss_stage for boss_stage in ALL_BOSS_STAGES]:
         constructor = f"Act.{boss_stage.act.replace(' ', '')}, "
         constructor += str(boss_stage.clear_location_id or "null")
         constructor += ", "
@@ -171,7 +168,7 @@ def build_item_id_to_level(world: "RhythmDoctorWorld") -> str:
         "internal static readonly Dictionary<long, Level> ItemIdToLevel = new() {"
     )
 
-    for stage in all_regular_stages:
+    for stage in ALL_REGULAR_STAGES:
         buffer += f"""\n  {{ {world.item_name_to_id[stage.name]}, {short_to_internal_name[stage.short_name]} }},"""
 
     buffer += "\n};\n\n"
