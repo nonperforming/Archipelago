@@ -2,6 +2,7 @@ from typing import TYPE_CHECKING, Literal
 
 from BaseClasses import Region
 from rule_builder.rules import CanReachEntrance, Has, HasGroup
+from rule_builder.options import OptionFilter
 
 from .Data import HELPING_HANDS_STAGE, REGIONS, ALL_BOSS_STAGES, ALL_REGULAR_STAGES
 from .Options import EndGoal
@@ -34,8 +35,9 @@ def connect_main_regions(world: "RhythmDoctorWorld"):
         region = world.get_region(region_name)
         entrance = main_ward_region.connect(region, f"{world.origin_region_name} to {region_name}")
 
-        if (region_name != "Garden Room" and world.options.end_goal.value == EndGoal.option_helping_hands) or \
-           (region_name == "Garden Room" and world.options.end_goal.value != EndGoal.option_helping_hands):
+        if region_name == "Garden Room":
+            world.set_rule(entrance, Has(f"{region_name} Key") | OptionFilter(EndGoal, EndGoal.option_helping_hands))
+        else:
             world.set_rule(entrance, Has(f"{region_name} Key"))
 
 
@@ -46,7 +48,9 @@ def create_and_connect_stage_regions(world: "RhythmDoctorWorld"):
     Must be run after create_main_regions()
     """
 
-    def get_boss_unlock_requirement_value_for_act(act: Literal["Act 1", "Act 2", "Act 3", "Act 4", "Act 5", "Act 6", "Act 7"]):
+    def get_boss_unlock_requirement_value_for_act(
+        act: Literal["Act 1", "Act 2", "Act 3", "Act 4", "Act 5", "Act 6", "Act 7"],
+    ):
         match act:
             case "Act 1":
                 return world.options.act_1_boss_unlock_requirement.value
