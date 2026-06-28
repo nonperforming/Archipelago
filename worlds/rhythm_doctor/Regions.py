@@ -1,10 +1,22 @@
 from typing import TYPE_CHECKING, Literal
 
 from BaseClasses import Region
+from rule_builder.field_resolvers import FromOption
+from rule_builder.options import OptionFilter
 from rule_builder.rules import CanReachEntrance, Has, HasGroup
 
 from .Data import HELPING_HANDS_STAGE, REGIONS, ALL_BOSS_STAGES, ALL_REGULAR_STAGES
-from .Options import EndGoal
+from .Options import (
+    EndGoal,
+    Act3BossUnlockRequirement,
+    Act2BossUnlockRequirement,
+    Act4BossUnlockRequirement,
+    Act5BossUnlockRequirement,
+    Act6BossUnlockRequirement,
+    Act7BossUnlockRequirement,
+)
+from .Rules import get_completion_rule_for_helping_hands
+from .Options import Act1BossUnlockRequirement
 
 if TYPE_CHECKING:
     from . import RhythmDoctorWorld
@@ -34,8 +46,8 @@ def connect_main_regions(world: "RhythmDoctorWorld"):
         region = world.get_region(region_name)
         entrance = main_ward_region.connect(region, f"{world.origin_region_name} to {region_name}")
 
-        if (region_name != "Garden Room" and world.options.end_goal.value == EndGoal.option_helping_hands) or \
-           (region_name == "Garden Room" and world.options.end_goal.value != EndGoal.option_helping_hands):
+        if (region_name != "Garden Room" and OptionFilter(EndGoal, EndGoal.option_helping_hands).check(world.options)) or \
+           (region_name == "Garden Room" and OptionFilter(EndGoal, EndGoal.option_helping_hands, "ne").check(world.options)):
             world.set_rule(entrance, Has(f"{region_name} Key"))
 
 
@@ -46,26 +58,27 @@ def create_and_connect_stage_regions(world: "RhythmDoctorWorld"):
     Must be run after create_main_regions()
     """
 
-    def get_boss_unlock_requirement_value_for_act(act: Literal["Act 1", "Act 2", "Act 3", "Act 4", "Act 5", "Act 6", "Act 7"]):
+    def get_boss_unlock_requirement_value_for_act(act: Literal["Act 1", "Act 2", "Act 3", "Act 4", "Act 5", "Act 6", "Act 7"]) -> FromOption:
         match act:
             case "Act 1":
-                return world.options.act_1_boss_unlock_requirement.value
+                return FromOption(Act1BossUnlockRequirement)
             case "Act 2":
-                return world.options.act_2_boss_unlock_requirement.value
+                return FromOption(Act2BossUnlockRequirement)
             case "Act 3":
-                return world.options.act_3_boss_unlock_requirement.value
+                return FromOption(Act3BossUnlockRequirement)
             case "Act 4":
-                return world.options.act_4_boss_unlock_requirement.value
+                return FromOption(Act4BossUnlockRequirement)
             case "Act 5":
-                return world.options.act_5_boss_unlock_requirement.value
+                return FromOption(Act5BossUnlockRequirement)
             case "Act 6":
-                return world.options.act_6_boss_unlock_requirement.value
+                return FromOption(Act6BossUnlockRequirement)
             case "Act 7":
-                return world.options.act_7_boss_unlock_requirement.value
+                return FromOption(Act7BossUnlockRequirement)
             case _:
                 raise NotImplementedError
 
     for stage in ALL_REGULAR_STAGES:
+        # Add stage and its region
         if stage.region_name is None:
             if stage.short_name == "X-1":
                 if world.options.end_goal.value == EndGoal.option_helping_hands:
@@ -80,21 +93,11 @@ def create_and_connect_stage_regions(world: "RhythmDoctorWorld"):
         stage_region = Region(stage.short_name, world.player, world.multiworld)
         world.multiworld.regions.append(stage_region)
 
+        # Set rules
         if world.options.end_goal.value == EndGoal.option_helping_hands and stage.name == HELPING_HANDS_STAGE.name:
-            # TODO: duplicated in Rules
-            rule = (
-                HasGroup("Act 1", count=world.options.act_1_boss_unlock_requirement.value)
-                & HasGroup("Act 2", count=world.options.act_2_boss_unlock_requirement.value)
-                & CanReachEntrance(f"{world.origin_region_name} to SVT Ward")
-                & HasGroup("Act 3", count=world.options.act_3_boss_unlock_requirement.value)
-                & HasGroup("Act 4", count=world.options.act_4_boss_unlock_requirement.value)
-                & CanReachEntrance(f"{world.origin_region_name} to Train")
-                & HasGroup("Act 5", count=world.options.act_5_boss_unlock_requirement.value)
-                & CanReachEntrance(f"{world.origin_region_name} to Physiotherapy Ward")
-                & HasGroup("Act 6", count=world.options.act_6_boss_unlock_requirement.value)
-                & CanReachEntrance(f"{world.origin_region_name} to Records Room")
-                & HasGroup("Act 7", count=world.options.act_7_boss_unlock_requirement.value)
-            )
+            # This is the rule to unlock X-0 with it as the end goal.
+            # The completion rule is handled in Rules.py.
+            rule = get_completion_rule_for_helping_hands()
         else:
             rule = Has(stage.name)
         entrance = region.connect(stage_region, f"{stage.region_name} to {stage.short_name}")
@@ -106,20 +109,23 @@ def create_and_connect_stage_regions(world: "RhythmDoctorWorld"):
         world.multiworld.regions.append(stage_region)
 
         entrance = region.connect(stage_region, f"{boss_stage.region_name} to {boss_stage.short_name}")
-        rule = HasGroup(boss_stage.act, get_boss_unlock_requirement_value_for_act(boss_stage.act))  # noqa: all boss stages have act
+        rule = HasGroup(boss_stage.act, count=get_boss_unlock_requirement_value_for_act(boss_stage.act))  # noqa: all boss stages have act
         if boss_stage.region_name != world.origin_region_name:
             rule = rule & Has(f"{boss_stage.region_name} Key")
 
+        # Stage-specific additional rules
         if boss_stage.short_name == "1-XN":
+            # 1-XN is in the Main Ward but requires levels from the Train
             rule = rule & Has("Train Key")
         elif boss_stage.short_name == "7-X":
+            # 7-X is in the "Main Ward" but requires at least one level/both "2-XN" and "7-1"
+            # from the SVT Ward or Records Room respectively
+
             # TODO: There should be a better way to do this! This will break when more levels are added to Act 7
-            # Due to 7-X being considered in Main Ward while requiring levels in either/both SVT Ward and
-            # Records Room to unlock, it must be considered for here.
 
             bitter_times_rule = CanReachEntrance("SVT Ward to 2-XN")
             blurred_rule = CanReachEntrance("Records Room to 7-1")
-            if get_boss_unlock_requirement_value_for_act("Act 7") == 1:
+            if get_boss_unlock_requirement_value_for_act("Act 7").resolve(world) == 1:
                 rule = rule & (bitter_times_rule | blurred_rule)
             else:
                 rule = rule & bitter_times_rule & blurred_rule

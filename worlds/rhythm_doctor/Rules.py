@@ -1,33 +1,33 @@
 from typing import TYPE_CHECKING
 
-from rule_builder.rules import HasAll, HasGroup, CanReachEntrance
-
-from .Options import EndGoal
+from rule_builder.field_resolvers import FromOption
+from rule_builder.options import OptionFilter
+from rule_builder.rules import HasAll, HasGroup
+from .Data import STORY_KEYS, ALL_PROGRESSION_ITEMS
+from .Options import (Act1BossUnlockRequirement, Act2BossUnlockRequirement, Act3BossUnlockRequirement,
+                      Act4BossUnlockRequirement, Act5BossUnlockRequirement, Act6BossUnlockRequirement,
+                      Act7BossUnlockRequirement, EndGoal)
 
 if TYPE_CHECKING:
     from . import RhythmDoctorWorld
 
 
+def get_completion_rule_for_helping_hands():
+    return (
+        HasGroup("Act 1", count=FromOption(Act1BossUnlockRequirement))
+        & HasGroup("Act 2", count=FromOption(Act2BossUnlockRequirement))
+        & HasGroup("Act 3", count=FromOption(Act3BossUnlockRequirement))
+        & HasGroup("Act 4", count=FromOption(Act4BossUnlockRequirement))
+        & HasGroup("Act 5", count=FromOption(Act5BossUnlockRequirement))
+        & HasGroup("Act 6", count=FromOption(Act6BossUnlockRequirement))
+        & HasGroup("Act 7", count=FromOption(Act7BossUnlockRequirement))
+        & HasAll(*[key.name for key in STORY_KEYS])
+    )
+
+
+
 def set_rules(world: "RhythmDoctorWorld"):
-    # TODO: X-0 with its end goal
-    # TODO: Boss level conditions
-    match world.options.end_goal.value:
-        case EndGoal.option_helping_hands:
-            # TODO: duplicated in regions
-            world.set_completion_rule(rule = HasGroup("Act 1", count=world.options.act_1_boss_unlock_requirement.value) \
-                & HasGroup("Act 2", count=world.options.act_2_boss_unlock_requirement.value) \
-                & CanReachEntrance(f"{world.origin_region_name} to SVT Ward") \
-                & HasGroup("Act 3", count=world.options.act_3_boss_unlock_requirement.value) \
-                & HasGroup("Act 4", count=world.options.act_4_boss_unlock_requirement.value) \
-                & CanReachEntrance(f"{world.origin_region_name} to Train") \
-                & HasGroup("Act 5", count=world.options.act_5_boss_unlock_requirement.value) \
-                & CanReachEntrance(f"{world.origin_region_name} to Physiotherapy Ward") \
-                & HasGroup("Act 6", count=world.options.act_6_boss_unlock_requirement.value) \
-                & CanReachEntrance(f"{world.origin_region_name} to Records Room") \
-                & HasGroup("Act 7", count=world.options.act_7_boss_unlock_requirement.value))
-        case EndGoal.option_perfect_all | EndGoal.option_a_rank_all | EndGoal.option_b_rank_all:
-            world.set_completion_rule(HasAll(*world.item_name_groups["Stages"]) \
-                & CanReachEntrance(f"{world.origin_region_name} to SVT Ward") \
-                & CanReachEntrance(f"{world.origin_region_name} to Train") \
-                & CanReachEntrance(f"{world.origin_region_name} to Physiotherapy Ward") \
-                & CanReachEntrance(f"{world.origin_region_name} to Records Room"))
+    helping_hands_rule = OptionFilter(EndGoal, EndGoal.option_helping_hands) & get_completion_rule_for_helping_hands()
+    # can't use '|' operator for OptionFilter, this will have to do for now
+    clear_all_rule = OptionFilter(EndGoal, EndGoal.option_helping_hands, "ne") & HasAll(*[item.name for item in ALL_PROGRESSION_ITEMS])
+    world.set_completion_rule(helping_hands_rule | clear_all_rule)

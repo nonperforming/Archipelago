@@ -26,13 +26,21 @@ GAME = "Rhythm Doctor"
 REGIONS = ["Main Ward", "SVT Ward", "Train", "Physiotherapy Ward", "Records Room", "Basement", "Garden Room"]
 
 GARDEN_ROOM_KEY = _Item("Garden Room Key", 54)
-KEYS = [
-    _Item("SVT Ward Key", 50),
-    _Item("Train Key", 51),
-    _Item("Physiotherapy Ward Key", 52),
+STORY_KEYS = [
+    # We start in Act 1, Main Ward
+    _Item("SVT Ward Key", 50), # Act 2
+    # Act 3 is in the Main Ward
+    _Item("Train Key", 51), # Act 4
+    _Item("Physiotherapy Ward Key", 52), # Act 5
+    _Item("Records Room Key", 55), # Act 6/7
+]
+EXTRA_KEYS = [
     _Item("Basement Key", 53),
     GARDEN_ROOM_KEY,
-    _Item("Records Room Key", 55),
+]
+KEYS = [
+    *STORY_KEYS,
+    GARDEN_ROOM_KEY,
 ]
 
 # TODO: Fix ids
@@ -262,7 +270,8 @@ ALL_ITEMS = ALL_PROGRESSION_ITEMS + FILLER
 
 def create_items(world: "RhythmDoctorWorld"):
     # Get a random level in the Main Ward to start with
-    # At runtime this seems to be a frozenset, not a list (for some reason???)
+    # TODO: At runtime this seems to be a frozenset, not a list, so we need to cast it to a list first...
+    #       See if there is a more efficient way of doing this.
     start_with_item = world.random.choice(list(world.item_name_groups["Act 1"] | world.item_name_groups["Act 3"]))
 
     def create_item(item: _Item) -> None:
@@ -310,9 +319,6 @@ def create_locations(world: "RhythmDoctorWorld"):
                 world.get_location(location_name).progress_type = LocationProgressType.PRIORITY
 
     for stage in ALL_STAGES:
-        if stage.name is HELPING_HANDS_STAGE.name and world.options.end_goal.value == EndGoal.option_helping_hands:
-            continue
-
         create_locations_from_stage(stage)
 
 
