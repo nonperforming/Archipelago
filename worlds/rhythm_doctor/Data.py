@@ -28,11 +28,11 @@ REGIONS = ["Main Ward", "SVT Ward", "Train", "Physiotherapy Ward", "Records Room
 GARDEN_ROOM_KEY = _Item("Garden Room Key", 54)
 STORY_KEYS = [
     # We start in Act 1, Main Ward
-    _Item("SVT Ward Key", 50), # Act 2
+    _Item("SVT Ward Key", 50),  # Act 2
     # Act 3 is in the Main Ward
-    _Item("Train Key", 51), # Act 4
-    _Item("Physiotherapy Ward Key", 52), # Act 5
-    _Item("Records Room Key", 55), # Act 6/7
+    _Item("Train Key", 51),  # Act 4
+    _Item("Physiotherapy Ward Key", 52),  # Act 5
+    _Item("Records Room Key", 55),  # Act 6/7
 ]
 EXTRA_KEYS = [
     _Item("Basement Key", 53),
@@ -40,6 +40,7 @@ EXTRA_KEYS = [
 ]
 KEYS = [
     *STORY_KEYS,
+    *EXTRA_KEYS,
     GARDEN_ROOM_KEY,
 ]
 
@@ -77,9 +78,10 @@ class RhythmDoctorLocation(Location):
 @dataclass
 class _Stage(_Item, ABC):
     short_name: str
-    region_name: Literal[
-        "Main Ward", "SVT Ward", "Train", "Physiotherapy Ward", "Records Room", "Basement", "Garden Room"
-    ] | None
+    region_name: (
+        Literal["Main Ward", "SVT Ward", "Train", "Physiotherapy Ward", "Records Room", "Basement", "Garden Room"]
+        | None
+    )
 
     act: Literal["Act 1", "Act 2", "Act 3", "Act 4", "Act 5", "Act 6", "Act 7"] | None
     excluded: bool
