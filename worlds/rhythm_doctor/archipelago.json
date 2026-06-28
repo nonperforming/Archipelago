@@ -1,7 +1,7 @@
 {
     "game": "Rhythm Doctor",
     "minimum_ap_version": "0.6.8",
-    "world_version": "0.0.10",
+    "world_version": "0.0.12",
     "authors": ["nonperforming", "crimsonDestroyer"],
     "tracker": "https://github.com/jetenergy/rhythm-doctor-poptracker",
     "igdb_id": 27907,

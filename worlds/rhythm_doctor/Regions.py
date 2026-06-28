@@ -46,8 +46,9 @@ def connect_main_regions(world: "RhythmDoctorWorld"):
         region = world.get_region(region_name)
         entrance = main_ward_region.connect(region, f"{world.origin_region_name} to {region_name}")
 
-        if (region_name != "Garden Room" and OptionFilter(EndGoal, EndGoal.option_helping_hands).check(world.options)) or \
-           (region_name == "Garden Room" and OptionFilter(EndGoal, EndGoal.option_helping_hands, "ne").check(world.options)):
+        if region_name == "Garden Room":
+            world.set_rule(entrance, Has(f"{region_name} Key") | OptionFilter(EndGoal, EndGoal.option_helping_hands))
+        else:
             world.set_rule(entrance, Has(f"{region_name} Key"))
 
 
@@ -58,7 +59,9 @@ def create_and_connect_stage_regions(world: "RhythmDoctorWorld"):
     Must be run after create_main_regions()
     """
 
-    def get_boss_unlock_requirement_value_for_act(act: Literal["Act 1", "Act 2", "Act 3", "Act 4", "Act 5", "Act 6", "Act 7"]) -> FromOption:
+    def get_boss_unlock_requirement_value_for_act(
+        act: Literal["Act 1", "Act 2", "Act 3", "Act 4", "Act 5", "Act 6", "Act 7"],
+    ) -> FromOption:
         match act:
             case "Act 1":
                 return FromOption(Act1BossUnlockRequirement)
