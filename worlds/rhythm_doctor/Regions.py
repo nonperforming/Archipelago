@@ -5,18 +5,18 @@ from rule_builder.field_resolvers import FromOption
 from rule_builder.options import OptionFilter
 from rule_builder.rules import CanReachEntrance, Has, HasGroup
 
-from .Data import HELPING_HANDS_STAGE, REGIONS, ALL_BOSS_STAGES, ALL_REGULAR_STAGES
+from .Data import ALL_BOSS_STAGES, ALL_REGULAR_STAGES, HELPING_HANDS_STAGE, REGIONS
 from .Options import (
-    EndGoal,
-    Act3BossUnlockRequirement,
+    Act1BossUnlockRequirement,
     Act2BossUnlockRequirement,
+    Act3BossUnlockRequirement,
     Act4BossUnlockRequirement,
     Act5BossUnlockRequirement,
     Act6BossUnlockRequirement,
     Act7BossUnlockRequirement,
+    EndGoal,
 )
 from .Rules import get_completion_rule_for_helping_hands
-from .Options import Act1BossUnlockRequirement
 
 if TYPE_CHECKING:
     from . import RhythmDoctorWorld
@@ -107,12 +107,14 @@ def create_and_connect_stage_regions(world: "RhythmDoctorWorld"):
         world.set_rule(entrance, rule)  # Key rule is handled by the region
 
     for boss_stage in ALL_BOSS_STAGES:
-        region = world.get_region(boss_stage.region_name)  # noqa: no boss stages have special region cases
+        # all boss stages have act
+        # no boss stages have special region cases
+        region = world.get_region(boss_stage.region_name)  # ty:ignore[invalid-argument-type]
         stage_region = Region(boss_stage.short_name, world.player, world.multiworld)
         world.multiworld.regions.append(stage_region)
 
         entrance = region.connect(stage_region, f"{boss_stage.region_name} to {boss_stage.short_name}")
-        rule = HasGroup(boss_stage.act, count=get_boss_unlock_requirement_value_for_act(boss_stage.act))  # noqa: all boss stages have act
+        rule = HasGroup(boss_stage.act, count=get_boss_unlock_requirement_value_for_act(boss_stage.act))  # ty:ignore[invalid-argument-type]
         if boss_stage.region_name != world.origin_region_name:
             rule = rule & Has(f"{boss_stage.region_name} Key")
 

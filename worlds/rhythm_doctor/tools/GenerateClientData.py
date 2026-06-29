@@ -2,15 +2,13 @@ from typing import TYPE_CHECKING
 
 from worlds.rhythm_doctor import GAME
 from worlds.rhythm_doctor.Data import (
+    ALL_BOSS_STAGES,
+    ALL_REGULAR_STAGES,
     FILLER_POWERUPS,
     FILLER_TRAPS,
     REGIONS,
-    ACT_3_BOSS,
-    ACT_3_SECRET_BOSS,
-    ALL_BOSS_STAGES,
-    ALL_REGULAR_STAGES,
-    _RegularStage,
     _BossStage,
+    _RegularStage,
 )
 
 if TYPE_CHECKING:
@@ -146,7 +144,7 @@ def build_internal_name_to_stage(world: "RhythmDoctorWorld") -> str:
         buffer += f"\n  {{ {short_to_internal_name[regular_stage.short_name]}, {constructor} }},"
 
     # We exclude 3-X and 3-DOG here as they are a special case - they are handled separately afterward
-    for boss_stage in [boss_stage for boss_stage in ALL_BOSS_STAGES]:
+    for boss_stage in ALL_BOSS_STAGES:
         constructor = f"Act.{boss_stage.act.replace(' ', '')}, "
         constructor += str(boss_stage.clear_location_id or "null")
         constructor += ", "

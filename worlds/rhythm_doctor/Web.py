@@ -1,5 +1,4 @@
 from BaseClasses import Tutorial
-
 from worlds.AutoWorld import WebWorld
 
 from .Options import groups, presets

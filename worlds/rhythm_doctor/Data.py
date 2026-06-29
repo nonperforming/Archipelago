@@ -284,8 +284,7 @@ def create_items(world: "RhythmDoctorWorld"):
             item_pool.append(rd_item)
 
     def pad_with_filler() -> None:
-        for _ in range(total_locations - len(item_pool)):
-            item_pool.append(world.create_filler())
+        item_pool.extend([world.create_filler() for _ in range(total_locations - len(item_pool))])
 
     total_locations = len(world.multiworld.get_unfilled_locations(world.player))
     item_pool = []
@@ -325,19 +324,15 @@ def create_locations(world: "RhythmDoctorWorld"):
 
 
 def get_location_name_to_id() -> dict[str, int]:
-    location_name_to_id = {}
-
-    for stage in ALL_STAGES:
-        for location_name, location_id in stage.get_locations(True).items():
-            location_name_to_id[location_name] = location_id
-
-    return location_name_to_id
+    return {
+        location_name: location_id
+        for stage in ALL_STAGES
+        for location_name, location_id in stage.get_locations(True).items()
+    }
 
 
 def get_item_name_to_id() -> dict[str, int]:
-    item_name_to_id = {}
-
-    for item_name, item_id in [item.get_item() for item in ALL_ITEMS if item.get_item() is not None]:
-        item_name_to_id[item_name] = item_id
-
-    return item_name_to_id
+    return {
+        item_name: item_id
+        for item_name, item_id in [item.get_item() for item in ALL_ITEMS if item.get_item() is not None]
+    }
