@@ -48,6 +48,9 @@ class RhythmDoctorWorld(World):
     location_name_to_id = get_location_name_to_id()
     item_name_to_id = get_item_name_to_id()
 
+    # Universal Tracker support
+    ut_can_gen_without_yaml = True
+
     # Populate item_name_groups
     # FIXME: frozenset or list?
     local_item_name_groups: dict[str, list[str]] = {"Stages": []}
@@ -135,6 +138,16 @@ class RhythmDoctorWorld(World):
         return self.random.choice(list(pool))
 
     def generate_early(self) -> None:
+        # Universal Tracker YAML-less generation support
+        # From 'Jak and Daxter: The Precursor Legacy's implementation
+        if hasattr(self.multiworld, "re_gen_passthrough"):
+            if GAME in self.multiworld.re_gen_passthrough:
+                for key, val in self.multiworld.re_gen_passthrough[GAME].items():
+                    try:
+                        getattr(self.options, key).value = val
+                    except AttributeError:
+                        pass
+
         if (self.options.trap_chance.value + self.options.powerup_chance.value) > 100:
             error = (
                 f"Rhythm Doctor: Player {self.player_name}'s set "
