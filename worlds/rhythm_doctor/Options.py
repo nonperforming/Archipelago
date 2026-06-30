@@ -38,6 +38,7 @@ class EndGoal(Choice):
     option_b_rank_all = 1
     option_a_rank_all = 2
     option_perfect_all = 3
+    alias_s_rank_all = 3
     default = 0
 
 
@@ -60,6 +61,7 @@ class BossUnlockRequirement(Choice):
     option_b_rank = 0
     option_a_rank = 1
     option_perfect = 2
+    alias_s_rank = 2
     default = 0
 
 
