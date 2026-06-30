@@ -1,10 +1,12 @@
+from rule_builder.cached_world import CachedRuleBuilderWorld
+from rule_builder.field_resolvers import FromOption
+from rule_builder.options import OptionFilter
 from collections.abc import Mapping
 from typing import Any
 
 from BaseClasses import ItemClassification
-from Options import OptionError
+from Options import OptionError, Option
 
-from ..AutoWorld import World
 from .Data import (
     ALL_BOSS_STAGES,
     ALL_STAGES,
@@ -19,13 +21,27 @@ from .Data import (
     get_item_name_to_id,
     get_location_name_to_id,
 )
-from .Options import RhythmDoctorOptions
+from .Options import (
+    RhythmDoctorOptions,
+    EnableFragileHeartTraps,
+    EnableCharacterScrambleTraps,
+    EnableBeatsoundScrambleTraps,
+    EnableHitsoundScrambleTraps,
+    EnableHardDifficultyTraps,
+    EnableChilliSpeedTraps,
+    EnableGhostTapTraps,
+    EnableEasyDifficultyPowerups,
+    EnableStrongHeartPowerups,
+    EnableIceSpeedPowerups,
+    TrapChance,
+    PowerupChance,
+)
 from .Regions import create_and_connect_regions
 from .Rules import set_rules
 from .Web import RhythmDoctorWeb
 
 
-class RhythmDoctorWorld(World):
+class RhythmDoctorWorld(CachedRuleBuilderWorld):
     """
     Save lives with your spacebar!
 
@@ -99,38 +115,38 @@ class RhythmDoctorWorld(World):
         return RhythmDoctorItem(name, get_classification(name), self.item_name_to_id[name], self.player)
 
     def get_filler_item_name(self) -> str:
-        # TODO: Currently ignores user input on trap preferences
-        #       i.e. self.options.enable_chilli_speed_trap
         # Check which filler type to get
         result = self.random.randrange(100)
 
         trap_pool = list(self.item_name_groups["Traps"])
-        if not self.options.enable_fragile_heart_traps.value:
+        if OptionFilter(EnableFragileHeartTraps, False).check(self.options):
             trap_pool.remove("Fragile Heart Trap")
-        if not self.options.enable_character_scramble_traps.value:
+        if OptionFilter(EnableCharacterScrambleTraps, False).check(self.options):
             trap_pool.remove("Scramble Characters Trap")
-        if not self.options.enable_beatsound_scramble_traps.value:
+        if OptionFilter(EnableBeatsoundScrambleTraps, False).check(self.options):
             trap_pool.remove("Scramble Beatsound Trap")
-        if not self.options.enable_hitsound_scramble_traps.value:
+        if OptionFilter(EnableHitsoundScrambleTraps, False).check(self.options):
             trap_pool.remove("Scramble Hitsound Trap")
-        if not self.options.enable_hard_difficulty_traps.value:
+        if OptionFilter(EnableHardDifficultyTraps, False).check(self.options):
             trap_pool.remove("Hard Difficulty Trap")
-        if not self.options.enable_chilli_speed_traps.value:
+        if OptionFilter(EnableChilliSpeedTraps, False).check(self.options):
             trap_pool.remove("Chilli Speed Trap")
-        if not self.options.enable_ghost_tap_traps.value:
+        if OptionFilter(EnableGhostTapTraps, False).check(self.options):
             trap_pool.remove("Ghost Tap Trap")
 
         powerup_pool = list(self.item_name_groups["Powerups"])
-        if not self.options.enable_easy_difficulty_powerups.value:
+        if OptionFilter(EnableEasyDifficultyPowerups, False).check(self.options):
             powerup_pool.remove("Easy Difficulty Powerup")
-        if not self.options.enable_strong_heart_powerups.value:
+        if OptionFilter(EnableStrongHeartPowerups, False).check(self.options):
             powerup_pool.remove("Strong Heart Powerup")
-        if not self.options.enable_ice_speed_powerups.value:
+        if OptionFilter(EnableIceSpeedPowerups, False).check(self.options):
             powerup_pool.remove("Ice Speed Powerup")
 
-        if result < self.options.trap_chance.value:
+        trap_chance = FromOption(TrapChance).resolve(self)
+        powerup_chance = FromOption(PowerupChance).resolve(self)
+        if result < trap_chance:
             pool = trap_pool
-        elif result < self.options.trap_chance.value + self.options.powerup_chance.value:
+        elif result < trap_chance + powerup_chance:
             pool = powerup_pool
         else:
             pool = self.item_name_groups["Junk"]
@@ -148,14 +164,17 @@ class RhythmDoctorWorld(World):
                     except AttributeError:
                         pass
 
-        if (self.options.trap_chance.value + self.options.powerup_chance.value) > 100:
+        trap_chance = FromOption(TrapChance).resolve(self)
+        powerup_chance = FromOption(PowerupChance).resolve(self)
+
+        if (trap_chance + powerup_chance) > 100:
             error = (
                 f"Rhythm Doctor: Player {self.player_name}'s set "
-                f"trap chance ({self.options.trap_chance}%) and "
-                f"powerup chance ({self.options.powerup_chance}%) are over 100%"
+                f"trap chance ({trap_chance}%) and "
+                f"powerup chance ({powerup_chance}%) are over 100%"
             )
             raise OptionError(error)
-        if self.options.trap_chance.value != 0 and not (
+        if trap_chance != 0 and not (
             self.options.enable_fragile_heart_traps.value
             or self.options.enable_character_scramble_traps.value
             or self.options.enable_beatsound_scramble_traps.value
@@ -165,17 +184,17 @@ class RhythmDoctorWorld(World):
         ):
             error = (
                 f"Rhythm Doctor: Player {self.player_name}'s set trap chance "
-                f"is {self.options.trap_chance}, but all traps are disabled"
+                f"is {trap_chance}, but all traps are disabled"
             )
             raise OptionError(error)
-        if self.options.powerup_chance.value != 0 and not (
+        if powerup_chance != 0 and not (
             self.options.enable_easy_difficulty_powerups.value
             or self.options.enable_strong_heart_powerups.value
             or self.options.enable_ice_speed_powerups.value
         ):
             error = (
                 f"Rhythm Doctor: Player {self.player_name}'s set powerup chance "
-                f"is {self.options.trap_chance}, but all powerups are disabled"
+                f"is {powerup_chance}, but all powerups are disabled"
             )
             raise OptionError(error)
 

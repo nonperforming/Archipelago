@@ -5,7 +5,7 @@ from rule_builder.field_resolvers import FromOption
 from rule_builder.options import OptionFilter
 from rule_builder.rules import CanReachEntrance, Has, HasGroup
 
-from .Data import ALL_BOSS_STAGES, ALL_REGULAR_STAGES, HELPING_HANDS_STAGE, REGIONS
+from .Data import ALL_BOSS_STAGES, ALL_REGULAR_STAGES, HELPING_HANDS_STAGE, REGIONS, ART_EXERCISE_STAGE
 from .Options import (
     Act1BossUnlockRequirement,
     Act2BossUnlockRequirement,
@@ -83,8 +83,9 @@ def create_and_connect_stage_regions(world: "RhythmDoctorWorld"):
     for stage in ALL_REGULAR_STAGES:
         # Add stage and its region
         if stage.region_name is None:
-            if stage.short_name == "X-1":
-                if world.options.end_goal.value == EndGoal.option_helping_hands:
+            # X-1 in Helping Hands goal should be in the Basement, otherwise in the Garden Room
+            if stage.name is ART_EXERCISE_STAGE.name:
+                if OptionFilter(EndGoal, EndGoal.option_helping_hands).check(world.options):
                     region = world.get_region("Basement")
                 else:
                     region = world.get_region("Garden Room")
@@ -93,11 +94,15 @@ def create_and_connect_stage_regions(world: "RhythmDoctorWorld"):
                 raise NotImplementedError(err)
         else:
             region = world.get_region(stage.region_name)
+
         stage_region = Region(stage.short_name, world.player, world.multiworld)
         world.multiworld.regions.append(stage_region)
 
         # Set rules
-        if world.options.end_goal.value == EndGoal.option_helping_hands and stage.name == HELPING_HANDS_STAGE.name:
+        if (
+            OptionFilter(EndGoal, EndGoal.option_helping_hands).check(world.options)
+            and stage.name is HELPING_HANDS_STAGE.name
+        ):
             # This is the rule to unlock X-0 with it as the end goal.
             # The completion rule is handled in Rules.py.
             rule = get_completion_rule_for_helping_hands()

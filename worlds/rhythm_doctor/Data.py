@@ -1,10 +1,11 @@
+from rule_builder.options import OptionFilter
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from typing import TYPE_CHECKING, Literal
 
 from BaseClasses import Item, Location, LocationProgressType
 
-from .Options import EndGoal
+from .Options import EndGoal, PerfectRankLocations
 
 if TYPE_CHECKING:
     from . import RhythmDoctorWorld
@@ -212,6 +213,8 @@ RECORDS_ROOM_STAGES = [
 ]
 
 HELPING_HANDS_STAGE = _RegularStage("X-0 - Helping Hands", 48, "X-0", "Garden Room", None, False, 165, 166, 167)
+# special case: with X-0 goal this is moved to basement, otherwise garden room
+ART_EXERCISE_STAGE = _RegularStage("X-1 - Art Exercise", 49, "X-1", None, None, False, 168, 169, 170)
 OTHER_STAGES = [
     _RegularStage("X-FTS - Fixations Towards the Stars", 41, "X-FTS", "Basement", None, False, 144, 145, 146),
     _RegularStage("X-KOB - Kingdom of Balloons", 42, "X-KOB", "Basement", None, False, 147, 148, 149),
@@ -221,7 +224,7 @@ OTHER_STAGES = [
     _RegularStage("MD-2 - tape/stop/night", 46, "MD-2", "Basement", None, False, 159, 160, 161),
     _RegularStage("MD-3 - The 90's Decision", 47, "MD-3", "Basement", None, False, 162, 163, 164),
     HELPING_HANDS_STAGE,
-    _RegularStage("X-1 - Art Exercise", 49, "X-1", None, None, False, 168, 169, 170), # special case: with X-0 goal this is moved to basement, otherwise garden room
+    ART_EXERCISE_STAGE,
     _RegularStage("X-PBC - público cautivo", 67, "X-PBC", "Basement", None, False, 177, 178, 179),
 ]
 """
@@ -290,9 +293,10 @@ def create_items(world: "RhythmDoctorWorld"):
     item_pool = []
 
     for item in ALL_PROGRESSION_ITEMS:
-        if world.options.end_goal.value == EndGoal.option_helping_hands and (
+        if OptionFilter(EndGoal, EndGoal.option_helping_hands).check(world.options) and (
             item.name is HELPING_HANDS_STAGE.name or item.name is GARDEN_ROOM_KEY.name
         ):
+            # Don't place X-0/Garden Room Key in the item pool with this goal.
             continue
 
         create_item(item)
@@ -304,7 +308,7 @@ def create_items(world: "RhythmDoctorWorld"):
 def create_locations(world: "RhythmDoctorWorld"):
     def create_locations_from_stage(stage: _Stage):
         # TODO: Could probably do with a clean up
-        locations = stage.get_locations(bool(world.options.perfect_rank_locations.value))
+        locations = stage.get_locations(with_perfect=OptionFilter(PerfectRankLocations, True).check(world.options))
         world.get_region(stage.short_name).add_locations(locations, RhythmDoctorLocation)
 
         if stage.excluded:
