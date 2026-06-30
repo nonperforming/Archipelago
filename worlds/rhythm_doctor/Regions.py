@@ -99,13 +99,17 @@ def create_and_connect_stage_regions(world: "RhythmDoctorWorld"):
         world.multiworld.regions.append(stage_region)
 
         # Set rules
-        if (
-            OptionFilter(EndGoal, EndGoal.option_helping_hands).check(world.options)
-            and stage.name is HELPING_HANDS_STAGE.name
-        ):
+        if stage.name is HELPING_HANDS_STAGE.name:
             # This is the rule to unlock X-0 with it as the end goal.
             # The completion rule is handled in Rules.py.
-            rule = get_completion_rule_for_helping_hands()
+            rule = (
+                Has(
+                    stage.name,
+                    options=[OptionFilter(EndGoal, EndGoal.option_helping_hands, "ne")],
+                    filtered_resolution=True,
+                )
+                | get_completion_rule_for_helping_hands()
+            )
         else:
             rule = Has(stage.name)
         entrance = region.connect(stage_region, f"{stage.region_name} to {stage.short_name}")

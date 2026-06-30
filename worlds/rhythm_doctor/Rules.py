@@ -22,21 +22,61 @@ if TYPE_CHECKING:
 
 def get_completion_rule_for_helping_hands():
     return (
-        HasGroup("Act 1", count=FromOption(Act1BossUnlockRequirement))
-        & HasGroup("Act 2", count=FromOption(Act2BossUnlockRequirement))
-        & HasGroup("Act 3", count=FromOption(Act3BossUnlockRequirement))
-        & HasGroup("Act 4", count=FromOption(Act4BossUnlockRequirement))
-        & HasGroup("Act 5", count=FromOption(Act5BossUnlockRequirement))
-        & HasGroup("Act 6", count=FromOption(Act6BossUnlockRequirement))
-        & HasGroup("Act 7", count=FromOption(Act7BossUnlockRequirement))
-        & HasAll(*[key.name for key in STORY_KEYS])
+        HasGroup(
+            "Act 1",
+            count=FromOption(Act1BossUnlockRequirement),
+            options=[OptionFilter(EndGoal, EndGoal.option_helping_hands)],
+            filtered_resolution=True,
+        )
+        & HasGroup(
+            "Act 2",
+            count=FromOption(Act2BossUnlockRequirement),
+            options=[OptionFilter(EndGoal, EndGoal.option_helping_hands)],
+            filtered_resolution=True,
+        )
+        & HasGroup(
+            "Act 3",
+            count=FromOption(Act3BossUnlockRequirement),
+            options=[OptionFilter(EndGoal, EndGoal.option_helping_hands)],
+            filtered_resolution=True,
+        )
+        & HasGroup(
+            "Act 4",
+            count=FromOption(Act4BossUnlockRequirement),
+            options=[OptionFilter(EndGoal, EndGoal.option_helping_hands)],
+            filtered_resolution=True,
+        )
+        & HasGroup(
+            "Act 5",
+            count=FromOption(Act5BossUnlockRequirement),
+            options=[OptionFilter(EndGoal, EndGoal.option_helping_hands)],
+            filtered_resolution=True,
+        )
+        & HasGroup(
+            "Act 6",
+            count=FromOption(Act6BossUnlockRequirement),
+            options=[OptionFilter(EndGoal, EndGoal.option_helping_hands)],
+            filtered_resolution=True,
+        )
+        & HasGroup(
+            "Act 7",
+            count=FromOption(Act7BossUnlockRequirement),
+            options=[OptionFilter(EndGoal, EndGoal.option_helping_hands)],
+            filtered_resolution=True,
+        )
+        & HasAll(
+            *[key.name for key in STORY_KEYS],
+            options=[OptionFilter(EndGoal, EndGoal.option_helping_hands)],
+            filtered_resolution=True,
+        )
     )
 
 
 def set_rules(world: "RhythmDoctorWorld"):
-    helping_hands_rule = OptionFilter(EndGoal, EndGoal.option_helping_hands) & get_completion_rule_for_helping_hands()
-    # can't use '|' operator for OptionFilter, this will have to do for now
-    clear_all_rule = OptionFilter(EndGoal, EndGoal.option_helping_hands, "ne") & HasAll(
-        *[item.name for item in ALL_PROGRESSION_ITEMS]
+    helping_hands_rule = get_completion_rule_for_helping_hands()
+    clear_all_rule = HasAll(
+        *[item.name for item in ALL_PROGRESSION_ITEMS],
+        options=[OptionFilter(EndGoal, EndGoal.option_helping_hands, "ne")],
+        filtered_resolution=True,
     )
     world.set_completion_rule(helping_hands_rule | clear_all_rule)
