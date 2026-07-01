@@ -106,7 +106,7 @@ def create_and_connect_stage_regions(world: "RhythmDoctorWorld"):
                 Has(
                     stage.name,
                     options=[OptionFilter(EndGoal, EndGoal.option_helping_hands, "ne")],
-                    filtered_resolution=True,
+                    filtered_resolution=False,
                 )
                 | get_completion_rule_for_helping_hands()
             )
