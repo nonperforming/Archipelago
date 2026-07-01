@@ -3,7 +3,7 @@ from typing import TYPE_CHECKING, Literal
 from BaseClasses import Region
 from rule_builder.field_resolvers import FromOption
 from rule_builder.options import OptionFilter
-from rule_builder.rules import CanReachEntrance, Has, HasGroup
+from rule_builder.rules import CanReachEntrance, Has, HasGroup, AtLeast
 
 from .Data import ALL_BOSS_STAGES, ALL_REGULAR_STAGES, HELPING_HANDS_STAGE, REGIONS, ART_EXERCISE_STAGE
 from .Options import (
@@ -47,7 +47,12 @@ def connect_main_regions(world: "RhythmDoctorWorld"):
         entrance = main_ward_region.connect(region, f"{world.origin_region_name} to {region_name}")
 
         if region_name == "Garden Room":
-            world.set_rule(entrance, Has(f"{region_name} Key") | OptionFilter(EndGoal, EndGoal.option_helping_hands))
+            # If we're not in Helping Hands goal, the Garden Room will be unlocked
+            # automatically when Helping Hands unlocks.
+            world.set_rule(entrance, Has(f"{region_name} Key",
+              options=[OptionFilter(EndGoal, EndGoal.option_helping_hands, "ne")],
+              filtered_resolution=True,
+            ))
         else:
             world.set_rule(entrance, Has(f"{region_name} Key"))
 
@@ -134,15 +139,9 @@ def create_and_connect_stage_regions(world: "RhythmDoctorWorld"):
         elif boss_stage.short_name == "7-X":
             # 7-X is in the "Main Ward" but requires at least one level/both "2-XN" and "7-1"
             # from the SVT Ward or Records Room respectively
-
-            # TODO: There should be a better way to do this! This will break when more levels are added to Act 7
-
             bitter_times_rule = CanReachEntrance("SVT Ward to 2-XN")
             blurred_rule = CanReachEntrance("Records Room to 7-1")
-            if get_boss_unlock_requirement_value_for_act("Act 7").resolve(world) == 1:
-                rule = rule & (bitter_times_rule | blurred_rule)
-            else:
-                rule = rule & bitter_times_rule & blurred_rule
+            rule = rule & AtLeast(get_boss_unlock_requirement_value_for_act("Act 7"), bitter_times_rule, blurred_rule)
         elif boss_stage.short_name == "7-X2":
             # To reach 7-X2 you must first clear 7-X.
             rule = CanReachEntrance("Main Ward to 7-X")
