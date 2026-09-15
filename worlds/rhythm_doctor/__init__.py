@@ -166,6 +166,19 @@ class RhythmDoctorWorld(CachedRuleBuilderWorld):
 
         trap_chance = FromOption(TrapChance).resolve(self)
         powerup_chance = FromOption(PowerupChance).resolve(self)
+        want_to_generate_traps = (
+            self.options.enable_fragile_heart_traps.value
+            or self.options.enable_character_scramble_traps.value
+            or self.options.enable_beatsound_scramble_traps.value
+            or self.options.enable_hitsound_scramble_traps.value
+            or self.options.enable_hard_difficulty_traps.value
+            or self.options.enable_chilli_speed_traps.value
+        )
+        want_to_generate_powerups = (
+            self.options.enable_easy_difficulty_powerups.value
+            or self.options.enable_strong_heart_powerups.value
+            or self.options.enable_ice_speed_powerups.value
+        )
 
         if (trap_chance + powerup_chance) > 100:
             error = (
@@ -174,27 +187,30 @@ class RhythmDoctorWorld(CachedRuleBuilderWorld):
                 f"powerup chance ({powerup_chance}%) are over 100%"
             )
             raise OptionError(error)
-        if trap_chance != 0 and not (
-            self.options.enable_fragile_heart_traps.value
-            or self.options.enable_character_scramble_traps.value
-            or self.options.enable_beatsound_scramble_traps.value
-            or self.options.enable_hitsound_scramble_traps.value
-            or self.options.enable_hard_difficulty_traps.value
-            or self.options.enable_chilli_speed_traps.value
-        ):
+
+        if trap_chance != 0 and not want_to_generate_traps:
             error = (
                 f"Rhythm Doctor: Player {self.player_name}'s set trap chance "
                 f"is {trap_chance}, but all traps are disabled"
             )
             raise OptionError(error)
-        if powerup_chance != 0 and not (
-            self.options.enable_easy_difficulty_powerups.value
-            or self.options.enable_strong_heart_powerups.value
-            or self.options.enable_ice_speed_powerups.value
-        ):
+        if powerup_chance != 0 and not want_to_generate_powerups:
             error = (
                 f"Rhythm Doctor: Player {self.player_name}'s set powerup chance "
                 f"is {powerup_chance}, but all powerups are disabled"
+            )
+            raise OptionError(error)
+
+        if trap_chance == 0 and want_to_generate_traps:
+            error = (
+                f"Rhythm Doctor: Player {self.player_name} has traps enabled, "
+                f"but set trap chance is 0"
+            )
+            raise OptionError(error)
+        if powerup_chance == 0 and want_to_generate_powerups:
+            error = (
+                f"Rhythm Doctor: Player {self.player_name} has powerups enabled, "
+                f"but set powerup chance is 0"
             )
             raise OptionError(error)
 
