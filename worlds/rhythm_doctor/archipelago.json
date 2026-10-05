@@ -7,5 +7,5 @@
     "igdb_id": 27907,
     "license": "MIT",
     "repo_url": "https://github.com/nonperforming/Archipelago",
-    "flags": ["unready", "supports_deathlink"]
+    "flags": ["supports_deathlink"]
 }
